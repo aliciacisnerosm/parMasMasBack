@@ -1,0 +1,19 @@
+program factorialIterativo:
+var int: n;
+
+int func factorial(int n){
+var int: fact,i;
+  fact =1;
+ for( i =1 to (n+1)){
+    fact = fact * i;
+    write(fact);
+  };
+   
+ 
+}
+
+main (){
+  n =5;
+ factorial(n);
+ 
+}

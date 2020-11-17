@@ -1,0 +1,61 @@
+program prueba :
+var int: aglobal,bglobal,x, b[0][10],c[0] & char: d & int: x & char: ap & char: appp, b1, m & float: variablefloat;
+
+
+void func prueba(int a, char t){
+    var int: variablelocal, va23[4] & char: o9;
+    variablelocal = 2;
+    a = 5*3-2;
+    read(a);
+    write("hola", 2309231);
+    write(a);
+    variablefloat = 1234.909;
+    aglobal = 2;
+
+}
+int func pruebatipo(int z, int n){
+  if (z < 115){
+    z = z + 1;
+    pruebatipo(z,0);
+  };
+  write("hoal");
+}
+int func retornoint(int z) {
+  return (z);
+}
+
+void func cuenta_regresiva(int n){
+  n=n-1;
+  if(n>0){
+    write(n);
+  
+  }
+  else{
+    write("boom!, fin de la funcion");
+  };
+  
+}
+void func shalalala(int param1, int param2){
+  var int: y, variablelocal;
+  y =2;
+  variablelocal = 20;
+  if(y<5){
+    write("hola","hola 2", 5 * 9.7, retornoint(1) + 1);
+  }
+  else{
+    write("y es mayor a 5");
+  };
+  
+}
+
+
+
+main (){
+  variablefloat = 7.5;
+  read(variablefloat);
+  aglobal = 1;
+  bglobal=111;
+
+pruebatipo(bglobal, 0);
+shalalala(aglobal,bglobal);
+}

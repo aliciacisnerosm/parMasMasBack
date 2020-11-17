@@ -1,0 +1,3827 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    DO
+    THEN
+    VD
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     cte_f -> CTE_I DOT CTE_I
+Rule 2     program -> PROGRAM ID punto_program COLON main
+Rule 3     program -> PROGRAM ID punto_program COLON variables main
+Rule 4     program -> PROGRAM ID punto_program COLON variables funciones main
+Rule 5     program -> PROGRAM ID punto_program COLON funciones main
+Rule 6     punto_program -> <empty>
+Rule 7     main -> MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
+Rule 8     punto_generator -> <empty>
+Rule 9     punto_goto_main -> <empty>
+Rule 10    main_aux -> estatutos_main_multiple
+Rule 11    main_aux -> empty
+Rule 12    variables -> VAR punto_variables_1 SEMICOLON
+Rule 13    variables -> VAR punto_variables_1 variables_aux SEMICOLON
+Rule 14    punto_variables_1 -> <empty>
+Rule 15    variables_aux -> tipo COLON declaracion_inicial
+Rule 16    variables_aux -> tipo COLON declaracion_inicial MORE variables_aux
+Rule 17    tipo -> INT
+Rule 18    tipo -> FLOAT
+Rule 19    tipo -> CHAR
+Rule 20    declaracion_inicial -> dec_varaux punto_dec_var_1 COMMA declaracion_inicial
+Rule 21    declaracion_inicial -> dec_varaux punto_dec_var_1
+Rule 22    punto_dec_var_1 -> <empty>
+Rule 23    dec_varaux -> ID
+Rule 24    dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR
+Rule 25    dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+Rule 26    punto_dec_varaux_1 -> <empty>
+Rule 27    dec_var -> dec_varaux COMMA dec_var
+Rule 28    dec_var -> dec_varaux
+Rule 29    dec_var_llamada -> m_exp punto_verify_dec_param COMMA punto_mas_k dec_var_llamada
+Rule 30    dec_var_llamada -> m_exp punto_verify_dec_param
+Rule 31    punto_mas_k -> <empty>
+Rule 32    punto_verify_dec_param -> <empty>
+Rule 33    funciones -> funciones_aux
+Rule 34    funciones -> funciones_aux funciones
+Rule 35    funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+Rule 36    funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+Rule 37    punto_return_value -> <empty>
+Rule 38    not_variables -> variables count_vars
+Rule 39    not_variables -> empty
+Rule 40    not_params -> parametros count_params
+Rule 41    not_params -> empty
+Rule 42    punto_end_function_return -> <empty>
+Rule 43    punto_id_func -> <empty>
+Rule 44    parametros -> dec_var_param COMMA parametros
+Rule 45    parametros -> dec_var_param
+Rule 46    dec_var_param -> tipo ID punto_push_param
+Rule 47    punto_push_param -> <empty>
+Rule 48    count_params -> <empty>
+Rule 49    count_vars -> <empty>
+Rule 50    end_func -> <empty>
+Rule 51    exp_or -> t_exp punto_pop_or t_exp_or_aux
+Rule 52    exp_or -> t_exp punto_pop_or
+Rule 53    punto_pop_or -> <empty>
+Rule 54    t_exp_or_aux -> OR punto_push_or exp_or
+Rule 55    punto_push_or -> <empty>
+Rule 56    t_exp -> g_exp pop_and t_exp_aux
+Rule 57    t_exp -> g_exp pop_and
+Rule 58    pop_and -> <empty>
+Rule 59    t_exp_aux -> AND punto_push_and t_exp
+Rule 60    punto_push_and -> <empty>
+Rule 61    g_exp -> m_exp
+Rule 62    g_exp -> m_exp relacionales punto_relacionales m_exp punto_pop_relacional
+Rule 63    punto_relacionales -> <empty>
+Rule 64    punto_pop_relacional -> <empty>
+Rule 65    m_exp -> termino punto_mexp_pop
+Rule 66    m_exp -> termino punto_mexp_pop m_exp_aux
+Rule 67    punto_mexp_pop -> <empty>
+Rule 68    m_exp_aux -> PLUS punto_m_exp_push m_exp
+Rule 69    m_exp_aux -> MINUS punto_m_exp_push m_exp
+Rule 70    punto_m_exp_push -> <empty>
+Rule 71    termino -> factor punto_termino_pop
+Rule 72    termino -> factor punto_termino_pop termino_aux
+Rule 73    punto_termino_pop -> <empty>
+Rule 74    termino_aux -> MULTIPLY punto_termino_aux termino
+Rule 75    termino_aux -> DIVIDE punto_termino_aux termino
+Rule 76    punto_termino_aux -> <empty>
+Rule 77    factor -> cte
+Rule 78    factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+Rule 79    punto_fondo_falso -> <empty>
+Rule 80    punto_fin_fondo_falso -> <empty>
+Rule 81    relacionales -> LESS_THAN
+Rule 82    relacionales -> GREATER_THAN
+Rule 83    relacionales -> DIFFERENT
+Rule 84    relacionales -> EQUAL
+Rule 85    relacionales -> GREATER_EQUAL
+Rule 86    relacionales -> LESS_EQUAL
+Rule 87    estatutos -> estatutos_main_aux
+Rule 88    estatutos -> retorno SEMICOLON
+Rule 89    estatutos_main -> asignacion SEMICOLON
+Rule 90    estatutos_main -> llamada SEMICOLON
+Rule 91    estatutos_main -> lectura SEMICOLON
+Rule 92    estatutos_main -> escritura SEMICOLON
+Rule 93    estatutos_main -> decision SEMICOLON
+Rule 94    estatutos_main -> repeticion SEMICOLON
+Rule 95    estatutos_main_multiple -> estatutos_main estatutos_main_multiple
+Rule 96    estatutos_main_multiple -> estatutos_main
+Rule 97    estatutos_main_aux -> estatutos_main estatutos
+Rule 98    estatutos_main_aux -> estatutos_main
+Rule 99    asignacion -> dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+Rule 100   punto_asignacion_var -> <empty>
+Rule 101   punto_igual -> <empty>
+Rule 102   punto_asignacion -> <empty>
+Rule 103   llamada -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+Rule 104   llamada -> ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+Rule 105   punto_verify_id -> <empty>
+Rule 106   punto_verify_total_params -> <empty>
+Rule 107   punto_end_llamada -> <empty>
+Rule 108   punto_era -> <empty>
+Rule 109   retorno -> RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
+Rule 110   punto_return -> <empty>
+Rule 111   punto_read_stack -> <empty>
+Rule 112   lectura -> READ LEFT_PAR lectura_var RIGHT_PAR
+Rule 113   lectura_var -> punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand COMMA lectura_var
+Rule 114   lectura_var -> punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand
+Rule 115   punto_push_dec_var -> <empty>
+Rule 116   punto_add_read_operand -> <empty>
+Rule 117   escritura -> WRITE LEFT_PAR escritura_aux RIGHT_PAR
+Rule 118   escritura_aux -> punto_write_stack STR punto_escritura_push punto_add_write_operand
+Rule 119   escritura_aux -> punto_write_stack m_exp punto_escritura_push punto_add_write_operand
+Rule 120   escritura_aux -> punto_write_stack STR punto_escritura_push punto_add_write_operand COMMA escritura_aux
+Rule 121   escritura_aux -> punto_write_stack m_exp punto_escritura_push punto_add_write_operand COMMA escritura_aux
+Rule 122   punto_escritura_push -> <empty>
+Rule 123   punto_write_stack -> <empty>
+Rule 124   punto_add_write_operand -> <empty>
+Rule 125   decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+Rule 126   decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+Rule 127   punto_if_exp -> <empty>
+Rule 128   punto_else -> <empty>
+Rule 129   punto_end_if -> <empty>
+Rule 130   repeticion -> condicional
+Rule 131   repeticion -> no_condicional
+Rule 132   no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+Rule 133   punto_for -> <empty>
+Rule 134   punto_exp_for_inf -> <empty>
+Rule 135   punto_exp_for_sup -> <empty>
+Rule 136   punto_end_for -> <empty>
+Rule 137   condicional -> WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+Rule 138   punto_while -> <empty>
+Rule 139   punto_validar_exp -> <empty>
+Rule 140   punto_end_while -> <empty>
+Rule 141   cte -> ID factor_push_operand
+Rule 142   cte -> CTE_I factor_int_push
+Rule 143   cte -> cte_f factor_float_push
+Rule 144   cte -> CTE_CHAR factor_char_push
+Rule 145   factor_push_operand -> <empty>
+Rule 146   factor_float_push -> <empty>
+Rule 147   factor_int_push -> <empty>
+Rule 148   factor_char_push -> <empty>
+Rule 149   empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 59
+CHAR                 : 19
+COLON                : 2 3 4 5 15 16
+COMMA                : 20 27 29 44 113 120 121
+CTE_CHAR             : 144
+CTE_I                : 1 1 24 25 25 142
+DIFFERENT            : 83
+DIVIDE               : 75
+DO                   : 
+DOT                  : 1
+ELSE                 : 126
+EQUAL                : 84
+EQUALS               : 99 132
+FLOAT                : 18
+FOR                  : 132
+FUNC                 : 35 36
+GREATER_EQUAL        : 85
+GREATER_THAN         : 82
+ID                   : 2 3 4 5 23 24 25 35 36 46 103 104 141
+IF                   : 125 126
+INT                  : 17
+LEFT_BR              : 24 25 25
+LEFT_CURL            : 7 35 36 125 126 126 132 137
+LEFT_PAR             : 7 35 36 78 103 104 109 112 117 125 126 132 137
+LESS_EQUAL           : 86
+LESS_THAN            : 81
+MAIN                 : 7
+MINUS                : 69
+MORE                 : 16
+MULTIPLY             : 74
+OR                   : 54
+PLUS                 : 68
+PROGRAM              : 2 3 4 5
+READ                 : 112
+RETURN               : 109
+RIGHT_BR             : 24 25 25
+RIGHT_CURL           : 7 35 36 125 126 126 132 137
+RIGHT_PAR            : 7 35 36 78 103 104 109 112 117 125 126 132 137
+SEMICOLON            : 12 13 88 89 90 91 92 93 94
+STR                  : 118 120
+THEN                 : 
+TO                   : 132
+VAR                  : 12 13
+VD                   : 
+VOID                 : 36
+WHILE                : 137
+WRITE                : 117
+error                : 
+
+Nonterminals, with rules where they appear
+
+asignacion           : 89
+condicional          : 130
+count_params         : 40
+count_vars           : 36 38
+cte                  : 77
+cte_f                : 143
+dec_var              : 27
+dec_var_llamada      : 29 104
+dec_var_param        : 44 45
+dec_varaux           : 20 21 27 28 99 113 114 132
+decision             : 93
+declaracion_inicial  : 15 16 20
+empty                : 11 39 41
+end_func             : 36
+escritura            : 92
+escritura_aux        : 117 120 121
+estatutos            : 35 36 97 125 126 126 132 137
+estatutos_main       : 95 96 97 98
+estatutos_main_aux   : 87
+estatutos_main_multiple : 10 95
+exp_or               : 54 78 125 126 137
+factor               : 71 72
+factor_char_push     : 144
+factor_float_push    : 143
+factor_int_push      : 142
+factor_push_operand  : 141
+funciones            : 4 5 34
+funciones_aux        : 33 34
+g_exp                : 56 57
+lectura              : 91
+lectura_var          : 112 113
+llamada              : 90
+m_exp                : 29 30 61 62 62 68 69 99 109 119 121 132 132
+m_exp_aux            : 66
+main                 : 2 3 4 5
+main_aux             : 7
+no_condicional       : 131
+not_params           : 35 36
+not_variables        : 35 36
+parametros           : 40 44
+pop_and              : 56 57
+program              : 0
+punto_add_read_operand : 113 114
+punto_add_write_operand : 118 119 120 121
+punto_asignacion     : 99
+punto_asignacion_var : 99
+punto_dec_var_1      : 20 21
+punto_dec_varaux_1   : 
+punto_else           : 126
+punto_end_for        : 132
+punto_end_function_return : 35
+punto_end_if         : 125 126
+punto_end_llamada    : 103 104
+punto_end_while      : 137
+punto_era            : 103 104
+punto_escritura_push : 118 119 120 121
+punto_exp_for_inf    : 132
+punto_exp_for_sup    : 132
+punto_fin_fondo_falso : 78
+punto_fondo_falso    : 78
+punto_for            : 132
+punto_generator      : 7
+punto_goto_main      : 7
+punto_id_func        : 35 36
+punto_if_exp         : 125 126
+punto_igual          : 99
+punto_m_exp_push     : 68 69
+punto_mas_k          : 29
+punto_mexp_pop       : 65 66
+punto_pop_or         : 51 52
+punto_pop_relacional : 62
+punto_program        : 2 3 4 5
+punto_push_and       : 59
+punto_push_dec_var   : 113 114
+punto_push_or        : 54
+punto_push_param     : 46
+punto_read_stack     : 113 114
+punto_relacionales   : 62
+punto_return         : 109
+punto_return_value   : 35
+punto_termino_aux    : 74 75
+punto_termino_pop    : 71 72
+punto_validar_exp    : 137
+punto_variables_1    : 12 13
+punto_verify_dec_param : 29 30
+punto_verify_id      : 103 104
+punto_verify_total_params : 104
+punto_while          : 137
+punto_write_stack    : 118 119 120 121
+relacionales         : 62
+repeticion           : 94
+retorno              : 88
+t_exp                : 51 52 59
+t_exp_aux            : 56
+t_exp_or_aux         : 51
+termino              : 65 66 74 75
+termino_aux          : 72
+tipo                 : 15 16 35 46
+variables            : 3 4 38
+variables_aux        : 13 16
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (2) program -> . PROGRAM ID punto_program COLON main
+    (3) program -> . PROGRAM ID punto_program COLON variables main
+    (4) program -> . PROGRAM ID punto_program COLON variables funciones main
+    (5) program -> . PROGRAM ID punto_program COLON funciones main
+
+    PROGRAM         shift and go to state 2
+
+    program                        shift and go to state 1
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (2) program -> PROGRAM . ID punto_program COLON main
+    (3) program -> PROGRAM . ID punto_program COLON variables main
+    (4) program -> PROGRAM . ID punto_program COLON variables funciones main
+    (5) program -> PROGRAM . ID punto_program COLON funciones main
+
+    ID              shift and go to state 3
+
+
+state 3
+
+    (2) program -> PROGRAM ID . punto_program COLON main
+    (3) program -> PROGRAM ID . punto_program COLON variables main
+    (4) program -> PROGRAM ID . punto_program COLON variables funciones main
+    (5) program -> PROGRAM ID . punto_program COLON funciones main
+    (6) punto_program -> .
+
+    COLON           reduce using rule 6 (punto_program -> .)
+
+    punto_program                  shift and go to state 4
+
+state 4
+
+    (2) program -> PROGRAM ID punto_program . COLON main
+    (3) program -> PROGRAM ID punto_program . COLON variables main
+    (4) program -> PROGRAM ID punto_program . COLON variables funciones main
+    (5) program -> PROGRAM ID punto_program . COLON funciones main
+
+    COLON           shift and go to state 5
+
+
+state 5
+
+    (2) program -> PROGRAM ID punto_program COLON . main
+    (3) program -> PROGRAM ID punto_program COLON . variables main
+    (4) program -> PROGRAM ID punto_program COLON . variables funciones main
+    (5) program -> PROGRAM ID punto_program COLON . funciones main
+    (7) main -> . MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
+    (12) variables -> . VAR punto_variables_1 SEMICOLON
+    (13) variables -> . VAR punto_variables_1 variables_aux SEMICOLON
+    (33) funciones -> . funciones_aux
+    (34) funciones -> . funciones_aux funciones
+    (35) funciones_aux -> . tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+    (36) funciones_aux -> . VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+    (17) tipo -> . INT
+    (18) tipo -> . FLOAT
+    (19) tipo -> . CHAR
+
+    MAIN            shift and go to state 9
+    VAR             shift and go to state 10
+    VOID            shift and go to state 13
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 15
+    CHAR            shift and go to state 16
+
+    main                           shift and go to state 6
+    variables                      shift and go to state 7
+    funciones                      shift and go to state 8
+    funciones_aux                  shift and go to state 11
+    tipo                           shift and go to state 12
+
+state 6
+
+    (2) program -> PROGRAM ID punto_program COLON main .
+
+    $end            reduce using rule 2 (program -> PROGRAM ID punto_program COLON main .)
+
+
+state 7
+
+    (3) program -> PROGRAM ID punto_program COLON variables . main
+    (4) program -> PROGRAM ID punto_program COLON variables . funciones main
+    (7) main -> . MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
+    (33) funciones -> . funciones_aux
+    (34) funciones -> . funciones_aux funciones
+    (35) funciones_aux -> . tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+    (36) funciones_aux -> . VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+    (17) tipo -> . INT
+    (18) tipo -> . FLOAT
+    (19) tipo -> . CHAR
+
+    MAIN            shift and go to state 9
+    VOID            shift and go to state 13
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 15
+    CHAR            shift and go to state 16
+
+    main                           shift and go to state 17
+    funciones                      shift and go to state 18
+    funciones_aux                  shift and go to state 11
+    tipo                           shift and go to state 12
+
+state 8
+
+    (5) program -> PROGRAM ID punto_program COLON funciones . main
+    (7) main -> . MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
+
+    MAIN            shift and go to state 9
+
+    main                           shift and go to state 19
+
+state 9
+
+    (7) main -> MAIN . LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
+
+    LEFT_PAR        shift and go to state 20
+
+
+state 10
+
+    (12) variables -> VAR . punto_variables_1 SEMICOLON
+    (13) variables -> VAR . punto_variables_1 variables_aux SEMICOLON
+    (14) punto_variables_1 -> .
+
+    SEMICOLON       reduce using rule 14 (punto_variables_1 -> .)
+    INT             reduce using rule 14 (punto_variables_1 -> .)
+    FLOAT           reduce using rule 14 (punto_variables_1 -> .)
+    CHAR            reduce using rule 14 (punto_variables_1 -> .)
+
+    punto_variables_1              shift and go to state 21
+
+state 11
+
+    (33) funciones -> funciones_aux .
+    (34) funciones -> funciones_aux . funciones
+    (33) funciones -> . funciones_aux
+    (34) funciones -> . funciones_aux funciones
+    (35) funciones_aux -> . tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+    (36) funciones_aux -> . VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+    (17) tipo -> . INT
+    (18) tipo -> . FLOAT
+    (19) tipo -> . CHAR
+
+    MAIN            reduce using rule 33 (funciones -> funciones_aux .)
+    VOID            shift and go to state 13
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 15
+    CHAR            shift and go to state 16
+
+    funciones_aux                  shift and go to state 11
+    funciones                      shift and go to state 22
+    tipo                           shift and go to state 12
+
+state 12
+
+    (35) funciones_aux -> tipo . FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+
+    FUNC            shift and go to state 23
+
+
+state 13
+
+    (36) funciones_aux -> VOID . FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+
+    FUNC            shift and go to state 24
+
+
+state 14
+
+    (17) tipo -> INT .
+
+    FUNC            reduce using rule 17 (tipo -> INT .)
+    COLON           reduce using rule 17 (tipo -> INT .)
+    ID              reduce using rule 17 (tipo -> INT .)
+
+
+state 15
+
+    (18) tipo -> FLOAT .
+
+    FUNC            reduce using rule 18 (tipo -> FLOAT .)
+    COLON           reduce using rule 18 (tipo -> FLOAT .)
+    ID              reduce using rule 18 (tipo -> FLOAT .)
+
+
+state 16
+
+    (19) tipo -> CHAR .
+
+    FUNC            reduce using rule 19 (tipo -> CHAR .)
+    COLON           reduce using rule 19 (tipo -> CHAR .)
+    ID              reduce using rule 19 (tipo -> CHAR .)
+
+
+state 17
+
+    (3) program -> PROGRAM ID punto_program COLON variables main .
+
+    $end            reduce using rule 3 (program -> PROGRAM ID punto_program COLON variables main .)
+
+
+state 18
+
+    (4) program -> PROGRAM ID punto_program COLON variables funciones . main
+    (7) main -> . MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
+
+    MAIN            shift and go to state 9
+
+    main                           shift and go to state 25
+
+state 19
+
+    (5) program -> PROGRAM ID punto_program COLON funciones main .
+
+    $end            reduce using rule 5 (program -> PROGRAM ID punto_program COLON funciones main .)
+
+
+state 20
+
+    (7) main -> MAIN LEFT_PAR . RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
+
+    RIGHT_PAR       shift and go to state 26
+
+
+state 21
+
+    (12) variables -> VAR punto_variables_1 . SEMICOLON
+    (13) variables -> VAR punto_variables_1 . variables_aux SEMICOLON
+    (15) variables_aux -> . tipo COLON declaracion_inicial
+    (16) variables_aux -> . tipo COLON declaracion_inicial MORE variables_aux
+    (17) tipo -> . INT
+    (18) tipo -> . FLOAT
+    (19) tipo -> . CHAR
+
+    SEMICOLON       shift and go to state 27
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 15
+    CHAR            shift and go to state 16
+
+    variables_aux                  shift and go to state 28
+    tipo                           shift and go to state 29
+
+state 22
+
+    (34) funciones -> funciones_aux funciones .
+
+    MAIN            reduce using rule 34 (funciones -> funciones_aux funciones .)
+
+
+state 23
+
+    (35) funciones_aux -> tipo FUNC . ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+
+    ID              shift and go to state 30
+
+
+state 24
+
+    (36) funciones_aux -> VOID FUNC . ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+
+    ID              shift and go to state 31
+
+
+state 25
+
+    (4) program -> PROGRAM ID punto_program COLON variables funciones main .
+
+    $end            reduce using rule 4 (program -> PROGRAM ID punto_program COLON variables funciones main .)
+
+
+state 26
+
+    (7) main -> MAIN LEFT_PAR RIGHT_PAR . LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
+
+    LEFT_CURL       shift and go to state 32
+
+
+state 27
+
+    (12) variables -> VAR punto_variables_1 SEMICOLON .
+
+    MAIN            reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    VOID            reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    INT             reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    FLOAT           reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    CHAR            reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    RETURN          reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    ID              reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    READ            reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    WRITE           reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    IF              reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    WHILE           reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+    FOR             reduce using rule 12 (variables -> VAR punto_variables_1 SEMICOLON .)
+
+
+state 28
+
+    (13) variables -> VAR punto_variables_1 variables_aux . SEMICOLON
+
+    SEMICOLON       shift and go to state 33
+
+
+state 29
+
+    (15) variables_aux -> tipo . COLON declaracion_inicial
+    (16) variables_aux -> tipo . COLON declaracion_inicial MORE variables_aux
+
+    COLON           shift and go to state 34
+
+
+state 30
+
+    (35) funciones_aux -> tipo FUNC ID . punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+    (43) punto_id_func -> .
+
+    LEFT_PAR        reduce using rule 43 (punto_id_func -> .)
+
+    punto_id_func                  shift and go to state 35
+
+state 31
+
+    (36) funciones_aux -> VOID FUNC ID . punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+    (43) punto_id_func -> .
+
+    LEFT_PAR        reduce using rule 43 (punto_id_func -> .)
+
+    punto_id_func                  shift and go to state 36
+
+state 32
+
+    (7) main -> MAIN LEFT_PAR RIGHT_PAR LEFT_CURL . punto_goto_main main_aux RIGHT_CURL punto_generator
+    (9) punto_goto_main -> .
+
+    ID              reduce using rule 9 (punto_goto_main -> .)
+    READ            reduce using rule 9 (punto_goto_main -> .)
+    WRITE           reduce using rule 9 (punto_goto_main -> .)
+    IF              reduce using rule 9 (punto_goto_main -> .)
+    WHILE           reduce using rule 9 (punto_goto_main -> .)
+    FOR             reduce using rule 9 (punto_goto_main -> .)
+    RIGHT_CURL      reduce using rule 9 (punto_goto_main -> .)
+
+    punto_goto_main                shift and go to state 37
+
+state 33
+
+    (13) variables -> VAR punto_variables_1 variables_aux SEMICOLON .
+
+    MAIN            reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    VOID            reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    INT             reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    FLOAT           reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    CHAR            reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    RETURN          reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    ID              reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    READ            reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    WRITE           reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    IF              reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    WHILE           reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+    FOR             reduce using rule 13 (variables -> VAR punto_variables_1 variables_aux SEMICOLON .)
+
+
+state 34
+
+    (15) variables_aux -> tipo COLON . declaracion_inicial
+    (16) variables_aux -> tipo COLON . declaracion_inicial MORE variables_aux
+    (20) declaracion_inicial -> . dec_varaux punto_dec_var_1 COMMA declaracion_inicial
+    (21) declaracion_inicial -> . dec_varaux punto_dec_var_1
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+
+    ID              shift and go to state 40
+
+    declaracion_inicial            shift and go to state 38
+    dec_varaux                     shift and go to state 39
+
+state 35
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func . punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+    (37) punto_return_value -> .
+
+    LEFT_PAR        reduce using rule 37 (punto_return_value -> .)
+
+    punto_return_value             shift and go to state 41
+
+state 36
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func . LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+
+    LEFT_PAR        shift and go to state 42
+
+
+state 37
+
+    (7) main -> MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main . main_aux RIGHT_CURL punto_generator
+    (10) main_aux -> . estatutos_main_multiple
+    (11) main_aux -> . empty
+    (95) estatutos_main_multiple -> . estatutos_main estatutos_main_multiple
+    (96) estatutos_main_multiple -> . estatutos_main
+    (149) empty -> .
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RIGHT_CURL      reduce using rule 149 (empty -> .)
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    main_aux                       shift and go to state 43
+    estatutos_main_multiple        shift and go to state 44
+    empty                          shift and go to state 45
+    estatutos_main                 shift and go to state 46
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    dec_varaux                     shift and go to state 53
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 38
+
+    (15) variables_aux -> tipo COLON declaracion_inicial .
+    (16) variables_aux -> tipo COLON declaracion_inicial . MORE variables_aux
+
+    SEMICOLON       reduce using rule 15 (variables_aux -> tipo COLON declaracion_inicial .)
+    MORE            shift and go to state 62
+
+
+state 39
+
+    (20) declaracion_inicial -> dec_varaux . punto_dec_var_1 COMMA declaracion_inicial
+    (21) declaracion_inicial -> dec_varaux . punto_dec_var_1
+    (22) punto_dec_var_1 -> .
+
+    COMMA           reduce using rule 22 (punto_dec_var_1 -> .)
+    MORE            reduce using rule 22 (punto_dec_var_1 -> .)
+    SEMICOLON       reduce using rule 22 (punto_dec_var_1 -> .)
+
+    punto_dec_var_1                shift and go to state 63
+
+state 40
+
+    (23) dec_varaux -> ID .
+    (24) dec_varaux -> ID . LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> ID . LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+
+    COMMA           reduce using rule 23 (dec_varaux -> ID .)
+    MORE            reduce using rule 23 (dec_varaux -> ID .)
+    SEMICOLON       reduce using rule 23 (dec_varaux -> ID .)
+    EQUALS          reduce using rule 23 (dec_varaux -> ID .)
+    RIGHT_PAR       reduce using rule 23 (dec_varaux -> ID .)
+    LEFT_BR         shift and go to state 64
+
+
+state 41
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value . LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+
+    LEFT_PAR        shift and go to state 65
+
+
+state 42
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR . not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+    (40) not_params -> . parametros count_params
+    (41) not_params -> . empty
+    (44) parametros -> . dec_var_param COMMA parametros
+    (45) parametros -> . dec_var_param
+    (149) empty -> .
+    (46) dec_var_param -> . tipo ID punto_push_param
+    (17) tipo -> . INT
+    (18) tipo -> . FLOAT
+    (19) tipo -> . CHAR
+
+    RIGHT_PAR       reduce using rule 149 (empty -> .)
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 15
+    CHAR            shift and go to state 16
+
+    not_params                     shift and go to state 66
+    parametros                     shift and go to state 67
+    empty                          shift and go to state 68
+    dec_var_param                  shift and go to state 69
+    tipo                           shift and go to state 70
+
+state 43
+
+    (7) main -> MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux . RIGHT_CURL punto_generator
+
+    RIGHT_CURL      shift and go to state 71
+
+
+state 44
+
+    (10) main_aux -> estatutos_main_multiple .
+
+    RIGHT_CURL      reduce using rule 10 (main_aux -> estatutos_main_multiple .)
+
+
+state 45
+
+    (11) main_aux -> empty .
+
+    RIGHT_CURL      reduce using rule 11 (main_aux -> empty .)
+
+
+state 46
+
+    (95) estatutos_main_multiple -> estatutos_main . estatutos_main_multiple
+    (96) estatutos_main_multiple -> estatutos_main .
+    (95) estatutos_main_multiple -> . estatutos_main estatutos_main_multiple
+    (96) estatutos_main_multiple -> . estatutos_main
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RIGHT_CURL      reduce using rule 96 (estatutos_main_multiple -> estatutos_main .)
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    estatutos_main                 shift and go to state 46
+    estatutos_main_multiple        shift and go to state 72
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    dec_varaux                     shift and go to state 53
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 47
+
+    (89) estatutos_main -> asignacion . SEMICOLON
+
+    SEMICOLON       shift and go to state 73
+
+
+state 48
+
+    (90) estatutos_main -> llamada . SEMICOLON
+
+    SEMICOLON       shift and go to state 74
+
+
+state 49
+
+    (91) estatutos_main -> lectura . SEMICOLON
+
+    SEMICOLON       shift and go to state 75
+
+
+state 50
+
+    (92) estatutos_main -> escritura . SEMICOLON
+
+    SEMICOLON       shift and go to state 76
+
+
+state 51
+
+    (93) estatutos_main -> decision . SEMICOLON
+
+    SEMICOLON       shift and go to state 77
+
+
+state 52
+
+    (94) estatutos_main -> repeticion . SEMICOLON
+
+    SEMICOLON       shift and go to state 78
+
+
+state 53
+
+    (99) asignacion -> dec_varaux . punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (100) punto_asignacion_var -> .
+
+    EQUALS          reduce using rule 100 (punto_asignacion_var -> .)
+
+    punto_asignacion_var           shift and go to state 79
+
+state 54
+
+    (103) llamada -> ID . punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> ID . punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (23) dec_varaux -> ID .
+    (24) dec_varaux -> ID . LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> ID . LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (105) punto_verify_id -> .
+
+    EQUALS          reduce using rule 23 (dec_varaux -> ID .)
+    LEFT_BR         shift and go to state 64
+    LEFT_PAR        reduce using rule 105 (punto_verify_id -> .)
+
+    punto_verify_id                shift and go to state 80
+
+state 55
+
+    (112) lectura -> READ . LEFT_PAR lectura_var RIGHT_PAR
+
+    LEFT_PAR        shift and go to state 81
+
+
+state 56
+
+    (117) escritura -> WRITE . LEFT_PAR escritura_aux RIGHT_PAR
+
+    LEFT_PAR        shift and go to state 82
+
+
+state 57
+
+    (125) decision -> IF . LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> IF . LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+
+    LEFT_PAR        shift and go to state 83
+
+
+state 58
+
+    (130) repeticion -> condicional .
+
+    SEMICOLON       reduce using rule 130 (repeticion -> condicional .)
+
+
+state 59
+
+    (131) repeticion -> no_condicional .
+
+    SEMICOLON       reduce using rule 131 (repeticion -> no_condicional .)
+
+
+state 60
+
+    (137) condicional -> WHILE . punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (138) punto_while -> .
+
+    LEFT_PAR        reduce using rule 138 (punto_while -> .)
+
+    punto_while                    shift and go to state 84
+
+state 61
+
+    (132) no_condicional -> FOR . LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    LEFT_PAR        shift and go to state 85
+
+
+state 62
+
+    (16) variables_aux -> tipo COLON declaracion_inicial MORE . variables_aux
+    (15) variables_aux -> . tipo COLON declaracion_inicial
+    (16) variables_aux -> . tipo COLON declaracion_inicial MORE variables_aux
+    (17) tipo -> . INT
+    (18) tipo -> . FLOAT
+    (19) tipo -> . CHAR
+
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 15
+    CHAR            shift and go to state 16
+
+    tipo                           shift and go to state 29
+    variables_aux                  shift and go to state 86
+
+state 63
+
+    (20) declaracion_inicial -> dec_varaux punto_dec_var_1 . COMMA declaracion_inicial
+    (21) declaracion_inicial -> dec_varaux punto_dec_var_1 .
+
+    COMMA           shift and go to state 87
+    MORE            reduce using rule 21 (declaracion_inicial -> dec_varaux punto_dec_var_1 .)
+    SEMICOLON       reduce using rule 21 (declaracion_inicial -> dec_varaux punto_dec_var_1 .)
+
+
+state 64
+
+    (24) dec_varaux -> ID LEFT_BR . CTE_I RIGHT_BR
+    (25) dec_varaux -> ID LEFT_BR . CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+
+    CTE_I           shift and go to state 88
+
+
+state 65
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR . not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+    (40) not_params -> . parametros count_params
+    (41) not_params -> . empty
+    (44) parametros -> . dec_var_param COMMA parametros
+    (45) parametros -> . dec_var_param
+    (149) empty -> .
+    (46) dec_var_param -> . tipo ID punto_push_param
+    (17) tipo -> . INT
+    (18) tipo -> . FLOAT
+    (19) tipo -> . CHAR
+
+    RIGHT_PAR       reduce using rule 149 (empty -> .)
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 15
+    CHAR            shift and go to state 16
+
+    tipo                           shift and go to state 70
+    not_params                     shift and go to state 89
+    parametros                     shift and go to state 67
+    empty                          shift and go to state 68
+    dec_var_param                  shift and go to state 69
+
+state 66
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params . RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+
+    RIGHT_PAR       shift and go to state 90
+
+
+state 67
+
+    (40) not_params -> parametros . count_params
+    (48) count_params -> .
+
+    RIGHT_PAR       reduce using rule 48 (count_params -> .)
+
+    count_params                   shift and go to state 91
+
+state 68
+
+    (41) not_params -> empty .
+
+    RIGHT_PAR       reduce using rule 41 (not_params -> empty .)
+
+
+state 69
+
+    (44) parametros -> dec_var_param . COMMA parametros
+    (45) parametros -> dec_var_param .
+
+    COMMA           shift and go to state 92
+    RIGHT_PAR       reduce using rule 45 (parametros -> dec_var_param .)
+
+
+state 70
+
+    (46) dec_var_param -> tipo . ID punto_push_param
+
+    ID              shift and go to state 93
+
+
+state 71
+
+    (7) main -> MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL . punto_generator
+    (8) punto_generator -> .
+
+    $end            reduce using rule 8 (punto_generator -> .)
+
+    punto_generator                shift and go to state 94
+
+state 72
+
+    (95) estatutos_main_multiple -> estatutos_main estatutos_main_multiple .
+
+    RIGHT_CURL      reduce using rule 95 (estatutos_main_multiple -> estatutos_main estatutos_main_multiple .)
+
+
+state 73
+
+    (89) estatutos_main -> asignacion SEMICOLON .
+
+    ID              reduce using rule 89 (estatutos_main -> asignacion SEMICOLON .)
+    READ            reduce using rule 89 (estatutos_main -> asignacion SEMICOLON .)
+    WRITE           reduce using rule 89 (estatutos_main -> asignacion SEMICOLON .)
+    IF              reduce using rule 89 (estatutos_main -> asignacion SEMICOLON .)
+    WHILE           reduce using rule 89 (estatutos_main -> asignacion SEMICOLON .)
+    FOR             reduce using rule 89 (estatutos_main -> asignacion SEMICOLON .)
+    RIGHT_CURL      reduce using rule 89 (estatutos_main -> asignacion SEMICOLON .)
+    RETURN          reduce using rule 89 (estatutos_main -> asignacion SEMICOLON .)
+
+
+state 74
+
+    (90) estatutos_main -> llamada SEMICOLON .
+
+    ID              reduce using rule 90 (estatutos_main -> llamada SEMICOLON .)
+    READ            reduce using rule 90 (estatutos_main -> llamada SEMICOLON .)
+    WRITE           reduce using rule 90 (estatutos_main -> llamada SEMICOLON .)
+    IF              reduce using rule 90 (estatutos_main -> llamada SEMICOLON .)
+    WHILE           reduce using rule 90 (estatutos_main -> llamada SEMICOLON .)
+    FOR             reduce using rule 90 (estatutos_main -> llamada SEMICOLON .)
+    RIGHT_CURL      reduce using rule 90 (estatutos_main -> llamada SEMICOLON .)
+    RETURN          reduce using rule 90 (estatutos_main -> llamada SEMICOLON .)
+
+
+state 75
+
+    (91) estatutos_main -> lectura SEMICOLON .
+
+    ID              reduce using rule 91 (estatutos_main -> lectura SEMICOLON .)
+    READ            reduce using rule 91 (estatutos_main -> lectura SEMICOLON .)
+    WRITE           reduce using rule 91 (estatutos_main -> lectura SEMICOLON .)
+    IF              reduce using rule 91 (estatutos_main -> lectura SEMICOLON .)
+    WHILE           reduce using rule 91 (estatutos_main -> lectura SEMICOLON .)
+    FOR             reduce using rule 91 (estatutos_main -> lectura SEMICOLON .)
+    RIGHT_CURL      reduce using rule 91 (estatutos_main -> lectura SEMICOLON .)
+    RETURN          reduce using rule 91 (estatutos_main -> lectura SEMICOLON .)
+
+
+state 76
+
+    (92) estatutos_main -> escritura SEMICOLON .
+
+    ID              reduce using rule 92 (estatutos_main -> escritura SEMICOLON .)
+    READ            reduce using rule 92 (estatutos_main -> escritura SEMICOLON .)
+    WRITE           reduce using rule 92 (estatutos_main -> escritura SEMICOLON .)
+    IF              reduce using rule 92 (estatutos_main -> escritura SEMICOLON .)
+    WHILE           reduce using rule 92 (estatutos_main -> escritura SEMICOLON .)
+    FOR             reduce using rule 92 (estatutos_main -> escritura SEMICOLON .)
+    RIGHT_CURL      reduce using rule 92 (estatutos_main -> escritura SEMICOLON .)
+    RETURN          reduce using rule 92 (estatutos_main -> escritura SEMICOLON .)
+
+
+state 77
+
+    (93) estatutos_main -> decision SEMICOLON .
+
+    ID              reduce using rule 93 (estatutos_main -> decision SEMICOLON .)
+    READ            reduce using rule 93 (estatutos_main -> decision SEMICOLON .)
+    WRITE           reduce using rule 93 (estatutos_main -> decision SEMICOLON .)
+    IF              reduce using rule 93 (estatutos_main -> decision SEMICOLON .)
+    WHILE           reduce using rule 93 (estatutos_main -> decision SEMICOLON .)
+    FOR             reduce using rule 93 (estatutos_main -> decision SEMICOLON .)
+    RIGHT_CURL      reduce using rule 93 (estatutos_main -> decision SEMICOLON .)
+    RETURN          reduce using rule 93 (estatutos_main -> decision SEMICOLON .)
+
+
+state 78
+
+    (94) estatutos_main -> repeticion SEMICOLON .
+
+    ID              reduce using rule 94 (estatutos_main -> repeticion SEMICOLON .)
+    READ            reduce using rule 94 (estatutos_main -> repeticion SEMICOLON .)
+    WRITE           reduce using rule 94 (estatutos_main -> repeticion SEMICOLON .)
+    IF              reduce using rule 94 (estatutos_main -> repeticion SEMICOLON .)
+    WHILE           reduce using rule 94 (estatutos_main -> repeticion SEMICOLON .)
+    FOR             reduce using rule 94 (estatutos_main -> repeticion SEMICOLON .)
+    RIGHT_CURL      reduce using rule 94 (estatutos_main -> repeticion SEMICOLON .)
+    RETURN          reduce using rule 94 (estatutos_main -> repeticion SEMICOLON .)
+
+
+state 79
+
+    (99) asignacion -> dec_varaux punto_asignacion_var . EQUALS punto_igual m_exp punto_asignacion
+
+    EQUALS          shift and go to state 95
+
+
+state 80
+
+    (103) llamada -> ID punto_verify_id . LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> ID punto_verify_id . LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+
+    LEFT_PAR        shift and go to state 96
+
+
+state 81
+
+    (112) lectura -> READ LEFT_PAR . lectura_var RIGHT_PAR
+    (113) lectura_var -> . punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand COMMA lectura_var
+    (114) lectura_var -> . punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand
+    (111) punto_read_stack -> .
+
+    ID              reduce using rule 111 (punto_read_stack -> .)
+
+    lectura_var                    shift and go to state 97
+    punto_read_stack               shift and go to state 98
+
+state 82
+
+    (117) escritura -> WRITE LEFT_PAR . escritura_aux RIGHT_PAR
+    (118) escritura_aux -> . punto_write_stack STR punto_escritura_push punto_add_write_operand
+    (119) escritura_aux -> . punto_write_stack m_exp punto_escritura_push punto_add_write_operand
+    (120) escritura_aux -> . punto_write_stack STR punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (121) escritura_aux -> . punto_write_stack m_exp punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (123) punto_write_stack -> .
+
+    STR             reduce using rule 123 (punto_write_stack -> .)
+    LEFT_PAR        reduce using rule 123 (punto_write_stack -> .)
+    ID              reduce using rule 123 (punto_write_stack -> .)
+    CTE_I           reduce using rule 123 (punto_write_stack -> .)
+    CTE_CHAR        reduce using rule 123 (punto_write_stack -> .)
+
+    escritura_aux                  shift and go to state 99
+    punto_write_stack              shift and go to state 100
+
+state 83
+
+    (125) decision -> IF LEFT_PAR . exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> IF LEFT_PAR . exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (51) exp_or -> . t_exp punto_pop_or t_exp_or_aux
+    (52) exp_or -> . t_exp punto_pop_or
+    (56) t_exp -> . g_exp pop_and t_exp_aux
+    (57) t_exp -> . g_exp pop_and
+    (61) g_exp -> . m_exp
+    (62) g_exp -> . m_exp relacionales punto_relacionales m_exp punto_pop_relacional
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    exp_or                         shift and go to state 102
+    t_exp                          shift and go to state 103
+    g_exp                          shift and go to state 104
+    m_exp                          shift and go to state 105
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 84
+
+    (137) condicional -> WHILE punto_while . LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+
+    LEFT_PAR        shift and go to state 113
+
+
+state 85
+
+    (132) no_condicional -> FOR LEFT_PAR . dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+
+    ID              shift and go to state 40
+
+    dec_varaux                     shift and go to state 114
+
+state 86
+
+    (16) variables_aux -> tipo COLON declaracion_inicial MORE variables_aux .
+
+    SEMICOLON       reduce using rule 16 (variables_aux -> tipo COLON declaracion_inicial MORE variables_aux .)
+
+
+state 87
+
+    (20) declaracion_inicial -> dec_varaux punto_dec_var_1 COMMA . declaracion_inicial
+    (20) declaracion_inicial -> . dec_varaux punto_dec_var_1 COMMA declaracion_inicial
+    (21) declaracion_inicial -> . dec_varaux punto_dec_var_1
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+
+    ID              shift and go to state 40
+
+    dec_varaux                     shift and go to state 39
+    declaracion_inicial            shift and go to state 115
+
+state 88
+
+    (24) dec_varaux -> ID LEFT_BR CTE_I . RIGHT_BR
+    (25) dec_varaux -> ID LEFT_BR CTE_I . RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+
+    RIGHT_BR        shift and go to state 116
+
+
+state 89
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params . RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+
+    RIGHT_PAR       shift and go to state 117
+
+
+state 90
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR . LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
+
+    LEFT_CURL       shift and go to state 118
+
+
+state 91
+
+    (40) not_params -> parametros count_params .
+
+    RIGHT_PAR       reduce using rule 40 (not_params -> parametros count_params .)
+
+
+state 92
+
+    (44) parametros -> dec_var_param COMMA . parametros
+    (44) parametros -> . dec_var_param COMMA parametros
+    (45) parametros -> . dec_var_param
+    (46) dec_var_param -> . tipo ID punto_push_param
+    (17) tipo -> . INT
+    (18) tipo -> . FLOAT
+    (19) tipo -> . CHAR
+
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 15
+    CHAR            shift and go to state 16
+
+    dec_var_param                  shift and go to state 69
+    parametros                     shift and go to state 119
+    tipo                           shift and go to state 70
+
+state 93
+
+    (46) dec_var_param -> tipo ID . punto_push_param
+    (47) punto_push_param -> .
+
+    COMMA           reduce using rule 47 (punto_push_param -> .)
+    RIGHT_PAR       reduce using rule 47 (punto_push_param -> .)
+
+    punto_push_param               shift and go to state 120
+
+state 94
+
+    (7) main -> MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator .
+
+    $end            reduce using rule 7 (main -> MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator .)
+
+
+state 95
+
+    (99) asignacion -> dec_varaux punto_asignacion_var EQUALS . punto_igual m_exp punto_asignacion
+    (101) punto_igual -> .
+
+    LEFT_PAR        reduce using rule 101 (punto_igual -> .)
+    ID              reduce using rule 101 (punto_igual -> .)
+    CTE_I           reduce using rule 101 (punto_igual -> .)
+    CTE_CHAR        reduce using rule 101 (punto_igual -> .)
+
+    punto_igual                    shift and go to state 121
+
+state 96
+
+    (103) llamada -> ID punto_verify_id LEFT_PAR . punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> ID punto_verify_id LEFT_PAR . punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (108) punto_era -> .
+
+    RIGHT_PAR       reduce using rule 108 (punto_era -> .)
+    LEFT_PAR        reduce using rule 108 (punto_era -> .)
+    ID              reduce using rule 108 (punto_era -> .)
+    CTE_I           reduce using rule 108 (punto_era -> .)
+    CTE_CHAR        reduce using rule 108 (punto_era -> .)
+
+    punto_era                      shift and go to state 122
+
+state 97
+
+    (112) lectura -> READ LEFT_PAR lectura_var . RIGHT_PAR
+
+    RIGHT_PAR       shift and go to state 123
+
+
+state 98
+
+    (113) lectura_var -> punto_read_stack . dec_varaux punto_push_dec_var punto_add_read_operand COMMA lectura_var
+    (114) lectura_var -> punto_read_stack . dec_varaux punto_push_dec_var punto_add_read_operand
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+
+    ID              shift and go to state 40
+
+    dec_varaux                     shift and go to state 124
+
+state 99
+
+    (117) escritura -> WRITE LEFT_PAR escritura_aux . RIGHT_PAR
+
+    RIGHT_PAR       shift and go to state 125
+
+
+state 100
+
+    (118) escritura_aux -> punto_write_stack . STR punto_escritura_push punto_add_write_operand
+    (119) escritura_aux -> punto_write_stack . m_exp punto_escritura_push punto_add_write_operand
+    (120) escritura_aux -> punto_write_stack . STR punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (121) escritura_aux -> punto_write_stack . m_exp punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    STR             shift and go to state 126
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 127
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 101
+
+    (78) factor -> LEFT_PAR . punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (79) punto_fondo_falso -> .
+
+    LEFT_PAR        reduce using rule 79 (punto_fondo_falso -> .)
+    ID              reduce using rule 79 (punto_fondo_falso -> .)
+    CTE_I           reduce using rule 79 (punto_fondo_falso -> .)
+    CTE_CHAR        reduce using rule 79 (punto_fondo_falso -> .)
+
+    punto_fondo_falso              shift and go to state 128
+
+state 102
+
+    (125) decision -> IF LEFT_PAR exp_or . RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> IF LEFT_PAR exp_or . RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+
+    RIGHT_PAR       shift and go to state 129
+
+
+state 103
+
+    (51) exp_or -> t_exp . punto_pop_or t_exp_or_aux
+    (52) exp_or -> t_exp . punto_pop_or
+    (53) punto_pop_or -> .
+
+    OR              reduce using rule 53 (punto_pop_or -> .)
+    RIGHT_PAR       reduce using rule 53 (punto_pop_or -> .)
+
+    punto_pop_or                   shift and go to state 130
+
+state 104
+
+    (56) t_exp -> g_exp . pop_and t_exp_aux
+    (57) t_exp -> g_exp . pop_and
+    (58) pop_and -> .
+
+    AND             reduce using rule 58 (pop_and -> .)
+    OR              reduce using rule 58 (pop_and -> .)
+    RIGHT_PAR       reduce using rule 58 (pop_and -> .)
+
+    pop_and                        shift and go to state 131
+
+state 105
+
+    (61) g_exp -> m_exp .
+    (62) g_exp -> m_exp . relacionales punto_relacionales m_exp punto_pop_relacional
+    (81) relacionales -> . LESS_THAN
+    (82) relacionales -> . GREATER_THAN
+    (83) relacionales -> . DIFFERENT
+    (84) relacionales -> . EQUAL
+    (85) relacionales -> . GREATER_EQUAL
+    (86) relacionales -> . LESS_EQUAL
+
+    AND             reduce using rule 61 (g_exp -> m_exp .)
+    OR              reduce using rule 61 (g_exp -> m_exp .)
+    RIGHT_PAR       reduce using rule 61 (g_exp -> m_exp .)
+    LESS_THAN       shift and go to state 133
+    GREATER_THAN    shift and go to state 134
+    DIFFERENT       shift and go to state 135
+    EQUAL           shift and go to state 136
+    GREATER_EQUAL   shift and go to state 137
+    LESS_EQUAL      shift and go to state 138
+
+    relacionales                   shift and go to state 132
+
+state 106
+
+    (65) m_exp -> termino . punto_mexp_pop
+    (66) m_exp -> termino . punto_mexp_pop m_exp_aux
+    (67) punto_mexp_pop -> .
+
+    PLUS            reduce using rule 67 (punto_mexp_pop -> .)
+    MINUS           reduce using rule 67 (punto_mexp_pop -> .)
+    LESS_THAN       reduce using rule 67 (punto_mexp_pop -> .)
+    GREATER_THAN    reduce using rule 67 (punto_mexp_pop -> .)
+    DIFFERENT       reduce using rule 67 (punto_mexp_pop -> .)
+    EQUAL           reduce using rule 67 (punto_mexp_pop -> .)
+    GREATER_EQUAL   reduce using rule 67 (punto_mexp_pop -> .)
+    LESS_EQUAL      reduce using rule 67 (punto_mexp_pop -> .)
+    AND             reduce using rule 67 (punto_mexp_pop -> .)
+    OR              reduce using rule 67 (punto_mexp_pop -> .)
+    RIGHT_PAR       reduce using rule 67 (punto_mexp_pop -> .)
+    COMMA           reduce using rule 67 (punto_mexp_pop -> .)
+    SEMICOLON       reduce using rule 67 (punto_mexp_pop -> .)
+    TO              reduce using rule 67 (punto_mexp_pop -> .)
+
+    punto_mexp_pop                 shift and go to state 139
+
+state 107
+
+    (71) termino -> factor . punto_termino_pop
+    (72) termino -> factor . punto_termino_pop termino_aux
+    (73) punto_termino_pop -> .
+
+    MULTIPLY        reduce using rule 73 (punto_termino_pop -> .)
+    DIVIDE          reduce using rule 73 (punto_termino_pop -> .)
+    PLUS            reduce using rule 73 (punto_termino_pop -> .)
+    MINUS           reduce using rule 73 (punto_termino_pop -> .)
+    LESS_THAN       reduce using rule 73 (punto_termino_pop -> .)
+    GREATER_THAN    reduce using rule 73 (punto_termino_pop -> .)
+    DIFFERENT       reduce using rule 73 (punto_termino_pop -> .)
+    EQUAL           reduce using rule 73 (punto_termino_pop -> .)
+    GREATER_EQUAL   reduce using rule 73 (punto_termino_pop -> .)
+    LESS_EQUAL      reduce using rule 73 (punto_termino_pop -> .)
+    AND             reduce using rule 73 (punto_termino_pop -> .)
+    OR              reduce using rule 73 (punto_termino_pop -> .)
+    RIGHT_PAR       reduce using rule 73 (punto_termino_pop -> .)
+    COMMA           reduce using rule 73 (punto_termino_pop -> .)
+    SEMICOLON       reduce using rule 73 (punto_termino_pop -> .)
+    TO              reduce using rule 73 (punto_termino_pop -> .)
+
+    punto_termino_pop              shift and go to state 140
+
+state 108
+
+    (77) factor -> cte .
+
+    MULTIPLY        reduce using rule 77 (factor -> cte .)
+    DIVIDE          reduce using rule 77 (factor -> cte .)
+    PLUS            reduce using rule 77 (factor -> cte .)
+    MINUS           reduce using rule 77 (factor -> cte .)
+    LESS_THAN       reduce using rule 77 (factor -> cte .)
+    GREATER_THAN    reduce using rule 77 (factor -> cte .)
+    DIFFERENT       reduce using rule 77 (factor -> cte .)
+    EQUAL           reduce using rule 77 (factor -> cte .)
+    GREATER_EQUAL   reduce using rule 77 (factor -> cte .)
+    LESS_EQUAL      reduce using rule 77 (factor -> cte .)
+    AND             reduce using rule 77 (factor -> cte .)
+    OR              reduce using rule 77 (factor -> cte .)
+    RIGHT_PAR       reduce using rule 77 (factor -> cte .)
+    COMMA           reduce using rule 77 (factor -> cte .)
+    SEMICOLON       reduce using rule 77 (factor -> cte .)
+    TO              reduce using rule 77 (factor -> cte .)
+
+
+state 109
+
+    (141) cte -> ID . factor_push_operand
+    (145) factor_push_operand -> .
+
+    MULTIPLY        reduce using rule 145 (factor_push_operand -> .)
+    DIVIDE          reduce using rule 145 (factor_push_operand -> .)
+    PLUS            reduce using rule 145 (factor_push_operand -> .)
+    MINUS           reduce using rule 145 (factor_push_operand -> .)
+    LESS_THAN       reduce using rule 145 (factor_push_operand -> .)
+    GREATER_THAN    reduce using rule 145 (factor_push_operand -> .)
+    DIFFERENT       reduce using rule 145 (factor_push_operand -> .)
+    EQUAL           reduce using rule 145 (factor_push_operand -> .)
+    GREATER_EQUAL   reduce using rule 145 (factor_push_operand -> .)
+    LESS_EQUAL      reduce using rule 145 (factor_push_operand -> .)
+    AND             reduce using rule 145 (factor_push_operand -> .)
+    OR              reduce using rule 145 (factor_push_operand -> .)
+    RIGHT_PAR       reduce using rule 145 (factor_push_operand -> .)
+    COMMA           reduce using rule 145 (factor_push_operand -> .)
+    SEMICOLON       reduce using rule 145 (factor_push_operand -> .)
+    TO              reduce using rule 145 (factor_push_operand -> .)
+
+    factor_push_operand            shift and go to state 141
+
+state 110
+
+    (142) cte -> CTE_I . factor_int_push
+    (1) cte_f -> CTE_I . DOT CTE_I
+    (147) factor_int_push -> .
+
+    DOT             shift and go to state 143
+    MULTIPLY        reduce using rule 147 (factor_int_push -> .)
+    DIVIDE          reduce using rule 147 (factor_int_push -> .)
+    PLUS            reduce using rule 147 (factor_int_push -> .)
+    MINUS           reduce using rule 147 (factor_int_push -> .)
+    LESS_THAN       reduce using rule 147 (factor_int_push -> .)
+    GREATER_THAN    reduce using rule 147 (factor_int_push -> .)
+    DIFFERENT       reduce using rule 147 (factor_int_push -> .)
+    EQUAL           reduce using rule 147 (factor_int_push -> .)
+    GREATER_EQUAL   reduce using rule 147 (factor_int_push -> .)
+    LESS_EQUAL      reduce using rule 147 (factor_int_push -> .)
+    AND             reduce using rule 147 (factor_int_push -> .)
+    OR              reduce using rule 147 (factor_int_push -> .)
+    RIGHT_PAR       reduce using rule 147 (factor_int_push -> .)
+    COMMA           reduce using rule 147 (factor_int_push -> .)
+    SEMICOLON       reduce using rule 147 (factor_int_push -> .)
+    TO              reduce using rule 147 (factor_int_push -> .)
+
+    factor_int_push                shift and go to state 142
+
+state 111
+
+    (143) cte -> cte_f . factor_float_push
+    (146) factor_float_push -> .
+
+    MULTIPLY        reduce using rule 146 (factor_float_push -> .)
+    DIVIDE          reduce using rule 146 (factor_float_push -> .)
+    PLUS            reduce using rule 146 (factor_float_push -> .)
+    MINUS           reduce using rule 146 (factor_float_push -> .)
+    LESS_THAN       reduce using rule 146 (factor_float_push -> .)
+    GREATER_THAN    reduce using rule 146 (factor_float_push -> .)
+    DIFFERENT       reduce using rule 146 (factor_float_push -> .)
+    EQUAL           reduce using rule 146 (factor_float_push -> .)
+    GREATER_EQUAL   reduce using rule 146 (factor_float_push -> .)
+    LESS_EQUAL      reduce using rule 146 (factor_float_push -> .)
+    AND             reduce using rule 146 (factor_float_push -> .)
+    OR              reduce using rule 146 (factor_float_push -> .)
+    RIGHT_PAR       reduce using rule 146 (factor_float_push -> .)
+    COMMA           reduce using rule 146 (factor_float_push -> .)
+    SEMICOLON       reduce using rule 146 (factor_float_push -> .)
+    TO              reduce using rule 146 (factor_float_push -> .)
+
+    factor_float_push              shift and go to state 144
+
+state 112
+
+    (144) cte -> CTE_CHAR . factor_char_push
+    (148) factor_char_push -> .
+
+    MULTIPLY        reduce using rule 148 (factor_char_push -> .)
+    DIVIDE          reduce using rule 148 (factor_char_push -> .)
+    PLUS            reduce using rule 148 (factor_char_push -> .)
+    MINUS           reduce using rule 148 (factor_char_push -> .)
+    LESS_THAN       reduce using rule 148 (factor_char_push -> .)
+    GREATER_THAN    reduce using rule 148 (factor_char_push -> .)
+    DIFFERENT       reduce using rule 148 (factor_char_push -> .)
+    EQUAL           reduce using rule 148 (factor_char_push -> .)
+    GREATER_EQUAL   reduce using rule 148 (factor_char_push -> .)
+    LESS_EQUAL      reduce using rule 148 (factor_char_push -> .)
+    AND             reduce using rule 148 (factor_char_push -> .)
+    OR              reduce using rule 148 (factor_char_push -> .)
+    RIGHT_PAR       reduce using rule 148 (factor_char_push -> .)
+    COMMA           reduce using rule 148 (factor_char_push -> .)
+    SEMICOLON       reduce using rule 148 (factor_char_push -> .)
+    TO              reduce using rule 148 (factor_char_push -> .)
+
+    factor_char_push               shift and go to state 145
+
+state 113
+
+    (137) condicional -> WHILE punto_while LEFT_PAR . exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (51) exp_or -> . t_exp punto_pop_or t_exp_or_aux
+    (52) exp_or -> . t_exp punto_pop_or
+    (56) t_exp -> . g_exp pop_and t_exp_aux
+    (57) t_exp -> . g_exp pop_and
+    (61) g_exp -> . m_exp
+    (62) g_exp -> . m_exp relacionales punto_relacionales m_exp punto_pop_relacional
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    exp_or                         shift and go to state 146
+    t_exp                          shift and go to state 103
+    g_exp                          shift and go to state 104
+    m_exp                          shift and go to state 105
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 114
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux . punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+    (133) punto_for -> .
+
+    EQUALS          reduce using rule 133 (punto_for -> .)
+
+    punto_for                      shift and go to state 147
+
+state 115
+
+    (20) declaracion_inicial -> dec_varaux punto_dec_var_1 COMMA declaracion_inicial .
+
+    MORE            reduce using rule 20 (declaracion_inicial -> dec_varaux punto_dec_var_1 COMMA declaracion_inicial .)
+    SEMICOLON       reduce using rule 20 (declaracion_inicial -> dec_varaux punto_dec_var_1 COMMA declaracion_inicial .)
+
+
+state 116
+
+    (24) dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR .
+    (25) dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR . LEFT_BR CTE_I RIGHT_BR
+
+    COMMA           reduce using rule 24 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR .)
+    MORE            reduce using rule 24 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR .)
+    SEMICOLON       reduce using rule 24 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR .)
+    EQUALS          reduce using rule 24 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR .)
+    RIGHT_PAR       reduce using rule 24 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR .)
+    LEFT_BR         shift and go to state 148
+
+
+state 117
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR . LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+
+    LEFT_CURL       shift and go to state 149
+
+
+state 118
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL . not_variables count_vars estatutos RIGHT_CURL end_func
+    (38) not_variables -> . variables count_vars
+    (39) not_variables -> . empty
+    (12) variables -> . VAR punto_variables_1 SEMICOLON
+    (13) variables -> . VAR punto_variables_1 variables_aux SEMICOLON
+    (149) empty -> .
+
+    VAR             shift and go to state 10
+    RETURN          reduce using rule 149 (empty -> .)
+    ID              reduce using rule 149 (empty -> .)
+    READ            reduce using rule 149 (empty -> .)
+    WRITE           reduce using rule 149 (empty -> .)
+    IF              reduce using rule 149 (empty -> .)
+    WHILE           reduce using rule 149 (empty -> .)
+    FOR             reduce using rule 149 (empty -> .)
+
+    not_variables                  shift and go to state 150
+    variables                      shift and go to state 151
+    empty                          shift and go to state 152
+
+state 119
+
+    (44) parametros -> dec_var_param COMMA parametros .
+
+    RIGHT_PAR       reduce using rule 44 (parametros -> dec_var_param COMMA parametros .)
+
+
+state 120
+
+    (46) dec_var_param -> tipo ID punto_push_param .
+
+    COMMA           reduce using rule 46 (dec_var_param -> tipo ID punto_push_param .)
+    RIGHT_PAR       reduce using rule 46 (dec_var_param -> tipo ID punto_push_param .)
+
+
+state 121
+
+    (99) asignacion -> dec_varaux punto_asignacion_var EQUALS punto_igual . m_exp punto_asignacion
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 153
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 122
+
+    (103) llamada -> ID punto_verify_id LEFT_PAR punto_era . RIGHT_PAR punto_end_llamada
+    (104) llamada -> ID punto_verify_id LEFT_PAR punto_era . dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (29) dec_var_llamada -> . m_exp punto_verify_dec_param COMMA punto_mas_k dec_var_llamada
+    (30) dec_var_llamada -> . m_exp punto_verify_dec_param
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    RIGHT_PAR       shift and go to state 154
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    dec_var_llamada                shift and go to state 155
+    m_exp                          shift and go to state 156
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 123
+
+    (112) lectura -> READ LEFT_PAR lectura_var RIGHT_PAR .
+
+    SEMICOLON       reduce using rule 112 (lectura -> READ LEFT_PAR lectura_var RIGHT_PAR .)
+
+
+state 124
+
+    (113) lectura_var -> punto_read_stack dec_varaux . punto_push_dec_var punto_add_read_operand COMMA lectura_var
+    (114) lectura_var -> punto_read_stack dec_varaux . punto_push_dec_var punto_add_read_operand
+    (115) punto_push_dec_var -> .
+
+    COMMA           reduce using rule 115 (punto_push_dec_var -> .)
+    RIGHT_PAR       reduce using rule 115 (punto_push_dec_var -> .)
+
+    punto_push_dec_var             shift and go to state 157
+
+state 125
+
+    (117) escritura -> WRITE LEFT_PAR escritura_aux RIGHT_PAR .
+
+    SEMICOLON       reduce using rule 117 (escritura -> WRITE LEFT_PAR escritura_aux RIGHT_PAR .)
+
+
+state 126
+
+    (118) escritura_aux -> punto_write_stack STR . punto_escritura_push punto_add_write_operand
+    (120) escritura_aux -> punto_write_stack STR . punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (122) punto_escritura_push -> .
+
+    COMMA           reduce using rule 122 (punto_escritura_push -> .)
+    RIGHT_PAR       reduce using rule 122 (punto_escritura_push -> .)
+
+    punto_escritura_push           shift and go to state 158
+
+state 127
+
+    (119) escritura_aux -> punto_write_stack m_exp . punto_escritura_push punto_add_write_operand
+    (121) escritura_aux -> punto_write_stack m_exp . punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (122) punto_escritura_push -> .
+
+    COMMA           reduce using rule 122 (punto_escritura_push -> .)
+    RIGHT_PAR       reduce using rule 122 (punto_escritura_push -> .)
+
+    punto_escritura_push           shift and go to state 159
+
+state 128
+
+    (78) factor -> LEFT_PAR punto_fondo_falso . exp_or RIGHT_PAR punto_fin_fondo_falso
+    (51) exp_or -> . t_exp punto_pop_or t_exp_or_aux
+    (52) exp_or -> . t_exp punto_pop_or
+    (56) t_exp -> . g_exp pop_and t_exp_aux
+    (57) t_exp -> . g_exp pop_and
+    (61) g_exp -> . m_exp
+    (62) g_exp -> . m_exp relacionales punto_relacionales m_exp punto_pop_relacional
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    exp_or                         shift and go to state 160
+    t_exp                          shift and go to state 103
+    g_exp                          shift and go to state 104
+    m_exp                          shift and go to state 105
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 129
+
+    (125) decision -> IF LEFT_PAR exp_or RIGHT_PAR . punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR . punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (127) punto_if_exp -> .
+
+    LEFT_CURL       reduce using rule 127 (punto_if_exp -> .)
+
+    punto_if_exp                   shift and go to state 161
+
+state 130
+
+    (51) exp_or -> t_exp punto_pop_or . t_exp_or_aux
+    (52) exp_or -> t_exp punto_pop_or .
+    (54) t_exp_or_aux -> . OR punto_push_or exp_or
+
+    RIGHT_PAR       reduce using rule 52 (exp_or -> t_exp punto_pop_or .)
+    OR              shift and go to state 163
+
+    t_exp_or_aux                   shift and go to state 162
+
+state 131
+
+    (56) t_exp -> g_exp pop_and . t_exp_aux
+    (57) t_exp -> g_exp pop_and .
+    (59) t_exp_aux -> . AND punto_push_and t_exp
+
+    OR              reduce using rule 57 (t_exp -> g_exp pop_and .)
+    RIGHT_PAR       reduce using rule 57 (t_exp -> g_exp pop_and .)
+    AND             shift and go to state 165
+
+    t_exp_aux                      shift and go to state 164
+
+state 132
+
+    (62) g_exp -> m_exp relacionales . punto_relacionales m_exp punto_pop_relacional
+    (63) punto_relacionales -> .
+
+    LEFT_PAR        reduce using rule 63 (punto_relacionales -> .)
+    ID              reduce using rule 63 (punto_relacionales -> .)
+    CTE_I           reduce using rule 63 (punto_relacionales -> .)
+    CTE_CHAR        reduce using rule 63 (punto_relacionales -> .)
+
+    punto_relacionales             shift and go to state 166
+
+state 133
+
+    (81) relacionales -> LESS_THAN .
+
+    LEFT_PAR        reduce using rule 81 (relacionales -> LESS_THAN .)
+    ID              reduce using rule 81 (relacionales -> LESS_THAN .)
+    CTE_I           reduce using rule 81 (relacionales -> LESS_THAN .)
+    CTE_CHAR        reduce using rule 81 (relacionales -> LESS_THAN .)
+
+
+state 134
+
+    (82) relacionales -> GREATER_THAN .
+
+    LEFT_PAR        reduce using rule 82 (relacionales -> GREATER_THAN .)
+    ID              reduce using rule 82 (relacionales -> GREATER_THAN .)
+    CTE_I           reduce using rule 82 (relacionales -> GREATER_THAN .)
+    CTE_CHAR        reduce using rule 82 (relacionales -> GREATER_THAN .)
+
+
+state 135
+
+    (83) relacionales -> DIFFERENT .
+
+    LEFT_PAR        reduce using rule 83 (relacionales -> DIFFERENT .)
+    ID              reduce using rule 83 (relacionales -> DIFFERENT .)
+    CTE_I           reduce using rule 83 (relacionales -> DIFFERENT .)
+    CTE_CHAR        reduce using rule 83 (relacionales -> DIFFERENT .)
+
+
+state 136
+
+    (84) relacionales -> EQUAL .
+
+    LEFT_PAR        reduce using rule 84 (relacionales -> EQUAL .)
+    ID              reduce using rule 84 (relacionales -> EQUAL .)
+    CTE_I           reduce using rule 84 (relacionales -> EQUAL .)
+    CTE_CHAR        reduce using rule 84 (relacionales -> EQUAL .)
+
+
+state 137
+
+    (85) relacionales -> GREATER_EQUAL .
+
+    LEFT_PAR        reduce using rule 85 (relacionales -> GREATER_EQUAL .)
+    ID              reduce using rule 85 (relacionales -> GREATER_EQUAL .)
+    CTE_I           reduce using rule 85 (relacionales -> GREATER_EQUAL .)
+    CTE_CHAR        reduce using rule 85 (relacionales -> GREATER_EQUAL .)
+
+
+state 138
+
+    (86) relacionales -> LESS_EQUAL .
+
+    LEFT_PAR        reduce using rule 86 (relacionales -> LESS_EQUAL .)
+    ID              reduce using rule 86 (relacionales -> LESS_EQUAL .)
+    CTE_I           reduce using rule 86 (relacionales -> LESS_EQUAL .)
+    CTE_CHAR        reduce using rule 86 (relacionales -> LESS_EQUAL .)
+
+
+state 139
+
+    (65) m_exp -> termino punto_mexp_pop .
+    (66) m_exp -> termino punto_mexp_pop . m_exp_aux
+    (68) m_exp_aux -> . PLUS punto_m_exp_push m_exp
+    (69) m_exp_aux -> . MINUS punto_m_exp_push m_exp
+
+    LESS_THAN       reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    GREATER_THAN    reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    DIFFERENT       reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    EQUAL           reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    GREATER_EQUAL   reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    LESS_EQUAL      reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    AND             reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    OR              reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    RIGHT_PAR       reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    COMMA           reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    SEMICOLON       reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    TO              reduce using rule 65 (m_exp -> termino punto_mexp_pop .)
+    PLUS            shift and go to state 168
+    MINUS           shift and go to state 169
+
+    m_exp_aux                      shift and go to state 167
+
+state 140
+
+    (71) termino -> factor punto_termino_pop .
+    (72) termino -> factor punto_termino_pop . termino_aux
+    (74) termino_aux -> . MULTIPLY punto_termino_aux termino
+    (75) termino_aux -> . DIVIDE punto_termino_aux termino
+
+    PLUS            reduce using rule 71 (termino -> factor punto_termino_pop .)
+    MINUS           reduce using rule 71 (termino -> factor punto_termino_pop .)
+    LESS_THAN       reduce using rule 71 (termino -> factor punto_termino_pop .)
+    GREATER_THAN    reduce using rule 71 (termino -> factor punto_termino_pop .)
+    DIFFERENT       reduce using rule 71 (termino -> factor punto_termino_pop .)
+    EQUAL           reduce using rule 71 (termino -> factor punto_termino_pop .)
+    GREATER_EQUAL   reduce using rule 71 (termino -> factor punto_termino_pop .)
+    LESS_EQUAL      reduce using rule 71 (termino -> factor punto_termino_pop .)
+    AND             reduce using rule 71 (termino -> factor punto_termino_pop .)
+    OR              reduce using rule 71 (termino -> factor punto_termino_pop .)
+    RIGHT_PAR       reduce using rule 71 (termino -> factor punto_termino_pop .)
+    COMMA           reduce using rule 71 (termino -> factor punto_termino_pop .)
+    SEMICOLON       reduce using rule 71 (termino -> factor punto_termino_pop .)
+    TO              reduce using rule 71 (termino -> factor punto_termino_pop .)
+    MULTIPLY        shift and go to state 171
+    DIVIDE          shift and go to state 172
+
+    termino_aux                    shift and go to state 170
+
+state 141
+
+    (141) cte -> ID factor_push_operand .
+
+    MULTIPLY        reduce using rule 141 (cte -> ID factor_push_operand .)
+    DIVIDE          reduce using rule 141 (cte -> ID factor_push_operand .)
+    PLUS            reduce using rule 141 (cte -> ID factor_push_operand .)
+    MINUS           reduce using rule 141 (cte -> ID factor_push_operand .)
+    LESS_THAN       reduce using rule 141 (cte -> ID factor_push_operand .)
+    GREATER_THAN    reduce using rule 141 (cte -> ID factor_push_operand .)
+    DIFFERENT       reduce using rule 141 (cte -> ID factor_push_operand .)
+    EQUAL           reduce using rule 141 (cte -> ID factor_push_operand .)
+    GREATER_EQUAL   reduce using rule 141 (cte -> ID factor_push_operand .)
+    LESS_EQUAL      reduce using rule 141 (cte -> ID factor_push_operand .)
+    AND             reduce using rule 141 (cte -> ID factor_push_operand .)
+    OR              reduce using rule 141 (cte -> ID factor_push_operand .)
+    RIGHT_PAR       reduce using rule 141 (cte -> ID factor_push_operand .)
+    COMMA           reduce using rule 141 (cte -> ID factor_push_operand .)
+    SEMICOLON       reduce using rule 141 (cte -> ID factor_push_operand .)
+    TO              reduce using rule 141 (cte -> ID factor_push_operand .)
+
+
+state 142
+
+    (142) cte -> CTE_I factor_int_push .
+
+    MULTIPLY        reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    DIVIDE          reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    PLUS            reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    MINUS           reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    LESS_THAN       reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    GREATER_THAN    reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    DIFFERENT       reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    EQUAL           reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    GREATER_EQUAL   reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    LESS_EQUAL      reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    AND             reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    OR              reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    RIGHT_PAR       reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    COMMA           reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    SEMICOLON       reduce using rule 142 (cte -> CTE_I factor_int_push .)
+    TO              reduce using rule 142 (cte -> CTE_I factor_int_push .)
+
+
+state 143
+
+    (1) cte_f -> CTE_I DOT . CTE_I
+
+    CTE_I           shift and go to state 173
+
+
+state 144
+
+    (143) cte -> cte_f factor_float_push .
+
+    MULTIPLY        reduce using rule 143 (cte -> cte_f factor_float_push .)
+    DIVIDE          reduce using rule 143 (cte -> cte_f factor_float_push .)
+    PLUS            reduce using rule 143 (cte -> cte_f factor_float_push .)
+    MINUS           reduce using rule 143 (cte -> cte_f factor_float_push .)
+    LESS_THAN       reduce using rule 143 (cte -> cte_f factor_float_push .)
+    GREATER_THAN    reduce using rule 143 (cte -> cte_f factor_float_push .)
+    DIFFERENT       reduce using rule 143 (cte -> cte_f factor_float_push .)
+    EQUAL           reduce using rule 143 (cte -> cte_f factor_float_push .)
+    GREATER_EQUAL   reduce using rule 143 (cte -> cte_f factor_float_push .)
+    LESS_EQUAL      reduce using rule 143 (cte -> cte_f factor_float_push .)
+    AND             reduce using rule 143 (cte -> cte_f factor_float_push .)
+    OR              reduce using rule 143 (cte -> cte_f factor_float_push .)
+    RIGHT_PAR       reduce using rule 143 (cte -> cte_f factor_float_push .)
+    COMMA           reduce using rule 143 (cte -> cte_f factor_float_push .)
+    SEMICOLON       reduce using rule 143 (cte -> cte_f factor_float_push .)
+    TO              reduce using rule 143 (cte -> cte_f factor_float_push .)
+
+
+state 145
+
+    (144) cte -> CTE_CHAR factor_char_push .
+
+    MULTIPLY        reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    DIVIDE          reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    PLUS            reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    MINUS           reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    LESS_THAN       reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    GREATER_THAN    reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    DIFFERENT       reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    EQUAL           reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    GREATER_EQUAL   reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    LESS_EQUAL      reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    AND             reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    OR              reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    RIGHT_PAR       reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    COMMA           reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    SEMICOLON       reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+    TO              reduce using rule 144 (cte -> CTE_CHAR factor_char_push .)
+
+
+state 146
+
+    (137) condicional -> WHILE punto_while LEFT_PAR exp_or . RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+
+    RIGHT_PAR       shift and go to state 174
+
+
+state 147
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for . EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    EQUALS          shift and go to state 175
+
+
+state 148
+
+    (25) dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR . CTE_I RIGHT_BR
+
+    CTE_I           shift and go to state 176
+
+
+state 149
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL . not_variables estatutos RIGHT_CURL punto_end_function_return
+    (38) not_variables -> . variables count_vars
+    (39) not_variables -> . empty
+    (12) variables -> . VAR punto_variables_1 SEMICOLON
+    (13) variables -> . VAR punto_variables_1 variables_aux SEMICOLON
+    (149) empty -> .
+
+    VAR             shift and go to state 10
+    RETURN          reduce using rule 149 (empty -> .)
+    ID              reduce using rule 149 (empty -> .)
+    READ            reduce using rule 149 (empty -> .)
+    WRITE           reduce using rule 149 (empty -> .)
+    IF              reduce using rule 149 (empty -> .)
+    WHILE           reduce using rule 149 (empty -> .)
+    FOR             reduce using rule 149 (empty -> .)
+
+    not_variables                  shift and go to state 177
+    variables                      shift and go to state 151
+    empty                          shift and go to state 152
+
+state 150
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables . count_vars estatutos RIGHT_CURL end_func
+    (49) count_vars -> .
+
+    RETURN          reduce using rule 49 (count_vars -> .)
+    ID              reduce using rule 49 (count_vars -> .)
+    READ            reduce using rule 49 (count_vars -> .)
+    WRITE           reduce using rule 49 (count_vars -> .)
+    IF              reduce using rule 49 (count_vars -> .)
+    WHILE           reduce using rule 49 (count_vars -> .)
+    FOR             reduce using rule 49 (count_vars -> .)
+
+    count_vars                     shift and go to state 178
+
+state 151
+
+    (38) not_variables -> variables . count_vars
+    (49) count_vars -> .
+
+    RETURN          reduce using rule 49 (count_vars -> .)
+    ID              reduce using rule 49 (count_vars -> .)
+    READ            reduce using rule 49 (count_vars -> .)
+    WRITE           reduce using rule 49 (count_vars -> .)
+    IF              reduce using rule 49 (count_vars -> .)
+    WHILE           reduce using rule 49 (count_vars -> .)
+    FOR             reduce using rule 49 (count_vars -> .)
+
+    count_vars                     shift and go to state 179
+
+state 152
+
+    (39) not_variables -> empty .
+
+    RETURN          reduce using rule 39 (not_variables -> empty .)
+    ID              reduce using rule 39 (not_variables -> empty .)
+    READ            reduce using rule 39 (not_variables -> empty .)
+    WRITE           reduce using rule 39 (not_variables -> empty .)
+    IF              reduce using rule 39 (not_variables -> empty .)
+    WHILE           reduce using rule 39 (not_variables -> empty .)
+    FOR             reduce using rule 39 (not_variables -> empty .)
+
+
+state 153
+
+    (99) asignacion -> dec_varaux punto_asignacion_var EQUALS punto_igual m_exp . punto_asignacion
+    (102) punto_asignacion -> .
+
+    SEMICOLON       reduce using rule 102 (punto_asignacion -> .)
+
+    punto_asignacion               shift and go to state 180
+
+state 154
+
+    (103) llamada -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR . punto_end_llamada
+    (107) punto_end_llamada -> .
+
+    SEMICOLON       reduce using rule 107 (punto_end_llamada -> .)
+
+    punto_end_llamada              shift and go to state 181
+
+state 155
+
+    (104) llamada -> ID punto_verify_id LEFT_PAR punto_era dec_var_llamada . RIGHT_PAR punto_verify_total_params punto_end_llamada
+
+    RIGHT_PAR       shift and go to state 182
+
+
+state 156
+
+    (29) dec_var_llamada -> m_exp . punto_verify_dec_param COMMA punto_mas_k dec_var_llamada
+    (30) dec_var_llamada -> m_exp . punto_verify_dec_param
+    (32) punto_verify_dec_param -> .
+
+    COMMA           reduce using rule 32 (punto_verify_dec_param -> .)
+    RIGHT_PAR       reduce using rule 32 (punto_verify_dec_param -> .)
+
+    punto_verify_dec_param         shift and go to state 183
+
+state 157
+
+    (113) lectura_var -> punto_read_stack dec_varaux punto_push_dec_var . punto_add_read_operand COMMA lectura_var
+    (114) lectura_var -> punto_read_stack dec_varaux punto_push_dec_var . punto_add_read_operand
+    (116) punto_add_read_operand -> .
+
+    COMMA           reduce using rule 116 (punto_add_read_operand -> .)
+    RIGHT_PAR       reduce using rule 116 (punto_add_read_operand -> .)
+
+    punto_add_read_operand         shift and go to state 184
+
+state 158
+
+    (118) escritura_aux -> punto_write_stack STR punto_escritura_push . punto_add_write_operand
+    (120) escritura_aux -> punto_write_stack STR punto_escritura_push . punto_add_write_operand COMMA escritura_aux
+    (124) punto_add_write_operand -> .
+
+    COMMA           reduce using rule 124 (punto_add_write_operand -> .)
+    RIGHT_PAR       reduce using rule 124 (punto_add_write_operand -> .)
+
+    punto_add_write_operand        shift and go to state 185
+
+state 159
+
+    (119) escritura_aux -> punto_write_stack m_exp punto_escritura_push . punto_add_write_operand
+    (121) escritura_aux -> punto_write_stack m_exp punto_escritura_push . punto_add_write_operand COMMA escritura_aux
+    (124) punto_add_write_operand -> .
+
+    COMMA           reduce using rule 124 (punto_add_write_operand -> .)
+    RIGHT_PAR       reduce using rule 124 (punto_add_write_operand -> .)
+
+    punto_add_write_operand        shift and go to state 186
+
+state 160
+
+    (78) factor -> LEFT_PAR punto_fondo_falso exp_or . RIGHT_PAR punto_fin_fondo_falso
+
+    RIGHT_PAR       shift and go to state 187
+
+
+state 161
+
+    (125) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp . LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp . LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+
+    LEFT_CURL       shift and go to state 188
+
+
+state 162
+
+    (51) exp_or -> t_exp punto_pop_or t_exp_or_aux .
+
+    RIGHT_PAR       reduce using rule 51 (exp_or -> t_exp punto_pop_or t_exp_or_aux .)
+
+
+state 163
+
+    (54) t_exp_or_aux -> OR . punto_push_or exp_or
+    (55) punto_push_or -> .
+
+    LEFT_PAR        reduce using rule 55 (punto_push_or -> .)
+    ID              reduce using rule 55 (punto_push_or -> .)
+    CTE_I           reduce using rule 55 (punto_push_or -> .)
+    CTE_CHAR        reduce using rule 55 (punto_push_or -> .)
+
+    punto_push_or                  shift and go to state 189
+
+state 164
+
+    (56) t_exp -> g_exp pop_and t_exp_aux .
+
+    OR              reduce using rule 56 (t_exp -> g_exp pop_and t_exp_aux .)
+    RIGHT_PAR       reduce using rule 56 (t_exp -> g_exp pop_and t_exp_aux .)
+
+
+state 165
+
+    (59) t_exp_aux -> AND . punto_push_and t_exp
+    (60) punto_push_and -> .
+
+    LEFT_PAR        reduce using rule 60 (punto_push_and -> .)
+    ID              reduce using rule 60 (punto_push_and -> .)
+    CTE_I           reduce using rule 60 (punto_push_and -> .)
+    CTE_CHAR        reduce using rule 60 (punto_push_and -> .)
+
+    punto_push_and                 shift and go to state 190
+
+state 166
+
+    (62) g_exp -> m_exp relacionales punto_relacionales . m_exp punto_pop_relacional
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 191
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 167
+
+    (66) m_exp -> termino punto_mexp_pop m_exp_aux .
+
+    LESS_THAN       reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    GREATER_THAN    reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    DIFFERENT       reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    EQUAL           reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    GREATER_EQUAL   reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    LESS_EQUAL      reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    AND             reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    OR              reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    RIGHT_PAR       reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    COMMA           reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    SEMICOLON       reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    TO              reduce using rule 66 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+
+
+state 168
+
+    (68) m_exp_aux -> PLUS . punto_m_exp_push m_exp
+    (70) punto_m_exp_push -> .
+
+    LEFT_PAR        reduce using rule 70 (punto_m_exp_push -> .)
+    ID              reduce using rule 70 (punto_m_exp_push -> .)
+    CTE_I           reduce using rule 70 (punto_m_exp_push -> .)
+    CTE_CHAR        reduce using rule 70 (punto_m_exp_push -> .)
+
+    punto_m_exp_push               shift and go to state 192
+
+state 169
+
+    (69) m_exp_aux -> MINUS . punto_m_exp_push m_exp
+    (70) punto_m_exp_push -> .
+
+    LEFT_PAR        reduce using rule 70 (punto_m_exp_push -> .)
+    ID              reduce using rule 70 (punto_m_exp_push -> .)
+    CTE_I           reduce using rule 70 (punto_m_exp_push -> .)
+    CTE_CHAR        reduce using rule 70 (punto_m_exp_push -> .)
+
+    punto_m_exp_push               shift and go to state 193
+
+state 170
+
+    (72) termino -> factor punto_termino_pop termino_aux .
+
+    PLUS            reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    MINUS           reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    LESS_THAN       reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    GREATER_THAN    reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    DIFFERENT       reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    EQUAL           reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    GREATER_EQUAL   reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    LESS_EQUAL      reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    AND             reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    OR              reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    RIGHT_PAR       reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    COMMA           reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    SEMICOLON       reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+    TO              reduce using rule 72 (termino -> factor punto_termino_pop termino_aux .)
+
+
+state 171
+
+    (74) termino_aux -> MULTIPLY . punto_termino_aux termino
+    (76) punto_termino_aux -> .
+
+    LEFT_PAR        reduce using rule 76 (punto_termino_aux -> .)
+    ID              reduce using rule 76 (punto_termino_aux -> .)
+    CTE_I           reduce using rule 76 (punto_termino_aux -> .)
+    CTE_CHAR        reduce using rule 76 (punto_termino_aux -> .)
+
+    punto_termino_aux              shift and go to state 194
+
+state 172
+
+    (75) termino_aux -> DIVIDE . punto_termino_aux termino
+    (76) punto_termino_aux -> .
+
+    LEFT_PAR        reduce using rule 76 (punto_termino_aux -> .)
+    ID              reduce using rule 76 (punto_termino_aux -> .)
+    CTE_I           reduce using rule 76 (punto_termino_aux -> .)
+    CTE_CHAR        reduce using rule 76 (punto_termino_aux -> .)
+
+    punto_termino_aux              shift and go to state 195
+
+state 173
+
+    (1) cte_f -> CTE_I DOT CTE_I .
+
+    MULTIPLY        reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    DIVIDE          reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    PLUS            reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    MINUS           reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    LESS_THAN       reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    GREATER_THAN    reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    DIFFERENT       reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    EQUAL           reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    GREATER_EQUAL   reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    LESS_EQUAL      reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    AND             reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    OR              reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    RIGHT_PAR       reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    COMMA           reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    SEMICOLON       reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    TO              reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+
+
+state 174
+
+    (137) condicional -> WHILE punto_while LEFT_PAR exp_or RIGHT_PAR . punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (139) punto_validar_exp -> .
+
+    LEFT_CURL       reduce using rule 139 (punto_validar_exp -> .)
+
+    punto_validar_exp              shift and go to state 196
+
+state 175
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS . m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 197
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 176
+
+    (25) dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I . RIGHT_BR
+
+    RIGHT_BR        shift and go to state 198
+
+
+state 177
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables . estatutos RIGHT_CURL punto_end_function_return
+    (87) estatutos -> . estatutos_main_aux
+    (88) estatutos -> . retorno SEMICOLON
+    (97) estatutos_main_aux -> . estatutos_main estatutos
+    (98) estatutos_main_aux -> . estatutos_main
+    (109) retorno -> . RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RETURN          shift and go to state 203
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    estatutos                      shift and go to state 199
+    estatutos_main_aux             shift and go to state 200
+    retorno                        shift and go to state 201
+    estatutos_main                 shift and go to state 202
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    dec_varaux                     shift and go to state 53
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 178
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars . estatutos RIGHT_CURL end_func
+    (87) estatutos -> . estatutos_main_aux
+    (88) estatutos -> . retorno SEMICOLON
+    (97) estatutos_main_aux -> . estatutos_main estatutos
+    (98) estatutos_main_aux -> . estatutos_main
+    (109) retorno -> . RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RETURN          shift and go to state 203
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    estatutos                      shift and go to state 204
+    estatutos_main_aux             shift and go to state 200
+    retorno                        shift and go to state 201
+    estatutos_main                 shift and go to state 202
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    dec_varaux                     shift and go to state 53
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 179
+
+    (38) not_variables -> variables count_vars .
+
+    RETURN          reduce using rule 38 (not_variables -> variables count_vars .)
+    ID              reduce using rule 38 (not_variables -> variables count_vars .)
+    READ            reduce using rule 38 (not_variables -> variables count_vars .)
+    WRITE           reduce using rule 38 (not_variables -> variables count_vars .)
+    IF              reduce using rule 38 (not_variables -> variables count_vars .)
+    WHILE           reduce using rule 38 (not_variables -> variables count_vars .)
+    FOR             reduce using rule 38 (not_variables -> variables count_vars .)
+
+
+state 180
+
+    (99) asignacion -> dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion .
+
+    SEMICOLON       reduce using rule 99 (asignacion -> dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion .)
+
+
+state 181
+
+    (103) llamada -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .
+
+    SEMICOLON       reduce using rule 103 (llamada -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
+
+
+state 182
+
+    (104) llamada -> ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR . punto_verify_total_params punto_end_llamada
+    (106) punto_verify_total_params -> .
+
+    SEMICOLON       reduce using rule 106 (punto_verify_total_params -> .)
+
+    punto_verify_total_params      shift and go to state 205
+
+state 183
+
+    (29) dec_var_llamada -> m_exp punto_verify_dec_param . COMMA punto_mas_k dec_var_llamada
+    (30) dec_var_llamada -> m_exp punto_verify_dec_param .
+
+    COMMA           shift and go to state 206
+    RIGHT_PAR       reduce using rule 30 (dec_var_llamada -> m_exp punto_verify_dec_param .)
+
+
+state 184
+
+    (113) lectura_var -> punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand . COMMA lectura_var
+    (114) lectura_var -> punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand .
+
+    COMMA           shift and go to state 207
+    RIGHT_PAR       reduce using rule 114 (lectura_var -> punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand .)
+
+
+state 185
+
+    (118) escritura_aux -> punto_write_stack STR punto_escritura_push punto_add_write_operand .
+    (120) escritura_aux -> punto_write_stack STR punto_escritura_push punto_add_write_operand . COMMA escritura_aux
+
+    RIGHT_PAR       reduce using rule 118 (escritura_aux -> punto_write_stack STR punto_escritura_push punto_add_write_operand .)
+    COMMA           shift and go to state 208
+
+
+state 186
+
+    (119) escritura_aux -> punto_write_stack m_exp punto_escritura_push punto_add_write_operand .
+    (121) escritura_aux -> punto_write_stack m_exp punto_escritura_push punto_add_write_operand . COMMA escritura_aux
+
+    RIGHT_PAR       reduce using rule 119 (escritura_aux -> punto_write_stack m_exp punto_escritura_push punto_add_write_operand .)
+    COMMA           shift and go to state 209
+
+
+state 187
+
+    (78) factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR . punto_fin_fondo_falso
+    (80) punto_fin_fondo_falso -> .
+
+    MULTIPLY        reduce using rule 80 (punto_fin_fondo_falso -> .)
+    DIVIDE          reduce using rule 80 (punto_fin_fondo_falso -> .)
+    PLUS            reduce using rule 80 (punto_fin_fondo_falso -> .)
+    MINUS           reduce using rule 80 (punto_fin_fondo_falso -> .)
+    LESS_THAN       reduce using rule 80 (punto_fin_fondo_falso -> .)
+    GREATER_THAN    reduce using rule 80 (punto_fin_fondo_falso -> .)
+    DIFFERENT       reduce using rule 80 (punto_fin_fondo_falso -> .)
+    EQUAL           reduce using rule 80 (punto_fin_fondo_falso -> .)
+    GREATER_EQUAL   reduce using rule 80 (punto_fin_fondo_falso -> .)
+    LESS_EQUAL      reduce using rule 80 (punto_fin_fondo_falso -> .)
+    AND             reduce using rule 80 (punto_fin_fondo_falso -> .)
+    OR              reduce using rule 80 (punto_fin_fondo_falso -> .)
+    RIGHT_PAR       reduce using rule 80 (punto_fin_fondo_falso -> .)
+    COMMA           reduce using rule 80 (punto_fin_fondo_falso -> .)
+    SEMICOLON       reduce using rule 80 (punto_fin_fondo_falso -> .)
+    TO              reduce using rule 80 (punto_fin_fondo_falso -> .)
+
+    punto_fin_fondo_falso          shift and go to state 210
+
+state 188
+
+    (125) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL . estatutos RIGHT_CURL punto_end_if
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL . estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (87) estatutos -> . estatutos_main_aux
+    (88) estatutos -> . retorno SEMICOLON
+    (97) estatutos_main_aux -> . estatutos_main estatutos
+    (98) estatutos_main_aux -> . estatutos_main
+    (109) retorno -> . RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RETURN          shift and go to state 203
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    estatutos                      shift and go to state 211
+    estatutos_main_aux             shift and go to state 200
+    retorno                        shift and go to state 201
+    estatutos_main                 shift and go to state 202
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    dec_varaux                     shift and go to state 53
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 189
+
+    (54) t_exp_or_aux -> OR punto_push_or . exp_or
+    (51) exp_or -> . t_exp punto_pop_or t_exp_or_aux
+    (52) exp_or -> . t_exp punto_pop_or
+    (56) t_exp -> . g_exp pop_and t_exp_aux
+    (57) t_exp -> . g_exp pop_and
+    (61) g_exp -> . m_exp
+    (62) g_exp -> . m_exp relacionales punto_relacionales m_exp punto_pop_relacional
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    exp_or                         shift and go to state 212
+    t_exp                          shift and go to state 103
+    g_exp                          shift and go to state 104
+    m_exp                          shift and go to state 105
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 190
+
+    (59) t_exp_aux -> AND punto_push_and . t_exp
+    (56) t_exp -> . g_exp pop_and t_exp_aux
+    (57) t_exp -> . g_exp pop_and
+    (61) g_exp -> . m_exp
+    (62) g_exp -> . m_exp relacionales punto_relacionales m_exp punto_pop_relacional
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    t_exp                          shift and go to state 213
+    g_exp                          shift and go to state 104
+    m_exp                          shift and go to state 105
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 191
+
+    (62) g_exp -> m_exp relacionales punto_relacionales m_exp . punto_pop_relacional
+    (64) punto_pop_relacional -> .
+
+    AND             reduce using rule 64 (punto_pop_relacional -> .)
+    OR              reduce using rule 64 (punto_pop_relacional -> .)
+    RIGHT_PAR       reduce using rule 64 (punto_pop_relacional -> .)
+
+    punto_pop_relacional           shift and go to state 214
+
+state 192
+
+    (68) m_exp_aux -> PLUS punto_m_exp_push . m_exp
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 215
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 193
+
+    (69) m_exp_aux -> MINUS punto_m_exp_push . m_exp
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 216
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 194
+
+    (74) termino_aux -> MULTIPLY punto_termino_aux . termino
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    termino                        shift and go to state 217
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 195
+
+    (75) termino_aux -> DIVIDE punto_termino_aux . termino
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    termino                        shift and go to state 218
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 196
+
+    (137) condicional -> WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp . LEFT_CURL estatutos RIGHT_CURL punto_end_while
+
+    LEFT_CURL       shift and go to state 219
+
+
+state 197
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp . punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+    (134) punto_exp_for_inf -> .
+
+    TO              reduce using rule 134 (punto_exp_for_inf -> .)
+
+    punto_exp_for_inf              shift and go to state 220
+
+state 198
+
+    (25) dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR .
+
+    COMMA           reduce using rule 25 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR .)
+    MORE            reduce using rule 25 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR .)
+    SEMICOLON       reduce using rule 25 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR .)
+    EQUALS          reduce using rule 25 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR .)
+    RIGHT_PAR       reduce using rule 25 (dec_varaux -> ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR .)
+
+
+state 199
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos . RIGHT_CURL punto_end_function_return
+
+    RIGHT_CURL      shift and go to state 221
+
+
+state 200
+
+    (87) estatutos -> estatutos_main_aux .
+
+    RIGHT_CURL      reduce using rule 87 (estatutos -> estatutos_main_aux .)
+
+
+state 201
+
+    (88) estatutos -> retorno . SEMICOLON
+
+    SEMICOLON       shift and go to state 222
+
+
+state 202
+
+    (97) estatutos_main_aux -> estatutos_main . estatutos
+    (98) estatutos_main_aux -> estatutos_main .
+    (87) estatutos -> . estatutos_main_aux
+    (88) estatutos -> . retorno SEMICOLON
+    (97) estatutos_main_aux -> . estatutos_main estatutos
+    (98) estatutos_main_aux -> . estatutos_main
+    (109) retorno -> . RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RIGHT_CURL      reduce using rule 98 (estatutos_main_aux -> estatutos_main .)
+    RETURN          shift and go to state 203
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    estatutos_main                 shift and go to state 202
+    estatutos                      shift and go to state 223
+    estatutos_main_aux             shift and go to state 200
+    retorno                        shift and go to state 201
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    dec_varaux                     shift and go to state 53
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 203
+
+    (109) retorno -> RETURN . LEFT_PAR m_exp RIGHT_PAR punto_return
+
+    LEFT_PAR        shift and go to state 224
+
+
+state 204
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos . RIGHT_CURL end_func
+
+    RIGHT_CURL      shift and go to state 225
+
+
+state 205
+
+    (104) llamada -> ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params . punto_end_llamada
+    (107) punto_end_llamada -> .
+
+    SEMICOLON       reduce using rule 107 (punto_end_llamada -> .)
+
+    punto_end_llamada              shift and go to state 226
+
+state 206
+
+    (29) dec_var_llamada -> m_exp punto_verify_dec_param COMMA . punto_mas_k dec_var_llamada
+    (31) punto_mas_k -> .
+
+    LEFT_PAR        reduce using rule 31 (punto_mas_k -> .)
+    ID              reduce using rule 31 (punto_mas_k -> .)
+    CTE_I           reduce using rule 31 (punto_mas_k -> .)
+    CTE_CHAR        reduce using rule 31 (punto_mas_k -> .)
+
+    punto_mas_k                    shift and go to state 227
+
+state 207
+
+    (113) lectura_var -> punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand COMMA . lectura_var
+    (113) lectura_var -> . punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand COMMA lectura_var
+    (114) lectura_var -> . punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand
+    (111) punto_read_stack -> .
+
+    ID              reduce using rule 111 (punto_read_stack -> .)
+
+    punto_read_stack               shift and go to state 98
+    lectura_var                    shift and go to state 228
+
+state 208
+
+    (120) escritura_aux -> punto_write_stack STR punto_escritura_push punto_add_write_operand COMMA . escritura_aux
+    (118) escritura_aux -> . punto_write_stack STR punto_escritura_push punto_add_write_operand
+    (119) escritura_aux -> . punto_write_stack m_exp punto_escritura_push punto_add_write_operand
+    (120) escritura_aux -> . punto_write_stack STR punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (121) escritura_aux -> . punto_write_stack m_exp punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (123) punto_write_stack -> .
+
+    STR             reduce using rule 123 (punto_write_stack -> .)
+    LEFT_PAR        reduce using rule 123 (punto_write_stack -> .)
+    ID              reduce using rule 123 (punto_write_stack -> .)
+    CTE_I           reduce using rule 123 (punto_write_stack -> .)
+    CTE_CHAR        reduce using rule 123 (punto_write_stack -> .)
+
+    punto_write_stack              shift and go to state 100
+    escritura_aux                  shift and go to state 229
+
+state 209
+
+    (121) escritura_aux -> punto_write_stack m_exp punto_escritura_push punto_add_write_operand COMMA . escritura_aux
+    (118) escritura_aux -> . punto_write_stack STR punto_escritura_push punto_add_write_operand
+    (119) escritura_aux -> . punto_write_stack m_exp punto_escritura_push punto_add_write_operand
+    (120) escritura_aux -> . punto_write_stack STR punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (121) escritura_aux -> . punto_write_stack m_exp punto_escritura_push punto_add_write_operand COMMA escritura_aux
+    (123) punto_write_stack -> .
+
+    STR             reduce using rule 123 (punto_write_stack -> .)
+    LEFT_PAR        reduce using rule 123 (punto_write_stack -> .)
+    ID              reduce using rule 123 (punto_write_stack -> .)
+    CTE_I           reduce using rule 123 (punto_write_stack -> .)
+    CTE_CHAR        reduce using rule 123 (punto_write_stack -> .)
+
+    punto_write_stack              shift and go to state 100
+    escritura_aux                  shift and go to state 230
+
+state 210
+
+    (78) factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .
+
+    MULTIPLY        reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    DIVIDE          reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    PLUS            reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    MINUS           reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    LESS_THAN       reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    GREATER_THAN    reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    DIFFERENT       reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    EQUAL           reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    GREATER_EQUAL   reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    LESS_EQUAL      reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    AND             reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    OR              reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    RIGHT_PAR       reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    COMMA           reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    SEMICOLON       reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    TO              reduce using rule 78 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+
+
+state 211
+
+    (125) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos . RIGHT_CURL punto_end_if
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos . RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+
+    RIGHT_CURL      shift and go to state 231
+
+
+state 212
+
+    (54) t_exp_or_aux -> OR punto_push_or exp_or .
+
+    RIGHT_PAR       reduce using rule 54 (t_exp_or_aux -> OR punto_push_or exp_or .)
+
+
+state 213
+
+    (59) t_exp_aux -> AND punto_push_and t_exp .
+
+    OR              reduce using rule 59 (t_exp_aux -> AND punto_push_and t_exp .)
+    RIGHT_PAR       reduce using rule 59 (t_exp_aux -> AND punto_push_and t_exp .)
+
+
+state 214
+
+    (62) g_exp -> m_exp relacionales punto_relacionales m_exp punto_pop_relacional .
+
+    AND             reduce using rule 62 (g_exp -> m_exp relacionales punto_relacionales m_exp punto_pop_relacional .)
+    OR              reduce using rule 62 (g_exp -> m_exp relacionales punto_relacionales m_exp punto_pop_relacional .)
+    RIGHT_PAR       reduce using rule 62 (g_exp -> m_exp relacionales punto_relacionales m_exp punto_pop_relacional .)
+
+
+state 215
+
+    (68) m_exp_aux -> PLUS punto_m_exp_push m_exp .
+
+    LESS_THAN       reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    GREATER_THAN    reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    DIFFERENT       reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    EQUAL           reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    GREATER_EQUAL   reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    LESS_EQUAL      reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    AND             reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    OR              reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    RIGHT_PAR       reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    COMMA           reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    SEMICOLON       reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    TO              reduce using rule 68 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+
+
+state 216
+
+    (69) m_exp_aux -> MINUS punto_m_exp_push m_exp .
+
+    LESS_THAN       reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    GREATER_THAN    reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    DIFFERENT       reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    EQUAL           reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    GREATER_EQUAL   reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    LESS_EQUAL      reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    AND             reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    OR              reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    RIGHT_PAR       reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    COMMA           reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    SEMICOLON       reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    TO              reduce using rule 69 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+
+
+state 217
+
+    (74) termino_aux -> MULTIPLY punto_termino_aux termino .
+
+    PLUS            reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    MINUS           reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    LESS_THAN       reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    GREATER_THAN    reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    DIFFERENT       reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    EQUAL           reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    GREATER_EQUAL   reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    LESS_EQUAL      reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    AND             reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    OR              reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    RIGHT_PAR       reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    COMMA           reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    SEMICOLON       reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    TO              reduce using rule 74 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+
+
+state 218
+
+    (75) termino_aux -> DIVIDE punto_termino_aux termino .
+
+    PLUS            reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    MINUS           reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    LESS_THAN       reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    GREATER_THAN    reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    DIFFERENT       reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    EQUAL           reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    GREATER_EQUAL   reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    LESS_EQUAL      reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    AND             reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    OR              reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    RIGHT_PAR       reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    COMMA           reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    SEMICOLON       reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    TO              reduce using rule 75 (termino_aux -> DIVIDE punto_termino_aux termino .)
+
+
+state 219
+
+    (137) condicional -> WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL . estatutos RIGHT_CURL punto_end_while
+    (87) estatutos -> . estatutos_main_aux
+    (88) estatutos -> . retorno SEMICOLON
+    (97) estatutos_main_aux -> . estatutos_main estatutos
+    (98) estatutos_main_aux -> . estatutos_main
+    (109) retorno -> . RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RETURN          shift and go to state 203
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    estatutos                      shift and go to state 232
+    estatutos_main_aux             shift and go to state 200
+    retorno                        shift and go to state 201
+    estatutos_main                 shift and go to state 202
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    dec_varaux                     shift and go to state 53
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 220
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf . TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    TO              shift and go to state 233
+
+
+state 221
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL . punto_end_function_return
+    (42) punto_end_function_return -> .
+
+    VOID            reduce using rule 42 (punto_end_function_return -> .)
+    INT             reduce using rule 42 (punto_end_function_return -> .)
+    FLOAT           reduce using rule 42 (punto_end_function_return -> .)
+    CHAR            reduce using rule 42 (punto_end_function_return -> .)
+    MAIN            reduce using rule 42 (punto_end_function_return -> .)
+
+    punto_end_function_return      shift and go to state 234
+
+state 222
+
+    (88) estatutos -> retorno SEMICOLON .
+
+    RIGHT_CURL      reduce using rule 88 (estatutos -> retorno SEMICOLON .)
+
+
+state 223
+
+    (97) estatutos_main_aux -> estatutos_main estatutos .
+
+    RIGHT_CURL      reduce using rule 97 (estatutos_main_aux -> estatutos_main estatutos .)
+
+
+state 224
+
+    (109) retorno -> RETURN LEFT_PAR . m_exp RIGHT_PAR punto_return
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 235
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 225
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL . end_func
+    (50) end_func -> .
+
+    VOID            reduce using rule 50 (end_func -> .)
+    INT             reduce using rule 50 (end_func -> .)
+    FLOAT           reduce using rule 50 (end_func -> .)
+    CHAR            reduce using rule 50 (end_func -> .)
+    MAIN            reduce using rule 50 (end_func -> .)
+
+    end_func                       shift and go to state 236
+
+state 226
+
+    (104) llamada -> ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada .
+
+    SEMICOLON       reduce using rule 104 (llamada -> ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada .)
+
+
+state 227
+
+    (29) dec_var_llamada -> m_exp punto_verify_dec_param COMMA punto_mas_k . dec_var_llamada
+    (29) dec_var_llamada -> . m_exp punto_verify_dec_param COMMA punto_mas_k dec_var_llamada
+    (30) dec_var_llamada -> . m_exp punto_verify_dec_param
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 156
+    dec_var_llamada                shift and go to state 237
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 228
+
+    (113) lectura_var -> punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand COMMA lectura_var .
+
+    RIGHT_PAR       reduce using rule 113 (lectura_var -> punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand COMMA lectura_var .)
+
+
+state 229
+
+    (120) escritura_aux -> punto_write_stack STR punto_escritura_push punto_add_write_operand COMMA escritura_aux .
+
+    RIGHT_PAR       reduce using rule 120 (escritura_aux -> punto_write_stack STR punto_escritura_push punto_add_write_operand COMMA escritura_aux .)
+
+
+state 230
+
+    (121) escritura_aux -> punto_write_stack m_exp punto_escritura_push punto_add_write_operand COMMA escritura_aux .
+
+    RIGHT_PAR       reduce using rule 121 (escritura_aux -> punto_write_stack m_exp punto_escritura_push punto_add_write_operand COMMA escritura_aux .)
+
+
+state 231
+
+    (125) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL . punto_end_if
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL . ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (129) punto_end_if -> .
+
+    ELSE            shift and go to state 239
+    SEMICOLON       reduce using rule 129 (punto_end_if -> .)
+
+    punto_end_if                   shift and go to state 238
+
+state 232
+
+    (137) condicional -> WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos . RIGHT_CURL punto_end_while
+
+    RIGHT_CURL      shift and go to state 240
+
+
+state 233
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO . m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+    (65) m_exp -> . termino punto_mexp_pop
+    (66) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (71) termino -> . factor punto_termino_pop
+    (72) termino -> . factor punto_termino_pop termino_aux
+    (77) factor -> . cte
+    (78) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (141) cte -> . ID factor_push_operand
+    (142) cte -> . CTE_I factor_int_push
+    (143) cte -> . cte_f factor_float_push
+    (144) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
+
+    LEFT_PAR        shift and go to state 101
+    ID              shift and go to state 109
+    CTE_I           shift and go to state 110
+    CTE_CHAR        shift and go to state 112
+
+    m_exp                          shift and go to state 241
+    termino                        shift and go to state 106
+    factor                         shift and go to state 107
+    cte                            shift and go to state 108
+    cte_f                          shift and go to state 111
+
+state 234
+
+    (35) funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return .
+
+    VOID            reduce using rule 35 (funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return .)
+    INT             reduce using rule 35 (funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return .)
+    FLOAT           reduce using rule 35 (funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return .)
+    CHAR            reduce using rule 35 (funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return .)
+    MAIN            reduce using rule 35 (funciones_aux -> tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return .)
+
+
+state 235
+
+    (109) retorno -> RETURN LEFT_PAR m_exp . RIGHT_PAR punto_return
+
+    RIGHT_PAR       shift and go to state 242
+
+
+state 236
+
+    (36) funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func .
+
+    VOID            reduce using rule 36 (funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func .)
+    INT             reduce using rule 36 (funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func .)
+    FLOAT           reduce using rule 36 (funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func .)
+    CHAR            reduce using rule 36 (funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func .)
+    MAIN            reduce using rule 36 (funciones_aux -> VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func .)
+
+
+state 237
+
+    (29) dec_var_llamada -> m_exp punto_verify_dec_param COMMA punto_mas_k dec_var_llamada .
+
+    RIGHT_PAR       reduce using rule 29 (dec_var_llamada -> m_exp punto_verify_dec_param COMMA punto_mas_k dec_var_llamada .)
+
+
+state 238
+
+    (125) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if .
+
+    SEMICOLON       reduce using rule 125 (decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if .)
+
+
+state 239
+
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE . punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (128) punto_else -> .
+
+    LEFT_CURL       reduce using rule 128 (punto_else -> .)
+
+    punto_else                     shift and go to state 243
+
+state 240
+
+    (137) condicional -> WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL . punto_end_while
+    (140) punto_end_while -> .
+
+    SEMICOLON       reduce using rule 140 (punto_end_while -> .)
+
+    punto_end_while                shift and go to state 244
+
+state 241
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp . punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+    (135) punto_exp_for_sup -> .
+
+    RIGHT_PAR       reduce using rule 135 (punto_exp_for_sup -> .)
+
+    punto_exp_for_sup              shift and go to state 245
+
+state 242
+
+    (109) retorno -> RETURN LEFT_PAR m_exp RIGHT_PAR . punto_return
+    (110) punto_return -> .
+
+    SEMICOLON       reduce using rule 110 (punto_return -> .)
+
+    punto_return                   shift and go to state 246
+
+state 243
+
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else . LEFT_CURL estatutos RIGHT_CURL punto_end_if
+
+    LEFT_CURL       shift and go to state 247
+
+
+state 244
+
+    (137) condicional -> WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while .
+
+    SEMICOLON       reduce using rule 137 (condicional -> WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while .)
+
+
+state 245
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup . RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RIGHT_PAR       shift and go to state 248
+
+
+state 246
+
+    (109) retorno -> RETURN LEFT_PAR m_exp RIGHT_PAR punto_return .
+
+    SEMICOLON       reduce using rule 109 (retorno -> RETURN LEFT_PAR m_exp RIGHT_PAR punto_return .)
+
+
+state 247
+
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL . estatutos RIGHT_CURL punto_end_if
+    (87) estatutos -> . estatutos_main_aux
+    (88) estatutos -> . retorno SEMICOLON
+    (97) estatutos_main_aux -> . estatutos_main estatutos
+    (98) estatutos_main_aux -> . estatutos_main
+    (109) retorno -> . RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RETURN          shift and go to state 203
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    estatutos                      shift and go to state 249
+    estatutos_main_aux             shift and go to state 200
+    retorno                        shift and go to state 201
+    estatutos_main                 shift and go to state 202
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    dec_varaux                     shift and go to state 53
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 248
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR . LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    LEFT_CURL       shift and go to state 250
+
+
+state 249
+
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos . RIGHT_CURL punto_end_if
+
+    RIGHT_CURL      shift and go to state 251
+
+
+state 250
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL . estatutos RIGHT_CURL punto_end_for
+    (87) estatutos -> . estatutos_main_aux
+    (88) estatutos -> . retorno SEMICOLON
+    (97) estatutos_main_aux -> . estatutos_main estatutos
+    (98) estatutos_main_aux -> . estatutos_main
+    (109) retorno -> . RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
+    (89) estatutos_main -> . asignacion SEMICOLON
+    (90) estatutos_main -> . llamada SEMICOLON
+    (91) estatutos_main -> . lectura SEMICOLON
+    (92) estatutos_main -> . escritura SEMICOLON
+    (93) estatutos_main -> . decision SEMICOLON
+    (94) estatutos_main -> . repeticion SEMICOLON
+    (99) asignacion -> . dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+    (103) llamada -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (104) llamada -> . ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+    (112) lectura -> . READ LEFT_PAR lectura_var RIGHT_PAR
+    (117) escritura -> . WRITE LEFT_PAR escritura_aux RIGHT_PAR
+    (125) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (126) decision -> . IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+    (130) repeticion -> . condicional
+    (131) repeticion -> . no_condicional
+    (23) dec_varaux -> . ID
+    (24) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR
+    (25) dec_varaux -> . ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+    (137) condicional -> . WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
+    (132) no_condicional -> . FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+
+    RETURN          shift and go to state 203
+    ID              shift and go to state 54
+    READ            shift and go to state 55
+    WRITE           shift and go to state 56
+    IF              shift and go to state 57
+    WHILE           shift and go to state 60
+    FOR             shift and go to state 61
+
+    dec_varaux                     shift and go to state 53
+    estatutos                      shift and go to state 252
+    estatutos_main_aux             shift and go to state 200
+    retorno                        shift and go to state 201
+    estatutos_main                 shift and go to state 202
+    asignacion                     shift and go to state 47
+    llamada                        shift and go to state 48
+    lectura                        shift and go to state 49
+    escritura                      shift and go to state 50
+    decision                       shift and go to state 51
+    repeticion                     shift and go to state 52
+    condicional                    shift and go to state 58
+    no_condicional                 shift and go to state 59
+
+state 251
+
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL . punto_end_if
+    (129) punto_end_if -> .
+
+    SEMICOLON       reduce using rule 129 (punto_end_if -> .)
+
+    punto_end_if                   shift and go to state 253
+
+state 252
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos . RIGHT_CURL punto_end_for
+
+    RIGHT_CURL      shift and go to state 254
+
+
+state 253
+
+    (126) decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if .
+
+    SEMICOLON       reduce using rule 126 (decision -> IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if .)
+
+
+state 254
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL . punto_end_for
+    (136) punto_end_for -> .
+
+    SEMICOLON       reduce using rule 136 (punto_end_for -> .)
+
+    punto_end_for                  shift and go to state 255
+
+state 255
+
+    (132) no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for .
+
+    SEMICOLON       reduce using rule 132 (no_condicional -> FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for .)
+

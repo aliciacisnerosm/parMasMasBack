@@ -1,0 +1,12 @@
+program parmasmas :
+var int: x;
+
+int func funcionprueba(int y, int z){
+    y=20;
+    z=20*5-2;
+    return(y+z);
+}
+
+main(){
+    funcionprueba(0,0);
+}

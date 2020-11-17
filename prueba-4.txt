@@ -1,0 +1,26 @@
+program factorialIterativo:
+var int: aglobal,bglobal;
+
+int func retornoint(int z) {
+  return (z);
+}
+
+void func shalalala(int param1, int param2){
+  var int: y, variablelocal;
+  y =2;
+  if(y<5){
+    write("holis");
+  }
+  else{
+    write("y es mayor a 5");
+  };
+  
+}
+
+
+main (){
+aglobal = 1;
+bglobal= 5;
+
+shalalala(aglobal,bglobal);
+}
