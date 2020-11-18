@@ -176,7 +176,7 @@ def p_punto_generator(p):
 		
 	for index, value in enumerate(arr_quadruples):
 		print(index, value, file=open("output_quadruples-1.txt", "a"))
-
+		
 	semantic_var.remove_local_function(scope)
 	memory.reset_local_temp()
 	memory.reset_dir_local()
@@ -858,7 +858,7 @@ def p_punto_access_arr(p):
 		stack_dimensions.append(value_access)  #elemento  al que  quiero accesar
 	else:
 		print("ERROR: SOLO SE ACEPTAN ENTEROS")
-
+		
 	stack_type.append(var_type)
 	stack_operands.append(var)
 		
