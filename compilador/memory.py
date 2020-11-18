@@ -251,6 +251,124 @@ class Memory:
 		elif return_type == 6:
 			if const:
 				return self.add_string_constante()
+		
+
+	def value_memory_array(self, return_type, scope, temp, const, space):
+		if return_type == 1:
+			if const:
+				value = self.add_int_constante() 
+				for i in range(space - 1):
+					self.add_int_constante()
+				print(self.memory)
+				return value
+					
+			if scope == "global":
+				print("esta es variable globalllll ")
+				if temp == True:
+					value = self.add_int_temp()
+					for i in range(space - 1):
+						self.add_int_temp()
+					print(self.memory)
+					return value
+
+				else:
+					print("esta es variable globalllll  - no temp")
+					value = self.add_int_global()
+					for i in range(space - 1):
+						self.add_int_global()
+					print(self.memory)
+					return value
+			else:
+				if temp == False:
+					value = self.add_int_local() # valor inicial
+					for i in range (space-1):
+						self.add_int_local()
+					print(self.memory)
+					return value
+				else:
+					value = self.add_int_local_temp()
+					for i in range (space -1):
+						self.add_int_local_temp()
+					print(self.memory)
+					return value
+				
+		elif return_type == 2:
+			if const:
+				value = self.add_float_constante()
+				for i in range(space - 1):
+					self.add_float_constante()
+				return value
+			if scope == "global":
+				if temp == True:
+					value= self.add_float_temp()
+					for i in range(space-1):
+						self.add_float_temp()
+					return value
+				else:
+					value = self.add_float_global()
+					for i in range(space - 1):
+						self.add_float_global()
+					return value
+			else:
+				if temp == False:
+					value = self.add_float_local()
+					for i  in range (space-1):
+						self.add_float_local()
+					return value
+				else:
+					value  = self.add_float_local_temp()
+					for i in range(space-1):
+						self.add_float_local_temp()
+					return value
+		elif return_type == 3:
+			if const:
+				value = self.add_char_constante()
+				for i in range(space-1):
+					self.add_char_constante()
+				return value
+
+			if scope == "global":
+				if temp == True:
+						value =self.add_char_temp()
+						for i in range(space-1):
+							self.add_char_temp()
+						return value
+				else:
+					value =self.add_char_global()
+					for i in range(space-1):
+						self.add_char_global()
+					return value
+			else:
+				if temp == False:
+					value = self.add_char_local()
+					for i in range(space-1):
+						self.add_char_local()
+					return value
+				else:
+					value = self.add_char_local_temp()
+					for i in range(space-1):
+						self.add_char_local_temp()
+					return value
+						
+		elif return_type == 4:
+			if scope != "global":
+				value = self.add_bool_local_temp()
+				for i in range(space-1):
+					self.add_bool_local_temp()
+				return value
+			else:
+				value = self.add_bool_temp()
+				for i in range(space-1):
+					self.add_bool_temp()
+				return value
+				
+		elif return_type == 6:
+			if const:
+				value = self.add_string_constante()
+				for i in range(space-1):
+					self.add_string_constante()
+				return value
+
 				
 
 

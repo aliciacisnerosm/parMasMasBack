@@ -26,11 +26,16 @@ vControl = None
 k = None
 func_name = None
 generator = None
+is_array = False
+array_info = {}
+cont = 1
+
 
 stack_operators = deque()
 stack_operands = deque()
 stack_type = deque()
 stack_jumps = deque()
+stack_dimensions = deque()
 
 
 reserved = {
@@ -164,9 +169,18 @@ def p_punto_generator(p):
 	'''
 	punto_generator :
 	'''
-	global  arr_quadruples, semantic_var
+	global arr_quadruples, semantic_var, scope
+	scope = 'global'
 	virtualMachine = VirtualMachine(arr_quadruples,semantic_var._global)
-	virtualMachine.execute()
+	#virtualMachine.execute()
+		
+	for index, value in enumerate(arr_quadruples):
+		print(index, value, file=open("output_quadruples-1.txt", "a"))
+
+	semantic_var.remove_local_function(scope)
+	memory.reset_local_temp()
+	memory.reset_dir_local()
+	arr_quadruples = []
 	
 
 def p_punto_goto_main(p):
@@ -224,24 +238,64 @@ def p_declaracion_inicial(p):
 											| dec_varaux punto_dec_var_1
 	'''
 	
+	print(array_info, is_array, "declaracion inicial")
+	
 def p_punto_dec_var_1(p):
 	'''
 	punto_dec_var_1 :
 	'''
-	global semantic_var, scope, var_type
+	global semantic_var, scope, var_type, is_array, array_info, cont
 	
-	#TO DO AVANCE 4: Memory_dir ya asignada al declarar variables
-	memory_dir_aux = memory.get_value_memory(var_type, scope, False, False)
-	semantic_var.declare_variables(var_type, scope, 'variable_name', p[-1], None, memory_dir_aux, 0)
+	if is_array:
+		dimension = len(array_info)
+		is_array = False
+		cont = 1
+		if dimension == 1:
+			memory_dir_aux = memory.value_memory_array(var_type, scope, False, False, array_info[1]['valor'])
+			semantic_var.declare_variables(var_type, scope, 'variable_name', p[-1], None, memory_dir_aux, array_info[1]['valor'], [array_info[1]['valor']])
+		else:
+			memory_dir_aux = memory.value_memory_array(var_type, scope, False, False, (array_info[2]['valor'] +1)  * (array_info[1]['valor']+1))
+			semantic_var.declare_variables(var_type, scope, 'variable_name', p[-1], None, memory_dir_aux,  (array_info[2]['valor'] +1)  * (array_info[1]['valor']+1), [array_info[1]['valor'], array_info[2]['valor']])
+		array_info = {}
+	else:
+		memory_dir_aux = memory.get_value_memory(var_type, scope, False, False)
+		semantic_var.declare_variables(var_type, scope, 'variable_name', p[-1], None, memory_dir_aux, 0)
+
 	
 def p_dec_varaux(p):
 	'''
 	dec_varaux : ID 
-							| ID LEFT_BR CTE_I RIGHT_BR 
-							| ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
+						 | dec_var_dimension
+							
 	'''
 	p[0] = p[1]
+
+def p_dec_var_dimension(p):
+	'''
+	dec_var_dimension : ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR 
+						| ID LEFT_BR punto_is_array CTE_I punto_size  RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+	'''	
+	p[0] = p[1]
+
+def p_punto_is_array(p):
+	'''
+	punto_is_array :
 	
+	'''
+	global is_array
+	is_array = True
+
+def p_punto_size(p):
+	'''
+	punto_size :
+	'''
+	global is_array, array_info, cont
+	array_info[cont] = {
+		'dimension': cont,
+		'valor': p[-1]
+	}
+	cont += 1
+
 
 
 #todo: agregar punto para las dimensiones (:
@@ -252,8 +306,8 @@ def p_punto_dec_varaux_1(p):
 
 def p_dec_var(p):
 	'''
-	dec_var : dec_varaux COMMA dec_var
-					| dec_varaux
+	dec_var : ID COMMA dec_var
+					| ID
 	'''
 
 def p_dec_var_llamada(p):
@@ -734,9 +788,102 @@ def p_estatutos_main_aux(p):
 
 def p_asignacion(p):
 	'''
-	asignacion : dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
+	asignacion : vars EQUALS punto_igual m_exp punto_asignacion
+						
 	'''
+	print(p[1], "este es p1")
+def p_vars(p):
+	'''
+	vars : ID punto_asignacion_var
+			 | ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr RIGHT_BR punto_verify_arr 
+			 | ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr RIGHT_BR punto_dimension_2 LEFT_BR punto_fondo_falso m_exp punto_access_arr RIGHT_BR punto_verify_matriz
+	'''
+	p[0] = p[1]
+	print(p[0], "este  es p[0]")
+def p_punto_verify_matriz(p):
+	'''
+	punto_verify_matriz :
+	'''
+	global stack_operators, stack_dimensions, arr_quadruples, stack_operands
+	stack_operators.pop() #sacar fondo falso
+	value_2=stack_dimensions.pop() #dimension casilla 2 que quiero accesar
+	value_1= stack_dimensions.pop()#dimension casilla 1 que quiero accesar
+	total = stack_dimensions.pop()  #dimension total de la variable (24)
+	dimension_array = semantic_var.get_dimension_array(scope, p[-13])
+	
+	if value_1 <= dimension_array[0] and value_2 <= dimension_array[1]:
+		q1= Quadruple('Verify',value_1,None,dimension_array[0])
+		arr_quadruples.append(q1.get_quadruple())
+		q2=Quadruple('Verify',value_2,None,dimension_array[1])
+		arr_quadruples.append(q2.get_quadruple())
+		total = (value_1+1)*(value_2+1)
+		final_dir = p[-13]+total
+		qtotal =Quadruple('&',p[-13],total,final_dir )
+		arr_quadruples.append(qtotal.get_quadruple())
+		stack_operands.append(final_dir)
+	else:
+		print("ERROR: OUT OF BOUNDS")
 
+	
+	
+
+
+
+def p_punto_dimension_2(p):
+	'''
+	punto_dimension_2 :
+	'''
+	global stack_operators
+	stack_operators.pop()
+
+
+def p_punto_get_size(p):
+	'''
+	punto_get_size :
+	'''
+	global semantic_var, stack_dimensions
+	memory_dir = p[-1]
+	dimension = semantic_var.get_dimension_variable(scope, memory_dir) #dimension total de la variable 
+	stack_dimensions.append(dimension) # dimension total
+
+def p_punto_access_arr(p):
+	'''
+	punto_access_arr :
+	'''
+	global stack_dimensions,semantic_var
+	var_type = stack_type.pop()
+	var = stack_operands.pop()
+	if var_type == 1:
+		value_access = semantic_var.get_value_variable(scope, var)
+		stack_dimensions.append(value_access)  #elemento  al que  quiero accesar
+	else:
+		print("ERROR: SOLO SE ACEPTAN ENTEROS")
+
+	stack_type.append(var_type)
+	stack_operands.append(var)
+		
+	
+def p_punto_verify_arr(p):
+	'''
+	punto_verify_arr :
+	'''
+	global arr_quadruples, stack_dimensions, stack_operators, stack_operands
+	stack_operators.pop() # sacar fondo falso
+	access = stack_dimensions.pop() # dimension del que yo quiero accesar
+	total_size = stack_dimensions.pop() #dimension total del array
+	print("este es access", access)
+	print("este es total_size", total_size)
+	if (access <= total_size):
+		q =Quadruple('Verify',access,None,total_size) # verificar tamaño
+		arr_quadruples.append(q.get_quadruple())
+		total =  p[-7]+ access
+		q2 = Quadruple('&', p[-7], access, total )
+		arr_quadruples.append(q2.get_quadruple())
+		stack_operands.append(total)
+	else:
+		print("ERROR: OUT OF BOUNDS")
+
+	
 def p_punto_asignacion_var(p):
 	'''
 	punto_asignacion_var : 
@@ -762,11 +909,13 @@ def p_punto_asignacion(p):
 	'''
 	punto_asignacion : 
 	'''
-	global stack_operators, stack_operands, arr_quadruples, scope, stack_type
+	global stack_operators, stack_operands, arr_quadruples, scope, stack_type, semantic_var
 	if p[-4] != None:
 		name = semantic_var.get_name_variable(p[-4], scope)
+		print(p[-4], "este es name en punto asignacion")
 		
-		if not semantic_var.get_variables_sets(name, scope):
+		if not semantic_var.get_variables_sets(p[-4], scope):
+			print(name, "variable en name")
 			print("error en punto de asignacion")
 		else:
 			elem = stack_operands.pop()
@@ -858,8 +1007,8 @@ def p_lectura(p):
 
 def p_lectura_var(p):
 	'''
-	lectura_var : punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand COMMA lectura_var
-					| punto_read_stack dec_varaux punto_push_dec_var punto_add_read_operand
+	lectura_var : punto_read_stack ID punto_push_dec_var punto_add_read_operand COMMA lectura_var
+					| punto_read_stack ID punto_push_dec_var punto_add_read_operand
 	'''
 	p[0] = p[1]
 
@@ -878,7 +1027,6 @@ def p_punto_push_dec_var(p):
 
 	p[0] = var_id
 	
-
 
 def p_punto_add_read_operand(p):
 	'''
@@ -993,7 +1141,7 @@ def p_repeticion(p):
 
 def p_no_condicional(p):
 	'''
-	no_condicional : FOR LEFT_PAR dec_varaux punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
+	no_condicional : FOR LEFT_PAR ID punto_for EQUALS m_exp punto_exp_for_inf TO m_exp punto_exp_for_sup RIGHT_PAR LEFT_CURL estatutos RIGHT_CURL punto_end_for
 	'''
 
 def p_punto_for(p):
@@ -1202,7 +1350,7 @@ parser = yacc.yacc()
 
 def parser():
 	try:
-		arch_name = 'prueba-4.txt'
+		arch_name = 'arrays.txt'
 		this_folder = os.path.dirname(os.path.abspath(__file__))
 		my_file = os.path.join(this_folder, arch_name)
 		print(my_file)
@@ -1215,10 +1363,8 @@ def parser():
 		if error: 
 			return "hay errores de sintaxis"
 		else:
-			global arr_quadruples, stack_operands, semantic_var
-			
-			for index, value in enumerate(arr_quadruples):
-				print(index, value, file=open("output_quadruples-1.txt", "a"))
+			global arr_quadruples, stack_operands, semantic_var, scope
+			scope = 'global'
 			return "apropiado"
 
 

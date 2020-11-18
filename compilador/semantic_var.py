@@ -46,7 +46,7 @@ class Semantics:
 		return name in self._global['functions']['func_names']
 		
 	#declara variables 
-	def declare_variables(self, return_type, scope, kind, name, value, memory_dir, dimension):
+	def declare_variables(self, return_type, scope, kind, name, value, memory_dir, dimension, array_dimension=None):
 		if scope == 'global':
 			if name not in self._global['global_var']['global_var_names']:
 				self._global['global_var']['global_var_names'].add(name)
@@ -57,7 +57,8 @@ class Semantics:
 					'kind': kind,
 					'value': value,
 					'memory_dir': memory_dir,
-					'dimension': dimension
+					'dimension': dimension,
+					'array_dimension': array_dimension
 				}
 				
 				if kind != 'param_types':
@@ -120,6 +121,7 @@ class Semantics:
 		
 		return "error en memory dir"
 
+
 	def add_function_id_return_value(self, name, return_type):
 		self._global['functions_id_return_values'][name] = return_type
 	
@@ -130,6 +132,7 @@ class Semantics:
 	def get_function_return_type(self, name):
 		print()
 		return self._global['functions'][name]['return_type']
+
 		
 
 	def add_variables(self, return_type, scope, kind, name, value, memory_dir, dimension):
@@ -175,6 +178,7 @@ class Semantics:
 				'dimension': dimension,
 				'name': None
 			}
+	
 
 	def remove_local_function(self, scope):
 		if scope != 'global':
@@ -206,10 +210,12 @@ class Semantics:
 		elif memory_dir in self._global['functions'][scope]['variables']:
 			return self._global['functions'][scope]['variables'][memory_dir]['return_type']
 
-	def get_name_variable(self, memory_dir, scope):	
+	def get_name_variable(self, memory_dir, scope):
+		print("holaaaa", memory_dir)
 		if memory_dir in self._global['global_var']:
 			return self._global['global_var'][memory_dir]['name']
 		elif memory_dir in self._global['functions'][scope]['variables']:
+			print("variable local", scope)
 			return self._global['functions'][scope]['variables'][memory_dir]['name']
 			
 	def get_value_variable(self, scope, memory_dir):
@@ -218,6 +224,20 @@ class Semantics:
 		elif memory_dir in self._global['functions'][scope]['variables']:
 			return self._global['functions'][scope]['variables'][memory_dir]['value']
 			
+	def get_dimension_variable(self, scope, memory_dir):
+		if memory_dir in self._global['global_var']:
+			print(self._global['global_var'][memory_dir]['dimension'], "dimension")
+			return self._global['global_var'][memory_dir]['dimension']
+		elif memory_dir in self._global['functions'][scope]['variables']:
+			print(self._global['functions'][scope]['variables'][memory_dir]['dimension'], "dimension")
+			return self._global['functions'][scope]['variables'][memory_dir]['dimension']
+
+	def get_dimension_array(self, scope, memory_dir):
+		if memory_dir in self._global['global_var']:
+			return self._global['global_var'][memory_dir]['array_dimension']
+		elif memory_dir in self._global['functions'][scope]['variables']:
+			return self._global['functions'][scope]['variables'][memory_dir]['array_dimension']
+
 	def set_value(self, scope, memory_dir, value):
 		if memory_dir in self._global['global_var']:
 			self._global['global_var'][memory_dir]['value'] = value
