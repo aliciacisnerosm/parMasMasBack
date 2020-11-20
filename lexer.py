@@ -172,7 +172,7 @@ def p_punto_generator(p):
 	global arr_quadruples, semantic_var, scope
 	scope = 'global'
 	virtualMachine = VirtualMachine(arr_quadruples,semantic_var._global)
-	#virtualMachine.execute()
+	virtualMachine.execute()
 		
 	for index, value in enumerate(arr_quadruples):
 		print(index, value, file=open("output_quadruples-1.txt", "a"))
@@ -313,7 +313,7 @@ def p_dec_var(p):
 def p_dec_var_llamada(p):
 	'''
 	dec_var_llamada : m_exp punto_verify_dec_param COMMA punto_mas_k dec_var_llamada
-					| m_exp punto_verify_dec_param
+									| m_exp punto_verify_dec_param
 	'''
 def p_punto_mas_k(p):
 	'''
@@ -353,9 +353,19 @@ def p_punto_return_value(p):
 	'''
 	punto_return_value :
 	'''
-	global semantic_var
+	global semantic_var # id - type
 	semantic_var.add_function_id_return_value(p[-2], p[-4])
+	return_type = None
+	if p[-4] == 'int':
+		return_type = 1
+	elif p[-4] == 'float':
+		return_type = 2
+	elif [p-4] == 'char':
+		return_type = 3
 
+	memory_dir = memory.get_value_memory(return_type, 'global', False, False)	
+	semantic_var.add_variables(return_type, 'global', 'function', p[-2], None, memory_dir, 0 )
+	print(semantic_var._global)
 def p_not_variables(p):
 	'''
 	not_variables : variables count_vars
@@ -428,7 +438,7 @@ def p_punto_push_param(p):
 	elif p[-2] == 'float':
 		param_type = 3
 	
-	var_memory= memory.get_value_memory(param_type,scope,True,False)
+	var_memory= memory.get_value_memory(param_type,scope,False,False)
 	semantic_var.add_variables(param_type, scope, 'param',p[-1],None,var_memory,0)
 	semantic_var.add_parameter_type(scope, param_type)
 	semantic_var._global['functions'][scope]['variables']['name_var'].add(p[-1])
@@ -727,9 +737,20 @@ def p_punto_termino_aux(p):
 def p_factor(p):
 	'''
 	factor : cte
-				 | LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+				| LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+				| ID factor_push_operand
+				| ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+				| ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada
 	'''
 	p[0] = p[1]
+
+def p_saca_fondo_falso(p):
+	'''
+	punto_saca_fondo_falso : 
+	'''
+	global stack_operators
+	stack_operators.pop()
+	
 def p_punto_fondo_falso(p):
 	'''
 	punto_fondo_falso :
@@ -896,6 +917,7 @@ def p_punto_asignacion_var(p):
 		stack_operands.append(var_id)
 		stack_type.append(type_id)
 
+	print(stack_operands)
 	p[0] = var_id
 
 def p_punto_igual(p):
@@ -935,7 +957,7 @@ def p_punto_asignacion(p):
 
 def p_llamada(p):
 	'''
-		llamada : ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+		llamada : ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada 
 						| ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
 						
 	'''
@@ -960,17 +982,40 @@ def p_punto_end_llamada(p):
 	'''
 	punto_end_llamada :
 	'''
-	global arr_quadruples, func_name, semantic_var
+	global arr_quadruples, func_name, semantic_var, stack_operands, stack_type
 	q = Quadruple('GOSUB',func_name,None, semantic_var.get_init_function(func_name))
-	arr_quadruples.append(q.get_quadruple())	
+	arr_quadruples.append(q.get_quadruple())
+	
+	memory_dir = stack_operands.pop()
+	
+	if semantic_var.memory_dir_is_function(memory_dir):
+		return_type = stack_type.pop()
+		memory_dir_2 = memory.get_value_memory(return_type, scope, True, False)
+		q2 = Quadruple('=', memory_dir, None, memory_dir_2)
+		stack_operands.append(memory_dir_2)
+		stack_type.append(return_type)
+		arr_quadruples.append(q2.get_quadruple())
+	else:
+		stack_operands.append(memory_dir)
+
+	print("ENTRA A PUNTO END LLAMADA")
 
 def p_punto_era(p):
 	'''
 	punto_era :
 	'''
-	global k, arr_quadruples, func_name
+	global k, arr_quadruples, func_name, semantic_var
 	q = Quadruple('ERA', None,None,p[-3])
 	arr_quadruples.append(q.get_quadruple())
+	memory_dir = semantic_var.get_memory_dir(p[-3], 'global')
+	return_type = semantic_var.get_return_type_variables('global', memory_dir)
+
+	if memory_dir == None:
+		print("ERROR: FUNCIÓN NO EXISTE")
+	else:
+		stack_operands.append(memory_dir)
+		stack_type.append(return_type)
+
 	k = 0
 	func_name = p[-3]
 
@@ -984,12 +1029,21 @@ def p_punto_return(p):
 	punto_return :
 	
 	'''
-	global stack_operands, semantic_var, stack_type
+	global stack_operands, semantic_var, stack_type, arr_quadruples
 	value = stack_operands.pop()
-	stack_type.pop()
 	semantic_var.add_function_return_value(scope, value)
+	return_type=stack_type.pop()
 	q = Quadruple('RETURN', None, None, value)
 	arr_quadruples.append(q.get_quadruple())
+	# funcion -> 
+	memory_dir = semantic_var.get_memory_dir(scope, 'global')
+
+	temp_return = memory.get_value_memory(return_type, scope, True, False)
+	q2 = Quadruple('=', value, None, memory_dir)
+	arr_quadruples.append(q2.get_quadruple())
+
+	print("stack operands en return", stack_operands)
+
 
 def p_punto_read_stack(p):
 	'''
@@ -1276,8 +1330,7 @@ def fill(end, cont):
 
 def p_cte(p):
 	'''
-	cte : ID factor_push_operand
-			| CTE_I factor_int_push
+	cte : CTE_I factor_int_push
 			| cte_f factor_float_push
 			| CTE_CHAR factor_char_push
 	'''
@@ -1298,6 +1351,7 @@ def p_factor_push_operand(p):
 		if memory_dir_p1 != None:
 			stack_operands.append(memory_dir_p1)
 			stack_type.append(type_aux_p1)
+		print("holaa desde push factor")
 
 #cambio de  add_variables a add_constant_variable y temp_variable a global_constant
 def p_factor_float_push(p):
@@ -1350,7 +1404,7 @@ parser = yacc.yacc()
 
 def parser():
 	try:
-		arch_name = 'arrays.txt'
+		arch_name = 'factorial_iterativo.txt'
 		this_folder = os.path.dirname(os.path.abspath(__file__))
 		my_file = os.path.join(this_folder, arch_name)
 		print(my_file)

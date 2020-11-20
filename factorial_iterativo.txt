@@ -1,5 +1,5 @@
 program factorialIterativo:
-var int: n;
+var int: n,x;
 
 int func factorial(int n){
 var int: fact,i;
@@ -7,13 +7,14 @@ var int: fact,i;
  for( i =1 to (n+1)){
     fact = fact * i;
     write(fact);
+
   };
    
- 
+ return (fact);
 }
 
 main (){
-  n =5;
- factorial(n);
- 
+ n =5;
+ x = (factorial(n));
+ write(x);
 }

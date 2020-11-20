@@ -217,9 +217,9 @@ class MemoryMap:
 		self.temp_count = None
 		self.return_type = None
 		self.temp_types = None
-		self.counter_int = 11001
-		self.counter_float = 12001
-		self.counter_char = 13001
+		self.counter_int = 8001
+		self.counter_float = 9001
+		self.counter_char = 10001
 
 	def get_local_values(self):
 		if self.function_name != 'global':

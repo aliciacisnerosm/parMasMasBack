@@ -120,8 +120,12 @@ class Semantics:
 						return self._global['global_var'][i]['memory_dir']
 		
 		return "error en memory dir"
-
-
+	
+	def memory_dir_is_function(self, memory_dir):
+			if memory_dir in self._global['global_var']:
+				print("is a function result", self._global['global_var'][memory_dir]['kind'] == 'function', memory_dir)
+				return self._global['global_var'][memory_dir]['kind'] == 'function'
+						
 	def add_function_id_return_value(self, name, return_type):
 		self._global['functions_id_return_values'][name] = return_type
 	
@@ -132,8 +136,6 @@ class Semantics:
 	def get_function_return_type(self, name):
 		print()
 		return self._global['functions'][name]['return_type']
-
-		
 
 	def add_variables(self, return_type, scope, kind, name, value, memory_dir, dimension):
 		if scope == 'global':
