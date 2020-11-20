@@ -17,6 +17,7 @@ class VirtualMachine:
 			return self.global_memory
 
 		elif (memory_dir >= 8000 and memory_dir < 15000) and self.aux_memory == None :
+			print("memoria local", self.local_memory.function_name)
 			return self.local_memory
 		else:
 			if self.aux_memory.get_value(memory_dir) != None:
@@ -30,7 +31,8 @@ class VirtualMachine:
 		params = []
 		counter = 1
 		while (pointer < len(self.arr_quadruples)):
-			print("CUADRUPLO ACTUAL ->>>", self.arr_quadruples[pointer])
+			print("CUADRUPLO ACTUAL ->>>", self.arr_quadruples[pointer],"->>", pointer)
+			print("memoria global", self.local_memory.type_int)
 			
 			if self.arr_quadruples[pointer][0] == '+':
 				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
@@ -73,10 +75,6 @@ class VirtualMachine:
 			elif self.arr_quadruples[pointer][0]== 'write':
 				value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
 				print("write", self.get_memory(self.arr_quadruples[pointer][3]).type_int)
-				print("local_memory en write -> ", self.local_memory.type_int)
-				if self.aux_memory != None:
-					print("aux_memory en write -> ", self.aux_memory.type_int)
-				print("memory que utiliza realmente ->", id(self.get_memory(self.arr_quadruples[pointer][3])))
 				pointer += 1
 				print(counter, value_memory)
 				counter += 1
@@ -139,23 +137,27 @@ class VirtualMachine:
 
 			elif self.arr_quadruples[pointer][0] == 'GOTO':
 				next_quadruple = self.arr_quadruples[pointer][3]
+				if pointer == 0:
+					self.local_memory = MemoryMap(self.general_dir, 'main')
+					self.local_memory.get_local_values()
 				pointer = next_quadruple
 
 			elif self.arr_quadruples[pointer][0] == 'ERA':
-				self.aux_memory = deepcopy(self.local_memory)
+				self.aux_memory = deepcopy(self.local_memory) # la copia de aux memory
+				self.execution_stack.append(self.aux_memory) # se agrega al stack de ejecucion
 				self.local_memory = MemoryMap(self.general_dir, self.arr_quadruples[pointer][3])
 				self.local_memory.get_local_values()
 				pointer +=1
 			elif self.arr_quadruples[pointer][0] == 'ENDFUNC':
-				pointer = self.stack_pointers.pop()
-				self.execution_stack.pop()
 				if(len(self.execution_stack)!=0):
-					self.local_memory=self.execution_stack[len(self.execution_stack)-1]
+					self.local_memory = self.execution_stack.pop()  #memory#self.execution_stack[len(self.execution_stack)-1]
+					pointer = self.stack_pointers.pop()
+				#	self.local_memory = self.execution_stack[len(self.execution_stack) - 1]
+				#	print(self.execution_stack)
 				print("--------------------------TERMINA----------------------------------")
 
 			elif self.arr_quadruples[pointer][0] == 'GOTOF':
 				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				print(left_value, "left_value")
 				if left_value == False:
 					pointer = self.arr_quadruples[pointer][3]
 				else:
@@ -165,7 +167,7 @@ class VirtualMachine:
 				self.aux_memory = None
 				self.stack_pointers.append(pointer + 1)		# cool
 				pointer = self.arr_quadruples[pointer][3] # cool
-				self.execution_stack.append(self.local_memory) 
+				print(self.execution_stack, "stackkkk" , self.execution_stack[len(self.execution_stack)-1].function_name)
 				print("------------------------EMPIEZA------------------------------------")
 				self.local_memory.add_params(params)
 				params = []
@@ -182,13 +184,18 @@ class VirtualMachine:
 				
 				value_2 = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
 				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], value)
-				pointer = self.stack_pointers.pop()
-				self.execution_stack.pop()
+				
+				#print(memory.function_name, pointer)
+				print("--------------------------TERMINA RETURN----------------------------------")
 
 				if(len(self.execution_stack)!=0):
-					self.local_memory=self.execution_stack[len(self.execution_stack)-1]
-				print("memoria - return", self.global_memory.type_int)
-			
+					self.local_memory = self.execution_stack.pop()  #memory#self.execution_stack[len(self.execution_stack)-1]
+					pointer = self.stack_pointers.pop()
+
+				print(self.execution_stack, "stack de ejecucion")
+				print()
+				print("nueva memoria asignada ->", self.local_memory.function_name)
+				
 			elif self.arr_quadruples[pointer][0] == '&':
 				value = self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
 				dir_base = self.arr_quadruples[pointer][1]
@@ -199,8 +206,8 @@ class VirtualMachine:
 				pointer += 1
 
 	def execute(self): 
-		print("entra a execute")
-		print(self.arr_quadruples)
+		print("-------------------MAQUINA--VIRTUAL-----------------------")
+		print(self.general_dir)
 		self.global_memory.init_global_memory()
 		self.process_quadruples()
 		print(self.execution_stack)

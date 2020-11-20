@@ -3,11 +3,17 @@ var int: x;
 
 int func funcionprueba(int y, int z){
 
-    return(y+z);    
+ if ((y == 1) and (z==1)){
+    return (y+z);
+    }
+else{
+    return(0);    
+};
+
 }
 
 main(){
-    x = funcionprueba(1,1)+ funcionprueba(2,2);
+    x = funcionprueba(1,5);
     write(x);
 }
 

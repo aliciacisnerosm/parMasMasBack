@@ -238,7 +238,6 @@ def p_declaracion_inicial(p):
 											| dec_varaux punto_dec_var_1
 	'''
 	
-	print(array_info, is_array, "declaracion inicial")
 	
 def p_punto_dec_var_1(p):
 	'''
@@ -362,7 +361,6 @@ def p_punto_return_value(p):
 
 	memory_dir = memory.get_value_memory(return_type, 'global', False, False)	
 	semantic_var.add_variables(return_type, 'global', 'function', p[-2], None, memory_dir, 0 )
-	print(semantic_var._global)
 def p_not_variables(p):
 	'''
 	not_variables : variables count_vars
@@ -483,7 +481,7 @@ def p_punto_pop_or(p):
 	
 	if len(stack_operators) != 0:
 		top = stack_operators.pop()
-
+		print("top en or", top)
 		if top == 'or':
 			op1 = stack_operands.pop() # memory dir
 			op2 = stack_operands.pop()
@@ -503,6 +501,8 @@ def p_punto_pop_or(p):
 
 				q = Quadruple(top, op2, op1, dir_memory_aux)
 				arr_quadruples.append(q.get_quadruple())
+				stack_type.append(value_type)
+				stack_operands.append(dir_memory_aux)
 			else:
 				raise Exception("error en or")
 		else:
@@ -519,7 +519,7 @@ def p_punto_push_or(p):
 	punto_push_or :
 	'''
 	global stack_operators
-	stack_operators.append('OR')
+	stack_operators.append('or')
 
 
 def p_t_exp(p):
@@ -763,8 +763,7 @@ def p_punto_fin_fondo_falso(p):
 	'''
 	global stack_operators
 	stack_operators.pop()
-	print("sacó fondo falso aaaa")
-
+	
 def p_relacionales(p):
 	'''
 	relacionales : LESS_THAN
@@ -810,7 +809,6 @@ def p_asignacion(p):
 	asignacion : m_exp EQUALS punto_igual m_exp punto_asignacion
 						
 	'''
-	print(p[1], "este es p1")
 # def p_vars(p):
 # 	'''
 # 	vars : ID punto_asignacion_var
@@ -844,11 +842,6 @@ def p_asignacion(p):
 # 	else:
 # 		print("ERROR: OUT OF BOUNDS")
 
-	
-	
-
-
-
 def p_punto_dimension_2(p):
 	'''
 	punto_dimension_2 :
@@ -873,10 +866,8 @@ def p_punto_access_arr(p):
 	global stack_dimensions,semantic_var
 	var_type = stack_type.pop()
 	var = stack_operands.pop()
-	print( "este es var en punto_access_arr", var)
 	
 	if var_type == 1:
-		print("todo bien, es entero")
 		stack_type.append(var_type)
 		stack_operands.append(var)
 		#elemento  al que  quiero accesar
@@ -941,7 +932,6 @@ def p_punto_asignacion(p):
 	global stack_operators, stack_operands, arr_quadruples, scope, stack_type, semantic_var
 	if p[-4] != None:
 		name = semantic_var.get_name_variable(p[-4], scope)
-		print(p[-4], "este es name en punto asignacion")
 		
 		if not semantic_var.get_variables_sets(p[-4], scope):
 			raise Exception("error en punto de asignacion")
@@ -991,20 +981,22 @@ def p_punto_end_llamada(p):
 	global arr_quadruples, func_name, semantic_var, stack_operands, stack_type
 	q = Quadruple('GOSUB',func_name,None, semantic_var.get_init_function(func_name))
 	arr_quadruples.append(q.get_quadruple())
-	
-	memory_dir = stack_operands.pop()
-	
-	if semantic_var.memory_dir_is_function(memory_dir):
-		return_type = stack_type.pop()
-		memory_dir_2 = memory.get_value_memory(return_type, scope, True, False)
-		q2 = Quadruple('=', memory_dir, None, memory_dir_2)
-		stack_operands.append(memory_dir_2)
-		stack_type.append(return_type)
-		arr_quadruples.append(q2.get_quadruple())
-	else:
-		stack_operands.append(memory_dir)
 
-	print("ENTRA A PUNTO END LLAMADA")
+	if len(stack_operands) != 0:
+		memory_dir = stack_operands.pop()
+		
+		if semantic_var.memory_dir_is_function(memory_dir):
+			return_type = stack_type.pop()
+			memory_dir_2 = memory.get_value_memory(return_type, scope, True, False)
+			q2 = Quadruple('=', memory_dir, None, memory_dir_2)
+			stack_operands.append(memory_dir_2)
+			stack_type.append(return_type)
+			arr_quadruples.append(q2.get_quadruple())
+		else:
+			stack_operands.append(memory_dir)
+	else:
+		print("sigue funcion void")
+
 
 def p_punto_era(p):
 	'''
@@ -1013,14 +1005,18 @@ def p_punto_era(p):
 	global k, arr_quadruples, func_name, semantic_var
 	q = Quadruple('ERA', None,None,p[-3])
 	arr_quadruples.append(q.get_quadruple())
+
 	memory_dir = semantic_var.get_memory_dir(p[-3], 'global')
-	return_type = semantic_var.get_return_type_variables('global', memory_dir)
 
 	if memory_dir == None:
-		raise Exception("ERROR: FUNCIÓN NO EXISTE")
+		if p[-3] not in semantic_var._global['functions']['func_names']:
+			raise Exception("ERROR: FUNCIÓN NO EXISTE")
+		else:
+			print("es una funcion void")
 	else:
-		stack_operands.append(memory_dir)
+		return_type = semantic_var.get_return_type_variables('global', memory_dir)
 		stack_type.append(return_type)
+		stack_operands.append(memory_dir)
 
 	k = 0
 	func_name = p[-3]
@@ -1043,12 +1039,10 @@ def p_punto_return(p):
 	arr_quadruples.append(q.get_quadruple())
 	# funcion -> 
 	memory_dir = semantic_var.get_memory_dir(scope, 'global')
-
-	temp_return = memory.get_value_memory(return_type, scope, True, False)
+	print("¿que esta retornando?", value, memory_dir, scope)
+	#temp_return = memory.get_value_memory(return_type, scope, True, False)
 	q2 = Quadruple('=', value, None, memory_dir)
 	arr_quadruples.append(q2.get_quadruple())
-
-	print("stack operands en return", stack_operands)
 
 
 def p_punto_read_stack(p):
@@ -1131,7 +1125,6 @@ def p_punto_escritura_push(p):
 			stack_type.append(6)
 
 	else:
-		print(p[-1], "no entra al if")
 		stack_operands.append(stack_operands.pop())
 
 		
@@ -1151,7 +1144,6 @@ def p_punto_add_write_operand(p):
 	# checar q este ok 
 	elemento = stack_operands.pop()
 	type_elment = stack_type.pop()
-	print("elementos", elemento)
 	q = Quadruple(stack_operators.pop(), None, None, elemento)
 	arr_quadruples.append(q.get_quadruple())
 
@@ -1357,7 +1349,6 @@ def p_factor_push_operand(p):
 		if memory_dir_p1 != None:
 			stack_operands.append(memory_dir_p1)
 			stack_type.append(type_aux_p1)
-		print("holaa desde push factor")
 
 #cambio de  add_variables a add_constant_variable y temp_variable a global_constant
 def p_factor_float_push(p):
@@ -1410,7 +1401,7 @@ parser = yacc.yacc()
 
 def parser():
 	try:
-		arch_name = 'prueba-arreglos.txt'
+		arch_name = 'prueba-2.txt'
 		this_folder = os.path.dirname(os.path.abspath(__file__))
 		my_file = os.path.join(this_folder, arch_name)
 		print(my_file)

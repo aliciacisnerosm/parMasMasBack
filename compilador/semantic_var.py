@@ -119,7 +119,7 @@ class Semantics:
 					if self._global['global_var'][i]['name'] == name and name != None:
 						return self._global['global_var'][i]['memory_dir']
 		
-		return "error en memory dir"
+		return None
 	
 	def memory_dir_is_function(self, memory_dir):
 			if memory_dir in self._global['global_var']:
@@ -205,6 +205,7 @@ class Semantics:
 		else:
 			return var in self._global['global_var']['global_var_names']
 	
+	
 	def get_return_type_variables(self, scope, memory_dir):
 
 		if memory_dir in self._global['global_var']:
@@ -213,7 +214,6 @@ class Semantics:
 			return self._global['functions'][scope]['variables'][memory_dir]['return_type']
 
 	def get_name_variable(self, memory_dir, scope):
-		print("holaaaa", memory_dir)
 		if memory_dir in self._global['global_var']:
 			return self._global['global_var'][memory_dir]['name']
 		elif memory_dir in self._global['functions'][scope]['variables']:

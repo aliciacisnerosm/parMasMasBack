@@ -3,6 +3,5 @@ program fibonacciIterativo:
 main(){
   x = 1;
   n[5] = x;
-  
   write(n[5]);
 }

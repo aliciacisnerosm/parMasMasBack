@@ -1,0 +1,19 @@
+program prueba :
+var int: aglobal;
+
+void func cuenta_regresiva(int n){
+
+  if(n>0){
+    write(n);
+    cuenta_regresiva(n-1);
+    
+  }
+  else{
+    write("boom!, fin de la funcion");
+  };
+  
+}
+
+main (){
+  cuenta_regresiva(5);
+}
