@@ -188,7 +188,13 @@ class VirtualMachine:
 				if(len(self.execution_stack)!=0):
 					self.local_memory=self.execution_stack[len(self.execution_stack)-1]
 				print("memoria - return", self.global_memory.type_int)
-				
+			
+			elif self.arr_quadruples[pointer][0] == '&':
+				value = self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+				dir_base = self.arr_quadruples[pointer][1]
+				total = value + dir_base
+				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], total)
+				pointer += 1 
 			else:
 				pointer += 1
 

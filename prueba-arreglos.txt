@@ -1,0 +1,8 @@
+program fibonacciIterativo:
+ var int: n[10], x;
+main(){
+  x = 1;
+  n[5] = x;
+  
+  write(n[5]);
+}
