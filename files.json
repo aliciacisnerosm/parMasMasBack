@@ -1,0 +1,26 @@
+{
+  "files": [
+    {
+      "name": "DeclaracionVariables",
+      "createdAt": "FECHA",
+      "path": "./files",
+      "lastResult": 1
+    },
+    {
+      "name": "For loops",
+      "createdAt": "FECHA",
+      "path": "./files",
+      "lastResult": 1
+    },
+    {
+      "name": "cuenta_regresiva",
+      "createdAt": "2020-11-21 15:01:12.670258",
+      "path": "pruebas/cuenta_regresiva.txt"
+    },
+    {
+      "name": "factorial_iterativo",
+      "createdAt": "2020-11-21 15:56:25.009017",
+      "path": "pruebas/factorial_iterativo.txt"
+    }
+  ]
+}

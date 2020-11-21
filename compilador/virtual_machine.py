@@ -11,6 +11,7 @@ class VirtualMachine:
 		self.stack_dir_array = deque()
 		self.general_dir = general_dir
 		self.aux_memory = None
+		self.output_array = []
 
 
 	def get_memory(self, memory_dir):
@@ -68,7 +69,9 @@ class VirtualMachine:
 				
 			elif self.arr_quadruples[pointer][0] == '/':
 				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+				right_value = self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+				if right_value == 0:
+					raise Exception("ERROR: No se pueden hacer divisiones entre 0")
 				result = left_value / right_value
 				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
 				pointer += 1
@@ -84,6 +87,7 @@ class VirtualMachine:
 					value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
 				
 				print("write",value_memory)
+				self.output_array.append(value_memory)
 				pointer += 1
 				print(counter, value_memory)
 				counter += 1
@@ -219,6 +223,16 @@ class VirtualMachine:
 					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], total)
 				
 				pointer += 1
+			elif self.arr_quadruples[pointer][0] == 'Verify':
+				value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+				inf = self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+				superior = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
+				if (value >= inf) and (value < superior):
+					pointer += 1
+				else:
+					raise Exception("ERROR: Out of bounds")
+
+
 
 			else:
 				pointer += 1

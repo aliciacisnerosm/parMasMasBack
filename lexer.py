@@ -29,6 +29,7 @@ generator = None
 is_array = False
 array_info = {}
 cont = 1
+output_array = []
 
 
 stack_operators = deque()
@@ -169,10 +170,11 @@ def p_punto_generator(p):
 	'''
 	punto_generator :
 	'''
-	global arr_quadruples, semantic_var, scope
+	global arr_quadruples, semantic_var, scope, output_array
 	scope = 'global'
 	virtualMachine = VirtualMachine(arr_quadruples,semantic_var._global)
 	virtualMachine.execute()
+	output_array = virtualMachine.output_array
 		
 	for index, value in enumerate(arr_quadruples):
 		print(index, value, file=open("output_quadruples-1.txt", "a"))
@@ -285,6 +287,8 @@ def p_punto_size(p):
 	punto_size :
 	'''
 	global is_array, array_info, cont
+	if p[-1] == 0:
+		raise Exception("ERROR: El tamano del arreglo debe de ser mayor a 0")
 	array_info[cont] = {
 		'dimension': cont,
 		'valor': p[-1]
@@ -326,7 +330,7 @@ def p_punto_verify_dec_param(p):
 	param_1 = stack_operands.pop()
 	param_1_type = stack_type.pop()
 	if param_type != param_1_type:
-		raise Exception("Error: el tipo de parametro no coinicide con el indicado")
+		raise Exception("ERROR: el tipo de parametro no coinicide con el indicado")
 	else:
 		q = Quadruple('PARAM', param_1, None, k)
 		arr_quadruples.append(q.get_quadruple())
@@ -502,7 +506,9 @@ def p_punto_pop_or(p):
 				stack_type.append(value_type)
 				stack_operands.append(dir_memory_aux)
 			else:
-				raise Exception("error en or")
+				raise Exception("ERROR: Type mismatch en or")
+
+		
 		else:
 			stack_operators.append(top)
 
@@ -555,7 +561,8 @@ def p_pop_and(p):
 				stack_operands.append(dir_memory_aux)
 				stack_type.append(4)
 			else:
-				raise Exception("error en and")
+				raise Exception("ERROR: Type mismatch en and")
+
 		else:
 			stack_operators.append(top)
 
@@ -609,6 +616,7 @@ def p_punto_pop_relacional(p):
 			stack_operands.append(dir_memory_aux)
 			stack_type.append(4)
 		else:
+			raise Exception("ERROR: Type Mismatch con operadores relacionales")
 			stack_operators.append(top)
 			
 def p_m_exp(p):
@@ -641,8 +649,7 @@ def p_punto_mexp_pop(p):
 			value_type = cube.get_type(type_aux_1, type_aux_2, top)
 
 			if value_type == 5:
-				#todo: error
-				raise Exception("error en tipo de suma & resta")
+				raise Exception("ERROR: Type Mismatch en suma o resta")
 			else:
 				dir_memory_aux = memory.get_value_memory(value_type, scope, True, False)
 				
@@ -702,7 +709,7 @@ def p_punto_termino_pop(p):
 
 			if value_type == 5:
 				#todo: error
-				raise Exception("error en multiplicacion y división")
+				raise Exception("ERROR: Type Mismatch en multiplicacion o division")
 			else:
 				dir_memory_aux = memory.get_value_memory(value_type, scope, True, False)
 				semantic_var.add_variables(value_type, scope, 'temp_variable', None, None, dir_memory_aux, 0)
@@ -877,7 +884,7 @@ def p_punto_access_arr(p):
 		print("stack operandos", stack_operands)
 		#elemento  al que  quiero accesar
 	else:
-		raise Exception("ERROR: SOLO SE ACEPTAN ENTEROS")
+		raise Exception("ERROR: Sólo se aceptan enteros")
 		
 def p_punto_verify_arr(p):
 	'''
@@ -891,14 +898,13 @@ def p_punto_verify_arr(p):
 	
 	value = semantic_var.get_value_variable(scope,access)
 	
-	if (value <= total_size and value >=0):
+	if (value < total_size and value >=0):
 		q =Quadruple('Verify',access,0,total_size) # verificar tamaño
 		arr_quadruples.append(q.get_quadruple())
 		print("stack_oper", stack_operators, "verify")
 		print("stack operandos", stack_operands)
-	
 	else:
-		raise Exception("ERROR: OUT OF BOUNDS")
+		raise Exception("ERROR: Out of bounds")
 def p_punto_direccion_arr(p):
 	'''
 	punto_direccion_arr :
@@ -951,9 +957,7 @@ def p_punto_asignacion(p):
 	if p[-4] != None:
 		name = semantic_var.get_name_variable(p[-4], scope)
 		
-		if not semantic_var.get_variables_sets(p[-4], scope):
-			raise Exception("error en punto de asignacion")
-		else:
+		if semantic_var.get_variables_sets(p[-4], scope):
 			elem = stack_operands.pop()
 			izq= stack_operands.pop()
 			op = stack_operators.pop()
@@ -964,7 +968,7 @@ def p_punto_asignacion(p):
 			value_type = cube.get_type(ty1, ty2, op)
 			
 			if value_type == 5:
-				raise Exception("error en asignacion, type mismatch")
+				raise Exception("ERROR: Type mismatch en asignación")
 			else:			
 				q = Quadruple(op, elem, None, izq)
 				arr_quadruples.append(q.get_quadruple())
@@ -981,7 +985,7 @@ def p_punto_verify_id(p):
 	'''
 	global semantic_var, arr_quadruples
 	if not semantic_var.verify_function_id(p[-1]):
-		raise Exception("Error: esta función no existe", p[-1])
+		raise Exception("ERROR: Función no definida", p[-1])
 
 def p_punto_verify_total_params(p):
 	'''
@@ -990,7 +994,7 @@ def p_punto_verify_total_params(p):
 	global k, semantic_var
 	total_params= len(semantic_var._global['functions'][func_name]['param_types'])
 	if(k+1!=total_params):
-		raise Exception("error no coincide cantidad de parametros")
+		raise Exception("ERROR: Error no coincide cantidad de parametros")
 
 def p_punto_end_llamada(p):
 	'''
@@ -1025,7 +1029,7 @@ def p_punto_era(p):
 
 	if memory_dir == None:
 		if p[-3] not in semantic_var._global['functions']['func_names']:
-			raise Exception("ERROR: FUNCIÓN NO EXISTE")
+			raise Exception("ERROR: Función no definida")
 
 	else:
 		return_type = semantic_var.get_return_type_variables('global', memory_dir)
@@ -1103,9 +1107,7 @@ def p_punto_add_read_operand(p):
 	global stack_operators
 	global stack_operands
 
-	if not semantic_var.get_variables_sets(p[-2], scope):
-		raise Exception("Error en punto de read")
-	else:
+	if semantic_var.get_variables_sets(p[-2], scope):
 		type1 = stack_type.pop()
 		q = Quadruple(stack_operators.pop(), None, None, stack_operands.pop())
 		arr_quadruples.append(q.get_quadruple())
@@ -1172,7 +1174,7 @@ def p_punto_if_exp(p):
 	global stack_type, stack_operands, arr_quadruples, stack_jumps
 	exp_type = stack_type.pop()
 	if(exp_type == 5):
-		raise Exception("Error, type mismatch")
+		raise Exception("ERROR: Type mismatch")
 	else:
 		result = stack_operands.pop()
 		q = Quadruple('GOTOF', result, None, None) 
@@ -1218,10 +1220,10 @@ def p_punto_for(p):
 	memory_dir_p1 = semantic_var.get_memory_dir(p[-1], scope)
 	return_type = semantic_var.get_return_type_variables(scope, memory_dir_p1)
 	if return_type == 3 or return_type == 4 or return_type == 5:
-		raise Exception("Error, el valor en el for no es numerico")
+		raise Exception("ERROR: El valor en el for no es numerico")
 	else:
-		stack_operands.append(memory_dir_p1) # id = j 
-		stack_type.append(return_type)  # type - int
+		stack_operands.append(memory_dir_p1) 
+		stack_type.append(return_type) 
 
 def p_punto_exp_for_inf(p):
 	'''
@@ -1314,7 +1316,7 @@ def p_punto_validar_exp(p):
 	global stack_type, stack_operands, arr_quadruples
 	return_type = stack_type.pop()
 	if return_type != 4:
-		raise Exception("Error: type mismatch")
+		raise Exception("Error: type mismatch en while")
 	else:
 		result = stack_operands.pop()
 		q = Quadruple('GOTOF', result,None,None)
@@ -1353,7 +1355,7 @@ def p_factor_push_operand(p):
 	'''
 	global stack_operators
 	if not semantic_var.get_variables_sets(p[-1], scope):
-		raise Exception("Error en factor")
+		raise Exception("ERROR: Error en variable")
 	else:
     # TO DO: CHECAR TIPOS PARA MANIPULAR MEMORIA Y TEMPORALES
 		global stack_type, stack_operands
@@ -1414,7 +1416,7 @@ parser = yacc.yacc()
 
 def parser():
 	try:
-		arch_name = 'prueba-arreglos.txt'
+		arch_name = 'prueba-2.txt'
 		this_folder = os.path.dirname(os.path.abspath(__file__))
 		my_file = os.path.join(this_folder, arch_name)
 		print(my_file)
@@ -1427,10 +1429,9 @@ def parser():
 		if error: 
 			return "hay errores de sintaxis"
 		else:
-			global arr_quadruples, stack_operands, semantic_var, scope
+			global arr_quadruples, stack_operands, semantic_var, scope, output_array
 			scope = 'global'
-			
-			return "apropiado"
+			return {'data': output_array, 'status': 200}
 
 
 	except EOFError:

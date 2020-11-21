@@ -1,12 +1,12 @@
 program factorialIterativo:
-var int: n,x;
+var int: n,x, i[10] ;
 
 int func factorial(int n){
 var int: fact,i;
   fact =1;
  for( i =1 to (n+1)){
     fact = fact * i;
-    write(fact);
+    
 
   };
    
@@ -18,8 +18,6 @@ var int: fact,i;
   fact =1;
  for( i =1 to (n+1)){
     fact = fact * i;
-    write(fact);
-
   };
    
  return (fact);
@@ -27,6 +25,6 @@ var int: fact,i;
 
 main (){
  n =5;
- x = (factorial(n)) + factorial2(4 + 1) + factorial(3);
- write(x);
+ x = (factorial(n)) + factorial2(4 + 1 )+ factorial(3);
+write(x);
 }

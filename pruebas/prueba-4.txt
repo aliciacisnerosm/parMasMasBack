@@ -18,8 +18,6 @@ int func fib(int n) {
   return (b); 
 }
 
-
-
 main(){
   n=10;
   x= fib(fib(3)) + 1;
