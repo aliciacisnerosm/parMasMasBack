@@ -738,7 +738,7 @@ def p_factor(p):
 				| ID factor_push_operand
 				| ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
 				| ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada
-				| ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr RIGHT_BR punto_verify_arr 
+				| ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr 
 	'''
 	p[0] = p[1]
 
@@ -806,17 +806,17 @@ def p_estatutos_main_aux(p):
 
 def p_asignacion(p):
 	'''
-	asignacion : m_exp EQUALS punto_igual m_exp punto_asignacion
+	asignacion : vars EQUALS punto_igual m_exp punto_asignacion
 						
 	'''
-# def p_vars(p):
-# 	'''
-# 	vars : ID punto_asignacion_var
-# 			 | ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr RIGHT_BR punto_verify_arr 
+def p_vars(p):
+	'''
+	vars : ID punto_asignacion_var
+			 | ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr 
 			 
-# 	'''
-# 	p[0] = p[1]
-# 	print(p[0], "este  es p[0]")
+	'''
+	p[0] = p[1]
+	print(p[0], "este  es p[0]")
 
 # def p_punto_verify_matriz(p):
 # 	'''
@@ -874,16 +874,13 @@ def p_punto_access_arr(p):
 	else:
 		raise Exception("ERROR: SOLO SE ACEPTAN ENTEROS")
 		
-	
-		
-	
 def p_punto_verify_arr(p):
 	'''
 	punto_verify_arr :
 	'''
-	global arr_quadruples, stack_dimensions, stack_operators, stack_operands, semantic_var
+	global arr_quadruples, stack_dimensions, stack_operators, stack_operands, semantic_var, stack_pointers
 	stack_operators.pop() # sacar fondo falso
-	access = stack_operands.pop() # direccion del que yo quiero accesar
+	access =stack_operands[len(stack_operands) - 1]# direccion del que yo quiero accesar
 	print("Esta es la  direcciond del que quiero accesar", access)
 	total_size = stack_dimensions.pop() #dimension total del array
 	print("este es total_size", total_size)
@@ -892,15 +889,35 @@ def p_punto_verify_arr(p):
 	print("este es value  en  punto_verify_arr", value)
 	if (value <= total_size and value >=0):
 		q =Quadruple('Verify',access,0,total_size) # verificar tamaño
-		print("este es el cuad de verify", q)
 		arr_quadruples.append(q.get_quadruple())
 	
-		memory_val = memory.get_value_memory(1, scope,True, False)
-		q2 = Quadruple('&', p[-7], access, memory_val )
-		arr_quadruples.append(q2.get_quadruple())
-		stack_operands.append(memory_val)
+		# memory_val = memory.get_value_memory(1, scope,True, False)
+		# q2 = Quadruple('&', p[-7], access, memory_val )
+		# arr_quadruples.append(q2.get_quadruple())
+		# stack_operands.append(memory_val)
+
+	
 	else:
 		raise Exception("ERROR: OUT OF BOUNDS")
+def p_punto_direccion_arr(p):
+	'''
+	punto_direccion_arr :
+	'''
+	global stack_operands, arr_quadruples
+	value = stack_operands.pop() #aux1
+	value_type = stack_type.pop()
+	temp = memory.get_value_memory(value_type,scope,True,False)  #ti
+	k= memory.get_value_memory(1, scope, False, True)# siempre 0
+	semantic_var.add_constant_variables(1, scope, 'const_variable', 0, k, 0)
+
+	q = Quadruple('+',value,k, temp)
+	arr_quadruples.append(q.get_quadruple())
+
+	temp_n= memory.get_value_memory(value_type,scope,True,False)
+
+	q2= Quadruple('&', temp,p[-8], temp_n)
+	arr_quadruples.append(q2.get_quadruple())
+	stack_operands.append( '(' + str(temp_n) + ')')
 
 	
 def p_punto_asignacion_var(p):
@@ -1401,7 +1418,7 @@ parser = yacc.yacc()
 
 def parser():
 	try:
-		arch_name = 'prueba-2.txt'
+		arch_name = 'fibo_recursivo.txt'
 		this_folder = os.path.dirname(os.path.abspath(__file__))
 		my_file = os.path.join(this_folder, arch_name)
 		print(my_file)

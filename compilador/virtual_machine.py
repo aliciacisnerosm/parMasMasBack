@@ -8,6 +8,7 @@ class VirtualMachine:
 		self.execution_stack = deque()
 		self.local_memory = MemoryMap(None, 'local')
 		self.stack_pointers = deque()
+		self.stack_dir_array = deque()
 		self.general_dir = general_dir
 		self.aux_memory = None
 
@@ -32,7 +33,7 @@ class VirtualMachine:
 		counter = 1
 		while (pointer < len(self.arr_quadruples)):
 			print("CUADRUPLO ACTUAL ->>>", self.arr_quadruples[pointer],"->>", pointer)
-			print("memoria global", self.local_memory.type_int)
+#			print("memoria global", self.local_memory.type_int)
 			
 			if self.arr_quadruples[pointer][0] == '+':
 				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
@@ -49,9 +50,11 @@ class VirtualMachine:
 				pointer += 1
 				
 			elif self.arr_quadruples[pointer][0] == '=':
-				value_memory = self.get_memory(self.arr_quadruples[pointer][1])
-				value = value_memory.get_value(self.arr_quadruples[pointer][1])
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], value)
+				value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+				if type(self.arr_quadruples[pointer][3]) == str:
+					self.local_memory.set_value(self.arr_quadruples[pointer][3], value)
+				else:
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], value)
 				pointer += 1
 
 			elif self.arr_quadruples[pointer][0] == '*':
@@ -73,8 +76,12 @@ class VirtualMachine:
 				pointer += 1
 				
 			elif self.arr_quadruples[pointer][0]== 'write':
-				value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
-				print("write", self.get_memory(self.arr_quadruples[pointer][3]).type_int)
+				if type(self.arr_quadruples[pointer][3]) is str:
+					value_memory = self.local_memory.get_value(self.arr_quadruples[pointer][3])
+				else:
+					value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
+				
+				print("write",value_memory)
 				pointer += 1
 				print(counter, value_memory)
 				counter += 1
@@ -197,11 +204,20 @@ class VirtualMachine:
 				print("nueva memoria asignada ->", self.local_memory.function_name)
 				
 			elif self.arr_quadruples[pointer][0] == '&':
-				value = self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				dir_base = self.arr_quadruples[pointer][1]
+
+				value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+				dir_base = self.arr_quadruples[pointer][2]
 				total = value + dir_base
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], total)
-				pointer += 1 
+				print(total, "MEMORIA REAL / VIRTUAL")
+
+				if type(self.arr_quadruples[pointer][3]) is str:
+					retorna = self.local_memory.get_value(self.arr_quadruples[pointer][3])
+					self.local_memory.set_value(retorna, '(' + str(total)+ ')')
+				else:
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], total)
+				
+				pointer += 1
+
 			else:
 				pointer += 1
 
@@ -295,31 +311,36 @@ class MemoryMap:
 
 
 	def get_value(self, memory_dir):
-		if (memory_dir >= 8000 and memory_dir < 9000) or (memory_dir >= 11000 and memory_dir < 12000)	or (memory_dir >= 1000 and memory_dir < 2000) or (memory_dir >= 4000 and memory_dir < 5000) or (memory_dir >= 15000 and memory_dir < 16000):
-			if memory_dir in self.type_int:
-				return self.type_int[memory_dir]['value']
-			else:
-				return self.new_int(memory_dir)
-		elif (memory_dir >= 2000 and memory_dir < 3000) or (memory_dir >= 5000 and memory_dir < 6000) or (memory_dir >= 9000 and memory_dir < 10000) or (memory_dir >= 12000 and memory_dir < 13000) or (memory_dir >= 16000 and memory_dir < 17000):
-			if memory_dir in self.type_float:
-				return self.type_float[memory_dir]['value']
-			else:
-				return self.new_float(memory_dir)
-		elif (memory_dir >= 10000 and memory_dir < 11000) or (memory_dir >= 13000 and memory_dir < 14000) or ( memory_dir >= 17000 and memory_dir < 18000) or (memory_dir >= 3000 and memory_dir < 4000) or (memory_dir >= 6000 and memory_dir < 7000):
-			if memory_dir in self.type_char:
-				return self.type_char[memory_dir]['value']
-			else:
-				return self.new_char(memory_dir)
-		elif (memory_dir>=14000 and memory_dir < 15000):
-			if memory_dir in self.type_bool:
-				return self.type_bool[memory_dir]['value']
-			else:
-				return self.new_bool(memory_dir)
-		elif (memory_dir>= 18000 and memory_dir<19000):
-			if memory_dir in self.type_str:
-				return self.type_str[memory_dir]['value']
-			else:
-				return self.new_str(memory_dir)
+		print(memory_dir, "get_value")
+		if (type(memory_dir) == str):
+			val = int(memory_dir.replace('(', '').replace(')', ''))
+			return self.get_value(self.get_value(val))
+		else:	
+			if (memory_dir >= 8000 and memory_dir < 9000) or (memory_dir >= 11000 and memory_dir < 12000)	or (memory_dir >= 1000 and memory_dir < 2000) or (memory_dir >= 4000 and memory_dir < 5000) or (memory_dir >= 15000 and memory_dir < 16000):
+				if memory_dir in self.type_int:
+					return self.type_int[memory_dir]['value']
+				else:
+					return self.new_int(memory_dir)
+			elif (memory_dir >= 2000 and memory_dir < 3000) or (memory_dir >= 5000 and memory_dir < 6000) or (memory_dir >= 9000 and memory_dir < 10000) or (memory_dir >= 12000 and memory_dir < 13000) or (memory_dir >= 16000 and memory_dir < 17000):
+				if memory_dir in self.type_float:
+					return self.type_float[memory_dir]['value']
+				else:
+					return self.new_float(memory_dir)
+			elif (memory_dir >= 10000 and memory_dir < 11000) or (memory_dir >= 13000 and memory_dir < 14000) or ( memory_dir >= 17000 and memory_dir < 18000) or (memory_dir >= 3000 and memory_dir < 4000) or (memory_dir >= 6000 and memory_dir < 7000):
+				if memory_dir in self.type_char:
+					return self.type_char[memory_dir]['value']
+				else:
+					return self.new_char(memory_dir)
+			elif (memory_dir>=14000 and memory_dir < 15000):
+				if memory_dir in self.type_bool:
+					return self.type_bool[memory_dir]['value']
+				else:
+					return self.new_bool(memory_dir)
+			elif (memory_dir>= 18000 and memory_dir<19000):
+				if memory_dir in self.type_str:
+					return self.type_str[memory_dir]['value']
+				else:
+					return self.new_str(memory_dir)
 
 	def new_int(self, memory_dir):
 		self.type_int[memory_dir] = {
@@ -353,52 +374,59 @@ class MemoryMap:
 		return self.type_str[memory_dir]['value']
 	
 	def set_value(self, memory_dir, value):
-		if (memory_dir >= 8000 and memory_dir < 9000) or (memory_dir >= 11000 and memory_dir < 12000)	or (memory_dir >= 1000 and memory_dir < 2000) or (memory_dir >= 4000 and memory_dir < 5000) or (memory_dir >= 15000 and memory_dir < 16000):
-			if memory_dir not in self.type_int:
-				self.type_int[memory_dir] = {
-					'value': value
-				}
-				print(self.type_int[memory_dir], "setttt")
-			else:
-				self.type_int[memory_dir]['value'] = value
-				print(self.type_int[memory_dir])
+		print(memory_dir)
+		if (type(memory_dir) is str):
+			val = int(memory_dir.replace('(', '').replace(')', ''))
+			print("entraal settttt")
+			self.set_value(self.get_value(val), value)
+			pass
+		else:	
+			if (memory_dir >= 8000 and memory_dir < 9000) or (memory_dir >= 11000 and memory_dir < 12000)	or (memory_dir >= 1000 and memory_dir < 2000) or (memory_dir >= 4000 and memory_dir < 5000) or (memory_dir >= 15000 and memory_dir < 16000):
+				if memory_dir not in self.type_int:
+					self.type_int[memory_dir] = {
+						'value': value
+					}
+					print(self.type_int[memory_dir], "setttt")
+				else:
+					self.type_int[memory_dir]['value'] = value
+					print(self.type_int[memory_dir])
 
-		elif (memory_dir >= 2000 and memory_dir < 3000) or (memory_dir >= 5000 and memory_dir < 6000) or (memory_dir >= 9000 and memory_dir < 10000) or (memory_dir >= 12000 and memory_dir < 13000) or (memory_dir >= 16000 and memory_dir < 17000):
-			if memory_dir not in self.type_int:
-				self.type_float[memory_dir] = {
-					'value': value
-				}
-				print(self.type_float[memory_dir], "setttt")
-			else:
-				self.type_float[memory_dir]['value'] = value
-				print(self.type_float[memory_dir])
+			elif (memory_dir >= 2000 and memory_dir < 3000) or (memory_dir >= 5000 and memory_dir < 6000) or (memory_dir >= 9000 and memory_dir < 10000) or (memory_dir >= 12000 and memory_dir < 13000) or (memory_dir >= 16000 and memory_dir < 17000):
+				if memory_dir not in self.type_int:
+					self.type_float[memory_dir] = {
+						'value': value
+					}
+					print(self.type_float[memory_dir], "setttt")
+				else:
+					self.type_float[memory_dir]['value'] = value
+					print(self.type_float[memory_dir])
 
-		elif (memory_dir >= 10000 and memory_dir < 11000) or (memory_dir >= 13000 and memory_dir < 14000) or ( memory_dir >= 17000 and memory_dir < 18000) or (memory_dir >= 3000 and memory_dir < 4000) or (memory_dir >= 6000 and memory_dir < 7000):
-			if memory_dir not in self.type_char:
-				self.type_char[memory_dir] = {
-					'value': value
-				}
-			else:
-				self.type_char[memory_dir]['value'] = value
-				print(self.type_char[memory_dir])
+			elif (memory_dir >= 10000 and memory_dir < 11000) or (memory_dir >= 13000 and memory_dir < 14000) or ( memory_dir >= 17000 and memory_dir < 18000) or (memory_dir >= 3000 and memory_dir < 4000) or (memory_dir >= 6000 and memory_dir < 7000):
+				if memory_dir not in self.type_char:
+					self.type_char[memory_dir] = {
+						'value': value
+					}
+				else:
+					self.type_char[memory_dir]['value'] = value
+					print(self.type_char[memory_dir])
 
-		elif (memory_dir>=14000 and memory_dir < 15000):
-			if memory_dir not in self.type_bool:
-				self.type_bool[memory_dir] = {
-					'value': value
-				}
-			else:
-				self.type_bool[memory_dir]['value'] = value
-				print(self.type_bool[memory_dir])
+			elif (memory_dir>=14000 and memory_dir < 15000):
+				if memory_dir not in self.type_bool:
+					self.type_bool[memory_dir] = {
+						'value': value
+					}
+				else:
+					self.type_bool[memory_dir]['value'] = value
+					print(self.type_bool[memory_dir])
 
-		elif (memory_dir >= 18000 and memory_dir < 19000):
-			if memory_dir not in self.type_str:
-				self.type_str[memory_dir] = {
-					'value': value
-				}
-			else:
-				self.type_str[memory_dir]['value'] = value
-				print(self.type_str[memory_dir])
+			elif (memory_dir >= 18000 and memory_dir < 19000):
+				if memory_dir not in self.type_str:
+					self.type_str[memory_dir] = {
+						'value': value
+					}
+				else:
+					self.type_str[memory_dir]['value'] = value
+					print(self.type_str[memory_dir])
 	
 	def add_params(self, params):
 		for index, value in enumerate(params):
