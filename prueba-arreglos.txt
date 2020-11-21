@@ -2,6 +2,7 @@ program fibonacciIterativo:
  var int: n[10], x;
 main(){
   n[5] = 1;
-  n[1]=2;
-  write(n[5] + n[1]);
+  x = 1;
+  n[1] = 2;
+  write((n[5]));
 }

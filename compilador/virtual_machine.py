@@ -14,6 +14,9 @@ class VirtualMachine:
 
 
 	def get_memory(self, memory_dir):
+		if (type(memory_dir) == str):
+			return self.local_memory
+
 		if (memory_dir >= 1000 and memory_dir < 8000) or (memory_dir >= 15000 and memory_dir < 19000):
 			return self.global_memory
 
@@ -33,7 +36,6 @@ class VirtualMachine:
 		counter = 1
 		while (pointer < len(self.arr_quadruples)):
 			print("CUADRUPLO ACTUAL ->>>", self.arr_quadruples[pointer],"->>", pointer)
-#			print("memoria global", self.local_memory.type_int)
 			
 			if self.arr_quadruples[pointer][0] == '+':
 				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])

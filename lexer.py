@@ -176,7 +176,6 @@ def p_punto_generator(p):
 		
 	for index, value in enumerate(arr_quadruples):
 		print(index, value, file=open("output_quadruples-1.txt", "a"))
-		
 	semantic_var.remove_local_function(scope)
 	memory.reset_local_temp()
 	memory.reset_dir_local()
@@ -481,7 +480,6 @@ def p_punto_pop_or(p):
 	
 	if len(stack_operators) != 0:
 		top = stack_operators.pop()
-		print("top en or", top)
 		if top == 'or':
 			op1 = stack_operands.pop() # memory dir
 			op2 = stack_operands.pop()
@@ -741,6 +739,8 @@ def p_factor(p):
 				| ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr 
 	'''
 	p[0] = p[1]
+	print("stack_oper", stack_operators, "factor")
+	print("stack operandos", stack_operands)
 
 def p_saca_fondo_falso(p):
 	'''
@@ -816,7 +816,8 @@ def p_vars(p):
 			 
 	'''
 	p[0] = p[1]
-	print(p[0], "este  es p[0]")
+	print("stack_oper", stack_operators, "vars")
+	print("stack operandos", stack_operands)
 
 # def p_punto_verify_matriz(p):
 # 	'''
@@ -857,7 +858,9 @@ def p_punto_get_size(p):
 	global semantic_var, stack_dimensions
 	memory_dir = p[-1]
 	dimension = semantic_var.get_dimension_variable(scope, memory_dir) #dimension total de la variable 
-	stack_dimensions.append(dimension) # dimension total
+	stack_dimensions.append(dimension)  # dimension total
+	print("stack_oper", stack_operators, "getsize")
+	print("stack operandos", stack_operands)
 
 def p_punto_access_arr(p):
 	'''
@@ -870,6 +873,8 @@ def p_punto_access_arr(p):
 	if var_type == 1:
 		stack_type.append(var_type)
 		stack_operands.append(var)
+		print("stack_oper", stack_operators, "punto access")
+		print("stack operandos", stack_operands)
 		#elemento  al que  quiero accesar
 	else:
 		raise Exception("ERROR: SOLO SE ACEPTAN ENTEROS")
@@ -881,21 +886,16 @@ def p_punto_verify_arr(p):
 	global arr_quadruples, stack_dimensions, stack_operators, stack_operands, semantic_var, stack_pointers
 	stack_operators.pop() # sacar fondo falso
 	access =stack_operands[len(stack_operands) - 1]# direccion del que yo quiero accesar
-	print("Esta es la  direcciond del que quiero accesar", access)
+	
 	total_size = stack_dimensions.pop() #dimension total del array
-	print("este es total_size", total_size)
-
+	
 	value = semantic_var.get_value_variable(scope,access)
-	print("este es value  en  punto_verify_arr", value)
+	
 	if (value <= total_size and value >=0):
 		q =Quadruple('Verify',access,0,total_size) # verificar tamaño
 		arr_quadruples.append(q.get_quadruple())
-	
-		# memory_val = memory.get_value_memory(1, scope,True, False)
-		# q2 = Quadruple('&', p[-7], access, memory_val )
-		# arr_quadruples.append(q2.get_quadruple())
-		# stack_operands.append(memory_val)
-
+		print("stack_oper", stack_operators, "verify")
+		print("stack operandos", stack_operands)
 	
 	else:
 		raise Exception("ERROR: OUT OF BOUNDS")
@@ -917,7 +917,8 @@ def p_punto_direccion_arr(p):
 
 	q2= Quadruple('&', temp,p[-8], temp_n)
 	arr_quadruples.append(q2.get_quadruple())
-	stack_operands.append( '(' + str(temp_n) + ')')
+	stack_operands.append('(' + str(temp_n) + ')')
+	print("stack operands", stack_operands, "es punto direccion")
 
 	
 def p_punto_asignacion_var(p):
@@ -931,9 +932,9 @@ def p_punto_asignacion_var(p):
 	if var_id != None:
 		stack_operands.append(var_id)
 		stack_type.append(type_id)
-
-	print(stack_operands)
 	p[0] = var_id
+	print("stack_oper", stack_operators, "es punto de asignacion", p[-1])
+	print("stackoperand", stack_operands)
 
 def p_punto_igual(p):
 	'''
@@ -963,7 +964,7 @@ def p_punto_asignacion(p):
 			value_type = cube.get_type(ty1, ty2, op)
 			
 			if value_type == 5:
-				print("error en asignacion, type mismatch")
+				raise Exception("error en asignacion, type mismatch")
 			else:			
 				q = Quadruple(op, elem, None, izq)
 				arr_quadruples.append(q.get_quadruple())
@@ -989,7 +990,7 @@ def p_punto_verify_total_params(p):
 	global k, semantic_var
 	total_params= len(semantic_var._global['functions'][func_name]['param_types'])
 	if(k+1!=total_params):
-		print("error no coincide cantidad de parametros")
+		raise Exception("error no coincide cantidad de parametros")
 
 def p_punto_end_llamada(p):
 	'''
@@ -1011,9 +1012,6 @@ def p_punto_end_llamada(p):
 			arr_quadruples.append(q2.get_quadruple())
 		else:
 			stack_operands.append(memory_dir)
-	else:
-		print("sigue funcion void")
-
 
 def p_punto_era(p):
 	'''
@@ -1028,8 +1026,7 @@ def p_punto_era(p):
 	if memory_dir == None:
 		if p[-3] not in semantic_var._global['functions']['func_names']:
 			raise Exception("ERROR: FUNCIÓN NO EXISTE")
-		else:
-			print("es una funcion void")
+
 	else:
 		return_type = semantic_var.get_return_type_variables('global', memory_dir)
 		stack_type.append(return_type)
@@ -1056,7 +1053,6 @@ def p_punto_return(p):
 	arr_quadruples.append(q.get_quadruple())
 	# funcion -> 
 	memory_dir = semantic_var.get_memory_dir(scope, 'global')
-	print("¿que esta retornando?", value, memory_dir, scope)
 	#temp_return = memory.get_value_memory(return_type, scope, True, False)
 	q2 = Quadruple('=', value, None, memory_dir)
 	arr_quadruples.append(q2.get_quadruple())
@@ -1418,7 +1414,7 @@ parser = yacc.yacc()
 
 def parser():
 	try:
-		arch_name = 'fibo_recursivo.txt'
+		arch_name = 'prueba-arreglos.txt'
 		this_folder = os.path.dirname(os.path.abspath(__file__))
 		my_file = os.path.join(this_folder, arch_name)
 		print(my_file)
@@ -1433,6 +1429,7 @@ def parser():
 		else:
 			global arr_quadruples, stack_operands, semantic_var, scope
 			scope = 'global'
+			
 			return "apropiado"
 
 
