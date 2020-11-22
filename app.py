@@ -20,8 +20,10 @@ def compiler():
 
         filename = "pruebas/" + str(file_name) + ".txt"
         print(file_name)
+       # print(parser(file_name))
         return parser(file_name), 200
     except Exception as e:
+         print(parser(file_name))
          return str(e),  400
 
 @app.route('/files', methods=['GET'])

@@ -287,11 +287,15 @@ def p_punto_size(p):
 	punto_size :
 	'''
 	global is_array, array_info, cont
-	if p[-1] == 0:
+	memory_dir = stack_operands.pop()
+	memory_dir_type = stack_type.pop()
+	value = semantic_var.get_value_variable(scope, memory_dir)
+
+	if value == 0:
 		raise Exception("ERROR: El tamano del arreglo debe de ser mayor a 0")
 	array_info[cont] = {
 		'dimension': cont,
-		'valor': p[-1]
+		'valor': value
 	}
 	cont += 1
 
@@ -918,8 +922,10 @@ def p_punto_direccion_arr(p):
 	arr_quadruples.append(q.get_quadruple())
 
 	temp_n= memory.get_value_memory(value_type,scope,True,False)
-
-	q2= Quadruple('&', temp,p[-8], temp_n)
+	
+	base = stack_operands.pop()
+	
+	q2= Quadruple('&', temp,base, temp_n)
 	arr_quadruples.append(q2.get_quadruple())
 	stack_operands.append('(' + str(temp_n) + ')')
 	print("stack operands", temp_n, "es punto direccion")

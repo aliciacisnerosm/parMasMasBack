@@ -1,29 +1,24 @@
 program parmasmas :
-var int: i, j;
+var int: i, j, s[9];
 
 void func sort(){
-  var int: s[9], n, temp, m;
-  n = 9;
+  var int: n, temp, m,w;
+  n = 4;
   
     s[3] = 5;
     s[1] = 2;
     s[2] = 0;
     s[0] = 11;
 
-    for(i= 0 to (2-1)){
-      for(j = 0 to (2-i-1)){
-        n = j + 1;
-        if(s[j] > s[n]){
-          temp=s[j];
-          s[j]=s[j+1];
-          s[j+1]=temp;
-
-        };
+  for(i= 0 to 1){
+      for(j = 0 to 1){
+       write("hola");
       };
     };
+
   write("Array after bubble sort");
-  for (m=0 to (n-1)){
-    write(a[i]);
+  for (m=0 to n-1){
+    write(s[m]);
   };
 }
 
