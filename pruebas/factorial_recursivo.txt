@@ -5,10 +5,11 @@ int func factorial (int x){
         return (1);
     }
     else{
-        return(x* factorial(x-1));
+        return(x* factorial(x - 1));
     };
 }
 
 main(){
 a = factorial(5);
+write(a);
 }

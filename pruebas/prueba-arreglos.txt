@@ -1,9 +1,13 @@
-program fibonacciIterativo:
+program pruebaArreglos:
  var int: n[10], x;
+
 main(){
   n[9] = 1;
+  n[1] = 2;
+  n[3] = 4;
   n[5] = 20;
-  x=n[5];
- write(n[9] + n[5]);
- write(x);
+
+ 
+  write(n[9] + n[5] * (n[3] - n[1]));
+  write(x);
 }

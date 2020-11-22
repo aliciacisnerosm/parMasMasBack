@@ -3,11 +3,10 @@ var int: n,x, i[10] ;
 
 int func factorial(int n){
 var int: fact,i;
-  fact =1;
- for( i =1 to (n+1)){
+  fact = 1;
+ for( i = 1 to (n + 1)){
     fact = fact * i;
     
-
   };
    
  return (fact);
@@ -15,8 +14,8 @@ var int: fact,i;
 
 int func factorial2(int n){
 var int: fact,i;
-  fact =1;
- for( i =1 to (n+1)){
+  fact = 1;
+ for(i = 1 to (n + 1)){
     fact = fact * i;
   };
    

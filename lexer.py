@@ -50,11 +50,8 @@ reserved = {
 	'float': 'FLOAT',
 	'write': 'WRITE',
 	'while': 'WHILE',
-	'do': 'DO',
 	'for': 'FOR',
-	'then': 'THEN',
 	'read': 'READ',
-	'vd': 'VD',
 	'and': 'AND',
 	'or': 'OR',
 	'void': 'VOID',
@@ -102,7 +99,7 @@ def t_ID(t):
 	return t
 
 def t_CTE_I(t):
-	r'\d+'
+	r'[\-]?\d+'
 	t.value = int(t.value)
 	return t
 
@@ -174,7 +171,6 @@ def p_punto_generator(p):
 	virtualMachine = VirtualMachine(arr_quadruples,semantic_var._global)
 	virtualMachine.execute()
 	output_array = virtualMachine.output_array
-	print(stack_operands, "acaba")
 	for index, value in enumerate(arr_quadruples):
 		print(index, value, file=open("output_quadruples-1.txt", "a"))
 	semantic_var.remove_local_function(scope)
@@ -299,20 +295,6 @@ def p_punto_size(p):
 	}
 	cont += 1
 
-
-
-#todo: agregar punto para las dimensiones (:
-def p_punto_dec_varaux_1(p):
-	'''
-	punto_dec_varaux_1 :
-	'''
-
-def p_dec_var(p):
-	'''
-	dec_var : ID COMMA dec_var
-					| ID
-	'''
-
 def p_dec_var_llamada(p):
 	'''
 	dec_var_llamada : m_exp punto_verify_dec_param COMMA punto_mas_k dec_var_llamada
@@ -330,7 +312,13 @@ def p_punto_verify_dec_param(p):
 	punto_verify_dec_param : 
 	'''
 	global stack_operands, stack_type, k, func_name, arr_quadruples
-	param_type = semantic_var._global['functions'][func_name]['param_types'][k]
+	param_type = None
+
+	try:
+		param_type = semantic_var._global['functions'][func_name]['param_types'][k]
+	except:
+		raise Exception("ERROR: Cantidad de parametros no coincide")
+
 	param_1 = stack_operands.pop()
 	param_1_type = stack_type.pop()
 	if param_type != param_1_type:
@@ -750,8 +738,6 @@ def p_factor(p):
 				| ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr 
 	'''
 	p[0] = p[1]
-	print("stack_oper", stack_operators, "factor")
-	print("stack operandos", stack_operands)
 
 def p_saca_fondo_falso(p):
 	'''
@@ -827,40 +813,6 @@ def p_vars(p):
 			 
 	'''
 	p[0] = p[1]
-	print("stack_oper", stack_operators, "vars")
-	print("stack operandos", stack_operands)
-
-# def p_punto_verify_matriz(p):
-# 	'''
-# 	punto_verify_matriz :
-# 	'''
-# 	global stack_operators, stack_dimensions, arr_quadruples, stack_operands
-# 	stack_operators.pop() #sacar fondo falso
-# 	value_2=stack_dimensions.pop() #dimension casilla 2 que quiero accesar
-# 	value_1= stack_dimensions.pop()#dimension casilla 1 que quiero accesar
-# 	total = stack_dimensions.pop()  #dimension total de la variable (24)
-# 	dimension_array = semantic_var.get_dimension_array(scope, p[-13])
-	
-# 	if value_1 <= dimension_array[0] and value_2 <= dimension_array[1]:
-# 		q1= Quadruple('Verify',value_1,None,dimension_array[0])
-# 		arr_quadruples.append(q1.get_quadruple())
-# 		q2=Quadruple('Verify',value_2,None,dimension_array[1])
-# 		arr_quadruples.append(q2.get_quadruple())
-# 		total = (value_1+1)*(value_2+1)
-# 		final_dir = p[-13]+total
-# 		qtotal =Quadruple('&',p[-13],total,final_dir )
-# 		arr_quadruples.append(qtotal.get_quadruple())
-# 		stack_operands.append(final_dir)
-# 	else:
-# 		print("ERROR: OUT OF BOUNDS")
-
-def p_punto_dimension_2(p):
-	'''
-	punto_dimension_2 :
-	'''
-	global stack_operators
-	stack_operators.pop()
-
 
 def p_punto_get_size(p):
 	'''
@@ -870,8 +822,6 @@ def p_punto_get_size(p):
 	memory_dir = p[-1]
 	dimension = semantic_var.get_dimension_variable(scope, memory_dir) #dimension total de la variable 
 	stack_dimensions.append(dimension)  # dimension total
-	print("stack_oper", stack_operators, "getsize")
-	print("stack operandos", stack_operands)
 
 def p_punto_access_arr(p):
 	'''
@@ -884,7 +834,6 @@ def p_punto_access_arr(p):
 	if var_type == 1:
 		stack_type.append(var_type)
 		stack_operands.append(var)
-		print(var, "punto access")
 		
 	else:
 		raise Exception("ERROR: Sólo se aceptan enteros como indices")
@@ -903,8 +852,7 @@ def p_punto_verify_arr(p):
 
 	q =Quadruple('Verify',access,0,total_size) # verificar tamaño
 	arr_quadruples.append(q.get_quadruple())
-	print("stack_oper", stack_operators, "verify")
-	print("stack operandos", stack_operands)
+
 
 def p_punto_direccion_arr(p):
 	'''
@@ -913,7 +861,6 @@ def p_punto_direccion_arr(p):
 	global stack_operands, arr_quadruples
 	value = stack_operands.pop() #aux1
 	value_type = stack_type.pop()
-	print(value, "direcccion arr 1")
 	temp = memory.get_value_memory(value_type,scope,True,False)  #ti
 	k= memory.get_value_memory(1, scope, False, True)# siempre 0
 	semantic_var.add_constant_variables(1, scope, 'const_variable', 0, k, 0)
@@ -928,7 +875,6 @@ def p_punto_direccion_arr(p):
 	q2= Quadruple('&', temp,base, temp_n)
 	arr_quadruples.append(q2.get_quadruple())
 	stack_operands.append('(' + str(temp_n) + ')')
-	print("stack operands", temp_n, "es punto direccion")
 
 	
 def p_punto_asignacion_var(p):
@@ -942,10 +888,7 @@ def p_punto_asignacion_var(p):
 	if var_id != None:
 		stack_operands.append(var_id)
 		stack_type.append(type_id)
-		print(var_id, "punto asignacion 1")
 	p[0] = var_id
-	print("stack_oper", stack_operators, "es punto de asignacion", p[-1])
-	print("stackoperand", stack_operands)
 
 def p_punto_igual(p):
 	'''
@@ -1401,7 +1344,6 @@ def p_factor_char_push(p):
 	global stack_operands, stack_type
 	if p[-1] != None:
 		memory_dir_p1 = memory.get_value_memory(3, scope, True, True)
-		print(memory_dir_p1, "memoria en char")
 		semantic_var.add_constant_variables(3, 'global', 'const_variable', p[-1], memory_dir_p1, 0)
 		stack_operands.append(memory_dir_p1)
 		stack_type.append(3)
@@ -1425,7 +1367,6 @@ def parser(filename, input=None):
 		arch_name = filename +'.txt'
 		#this_folder = os.path.dirname(os.path.abspath(__file__))
 		my_file = os.path.join('pruebas', arch_name)
-		print(my_file)
 		arch = open(my_file,'r')
 		print("Nombre de archivo " + arch_name)
 		archivo = arch.read()

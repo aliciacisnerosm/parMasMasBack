@@ -3,27 +3,23 @@ var int: x & char: c, aw[9] ;
 
 int func funcionprueba(int y, char z){
     z = 'p';
- if ((y == 1) and (z=='p')){
-     write("hola");
-    return (y);
-    }
-else{
-
-    return(0);    
-};
-
+    if ((y == 1) and (z =='p')){
+        return(y);
+        }
+    else{
+        return(0);    
+    };
 }
 
 main(){
     c = 'p';
     x = funcionprueba(1,c);
-    write(1/1);
+
     aw[1] ='h';
     aw[2] ='o';
     aw[3] ='l';
-    aw[4] ='!';
+    aw[4] ='a';
     
-
-    write(aw[1], aw[2],aw[3],aw[4]);
+    write(aw[1],aw[2],aw[3],aw[4]);
 }
 

@@ -42,21 +42,21 @@ class Memory:
 			self.memory['dir_global']['int'] += 1
 			return self.memory['dir_global']['int']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para enteros globales")
 
 	def add_float_global(self):
 		if self.memory['dir_global']['float'] < 3000:
 			self.memory['dir_global']['float'] += 1
 			return self.memory['dir_global']['float'] 
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para flotantes globales")
 
 	def add_char_global(self):
 		if self.memory['dir_global']['char'] < 4000:
 			self.memory['dir_global']['char'] += 1
 			return self.memory['dir_global']['char'] 
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para chars globales")
 
 ###########################################
 # temp global
@@ -65,7 +65,7 @@ class Memory:
 			self.memory['global_temp']['int'] += 1
 			return self.memory['global_temp']['int']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para temporales enteros globales")
 
 
 	def add_float_temp(self):
@@ -73,21 +73,22 @@ class Memory:
 			self.memory['global_temp']['float'] += 1
 			return self.memory['global_temp']['float']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para flotantes temporales globales")
 
 	def add_char_temp(self):
 		if self.memory['global_temp']['char'] < 7000:
 			self.memory['global_temp']['char'] += 1
 			return self.memory['global_temp']['char']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para chars temporales globales")
+
 
 	def add_bool_temp(self):
 		if self.memory['global_temp']['bool'] < 8000:
 			self.memory['global_temp']['bool'] += 1
 			return self.memory['global_temp']['bool']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para booleanos temporales globales")
 
 ###########################################
 
@@ -96,21 +97,22 @@ class Memory:
 			self.memory['dir_local']['int'] += 1
 			return self.memory['dir_local']['int']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para enteros locales")
+
 
 	def add_float_local(self):
 		if self.memory['dir_local']['float'] < 10000:
 			self.memory['dir_local']['float'] += 1
 			return self.memory['dir_local']['float']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para flotantes locales")
 
 	def add_char_local(self):
 		if self.memory['dir_local']['char'] < 11000:
 			self.memory['dir_local']['char'] += 1
 			return self.memory['dir_local']['char']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para chars locales")
 
 ###########################################
 # local temp
@@ -119,21 +121,21 @@ class Memory:
 			self.memory['local_temp']['int'] += 1
 			return self.memory['local_temp']['int']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para enteros locales temporales")
 
 	def add_float_local_temp(self):
 		if self.memory['local_temp']['float'] < 13000:
 			self.memory['local_temp']['float'] += 1
 			return self.memory['local_temp']['float']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para flotantes locales temporales")
 
 	def add_char_local_temp(self):
 		if self.memory['local_temp']['char'] < 14000:
 			self.memory['local_temp']['char'] += 1
 			return self.memory['local_temp']['char']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para chars locales temporales")
 
 
 	def add_bool_local_temp(self):
@@ -141,7 +143,7 @@ class Memory:
 			self.memory['local_temp']['bool'] += 1
 			return self.memory['local_temp']['bool']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para booleanos locales temporales")
 
 ###########################################
 #global constantes
@@ -150,28 +152,28 @@ class Memory:
 				self.memory['global_constant']['int'] += 1
 				return self.memory['global_constant']['int']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para enteros constantes globales")
 	
 	def add_float_constante(self):
 		if self.memory['global_constant']['float'] < 17000:
 			self.memory['global_constant']['float'] += 1
 			return self.memory['global_constant']['float']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para flotantes constantes globales")
 
 	def add_char_constante(self):
 		if self.memory['global_constant']['char'] < 18000:
 			self.memory['global_constant']['char'] += 1
 			return self.memory['global_constant']['char']
 		else:
-			return "error"
-		#checar este	
+			raise Exception("ERROR: No hay memoria para chars constantes globales")
+			
 	def add_string_constante(self):
 		if self.memory['global_constant']['string'] < 19000:
 			self.memory['global_constant']['string'] += 1
 			return self.memory['global_constant']['string']
 		else:
-			return "error"
+			raise Exception("ERROR: No hay memoria para string constantes globales")
 		
 
 ##########################################

@@ -5,7 +5,7 @@ void func cuenta_regresiva(int n){
 
   if(n>0){
     write(n);
-    cuenta_regresiva(n-1);
+    cuenta_regresiva(n - 1);
     
   }
   else{

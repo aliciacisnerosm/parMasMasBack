@@ -39,113 +39,157 @@ class VirtualMachine:
 			print("CUADRUPLO ACTUAL ->>>", self.arr_quadruples[pointer],"->>", pointer)
 			
 			if self.arr_quadruples[pointer][0] == '+':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value + right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
-		
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value + right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("Error: Variable sin valor")
+				
 			elif self.arr_quadruples[pointer][0] == '-':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value - right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value - right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 				
 			elif self.arr_quadruples[pointer][0] == '=':
-				value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				if type(self.arr_quadruples[pointer][3]) == str:
-					self.local_memory.set_value(self.arr_quadruples[pointer][3], value)
-				else:
-					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], value)
-				pointer += 1
+				try:
+					value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					if type(self.arr_quadruples[pointer][3]) == str:
+						self.local_memory.set_value(self.arr_quadruples[pointer][3], value)
+					else:
+						self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], value)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 
 			elif self.arr_quadruples[pointer][0] == '*':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value * right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value * right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 				
 			elif self.arr_quadruples[pointer][0] == '/':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value = self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				if right_value == 0:
-					raise Exception("ERROR: No se pueden hacer divisiones entre 0")
-				result = left_value / right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
-
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value = self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					if right_value == 0:
+						raise Exception("ERROR: No se pueden hacer divisiones entre 0")
+					result = left_value / right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
+				
 			elif self.arr_quadruples[pointer][0] == 'read':
-				value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
-				pointer += 1
-				
-			elif self.arr_quadruples[pointer][0]== 'write':
-				if type(self.arr_quadruples[pointer][3]) is str:
-					value_memory = self.local_memory.get_value(self.arr_quadruples[pointer][3])
-				else:
+				try:
 					value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 				
-				self.output_array.append(value_memory)
-				print(value_memory)
-				pointer += 1
-				counter += 1
+			elif self.arr_quadruples[pointer][0] == 'write':
+				try:
+					if type(self.arr_quadruples[pointer][3]) is str:
+						value_memory = self.local_memory.get_value(self.arr_quadruples[pointer][3])
+					else:
+						value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
+					
+					self.output_array.append(value_memory)
+					pointer += 1
+					counter += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 
 			elif self.arr_quadruples[pointer][0] == 'and':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value and right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value and right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 
 			elif self.arr_quadruples[pointer][0] == 'or':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value or right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value or right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 
 			elif self.arr_quadruples[pointer][0] == '>':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value > right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value > right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 
 			elif self.arr_quadruples[pointer][0] == '<':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value < right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value < right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 
 			elif self.arr_quadruples[pointer][0] == '>=':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value >= right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
-				
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value >= right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
+
 			elif self.arr_quadruples[pointer][0] == '<=':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value <= right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value <= right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 				
 			elif self.arr_quadruples[pointer][0] == '<>':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value != right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value != right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 				
 			elif self.arr_quadruples[pointer][0] == '==':
-				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				result = left_value == right_value
-				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
-				pointer += 1
+				try:
+					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
+					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
+					result = left_value == right_value
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], result)
+					pointer += 1
+				except:
+					raise Exception("ERROR: Variable sin valor")
 
 			elif self.arr_quadruples[pointer][0] == 'GOTO':
 				next_quadruple = self.arr_quadruples[pointer][3]
@@ -303,7 +347,6 @@ class MemoryMap:
 			self.type_char[function_name] = {
 				'value': value
 			}
-
 
 	def get_value(self, memory_dir):
 		if (type(memory_dir) == str):
