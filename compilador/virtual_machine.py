@@ -87,6 +87,7 @@ class VirtualMachine:
 					value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
 				
 				self.output_array.append(value_memory)
+				print(value_memory)
 				pointer += 1
 				counter += 1
 
@@ -213,8 +214,8 @@ class VirtualMachine:
 				pointer += 1
 			elif self.arr_quadruples[pointer][0] == 'Verify':
 				value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
-				inf = self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
-				superior = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
+				inf = self.arr_quadruples[pointer][2]
+				superior = self.arr_quadruples[pointer][3]
 				if (value >= inf) and (value < superior):
 					pointer += 1
 				else:

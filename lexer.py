@@ -107,10 +107,9 @@ def t_CTE_I(t):
 	return t
 
 def t_CTE_CHAR(t):
-	r'[a-zA-Z]'
+	r'\'[-!#$%&*+/0-9=¿?A-Z^_`a-z{|}~]\''
 	t.value=str(t.value)
 	return t
-
 
 def t_error(t):
 	print("Illegal characters", t)
@@ -175,7 +174,7 @@ def p_punto_generator(p):
 	virtualMachine = VirtualMachine(arr_quadruples,semantic_var._global)
 	virtualMachine.execute()
 	output_array = virtualMachine.output_array
-		
+	print(stack_operands, "acaba")
 	for index, value in enumerate(arr_quadruples):
 		print(index, value, file=open("output_quadruples-1.txt", "a"))
 	semantic_var.remove_local_function(scope)
@@ -267,10 +266,11 @@ def p_dec_varaux(p):
 	'''
 	p[0] = p[1]
 
+
 def p_dec_var_dimension(p):
 	'''
-	dec_var_dimension : ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR 
-						| ID LEFT_BR punto_is_array CTE_I punto_size  RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+	dec_var_dimension : ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR 
+						| ID LEFT_BR punto_is_array m_exp punto_size  RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
 	'''	
 	p[0] = p[1]
 
@@ -405,9 +405,9 @@ def p_punto_id_func(p):
 	elif p[-3] == 'int':
 		semantic_var.declare_function(p[-1],1, len(arr_quadruples))
 	elif p[-3] == 'char':
-		semantic_var.declare_function(p[-1], 2, len(arr_quadruples))
-	elif p[-3] == 'float':
 		semantic_var.declare_function(p[-1], 3, len(arr_quadruples))
+	elif p[-3] == 'float':
+		semantic_var.declare_function(p[-1], 2, len(arr_quadruples))
 	
 	
 def p_parametros(p):
@@ -432,9 +432,9 @@ def p_punto_push_param(p):
 	if p[-2] == 'int':
 		param_type = 1
 	elif p[-2] == 'char':
-		param_type = 2
-	elif p[-2] == 'float':
 		param_type = 3
+	elif p[-2] == 'float':
+		param_type = 2
 	
 	var_memory= memory.get_value_memory(param_type,scope,False,False)
 	semantic_var.add_variables(param_type, scope, 'param',p[-1],None,var_memory,0)
@@ -880,11 +880,10 @@ def p_punto_access_arr(p):
 	if var_type == 1:
 		stack_type.append(var_type)
 		stack_operands.append(var)
-		print("stack_oper", stack_operators, "punto access")
-		print("stack operandos", stack_operands)
-		#elemento  al que  quiero accesar
+		print(var, "punto access")
+		
 	else:
-		raise Exception("ERROR: Sólo se aceptan enteros")
+		raise Exception("ERROR: Sólo se aceptan enteros como indices")
 		
 def p_punto_verify_arr(p):
 	'''
@@ -897,14 +896,12 @@ def p_punto_verify_arr(p):
 	total_size = stack_dimensions.pop() #dimension total del array
 	
 	value = semantic_var.get_value_variable(scope,access)
-	
-	if (value < total_size and value >=0):
-		q =Quadruple('Verify',access,0,total_size) # verificar tamaño
-		arr_quadruples.append(q.get_quadruple())
-		print("stack_oper", stack_operators, "verify")
-		print("stack operandos", stack_operands)
-	else:
-		raise Exception("ERROR: Out of bounds")
+
+	q =Quadruple('Verify',access,0,total_size) # verificar tamaño
+	arr_quadruples.append(q.get_quadruple())
+	print("stack_oper", stack_operators, "verify")
+	print("stack operandos", stack_operands)
+
 def p_punto_direccion_arr(p):
 	'''
 	punto_direccion_arr :
@@ -912,6 +909,7 @@ def p_punto_direccion_arr(p):
 	global stack_operands, arr_quadruples
 	value = stack_operands.pop() #aux1
 	value_type = stack_type.pop()
+	print(value, "direcccion arr 1")
 	temp = memory.get_value_memory(value_type,scope,True,False)  #ti
 	k= memory.get_value_memory(1, scope, False, True)# siempre 0
 	semantic_var.add_constant_variables(1, scope, 'const_variable', 0, k, 0)
@@ -924,7 +922,7 @@ def p_punto_direccion_arr(p):
 	q2= Quadruple('&', temp,p[-8], temp_n)
 	arr_quadruples.append(q2.get_quadruple())
 	stack_operands.append('(' + str(temp_n) + ')')
-	print("stack operands", stack_operands, "es punto direccion")
+	print("stack operands", temp_n, "es punto direccion")
 
 	
 def p_punto_asignacion_var(p):
@@ -938,6 +936,7 @@ def p_punto_asignacion_var(p):
 	if var_id != None:
 		stack_operands.append(var_id)
 		stack_type.append(type_id)
+		print(var_id, "punto asignacion 1")
 	p[0] = var_id
 	print("stack_oper", stack_operators, "es punto de asignacion", p[-1])
 	print("stackoperand", stack_operands)
@@ -1396,6 +1395,7 @@ def p_factor_char_push(p):
 	global stack_operands, stack_type
 	if p[-1] != None:
 		memory_dir_p1 = memory.get_value_memory(3, scope, True, True)
+		print(memory_dir_p1, "memoria en char")
 		semantic_var.add_constant_variables(3, 'global', 'const_variable', p[-1], memory_dir_p1, 0)
 		stack_operands.append(memory_dir_p1)
 		stack_type.append(3)

@@ -33,8 +33,8 @@ Rule 21    declaracion_inicial -> dec_varaux punto_dec_var_1
 Rule 22    punto_dec_var_1 -> <empty>
 Rule 23    dec_varaux -> ID
 Rule 24    dec_varaux -> dec_var_dimension
-Rule 25    dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR
-Rule 26    dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+Rule 25    dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR
+Rule 26    dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
 Rule 27    punto_is_array -> <empty>
 Rule 28    punto_size -> <empty>
 Rule 29    punto_dec_varaux_1 -> <empty>
@@ -180,7 +180,7 @@ CHAR                 : 19
 COLON                : 2 3 4 5 15 16
 COMMA                : 20 30 32 47 128 135 136
 CTE_CHAR             : 158
-CTE_I                : 1 1 25 26 26 156
+CTE_I                : 1 1 156
 DIFFERENT            : 91
 DIVIDE               : 78
 DO                   : 
@@ -259,7 +259,7 @@ g_exp                : 59 60
 lectura              : 99
 lectura_var          : 127 128
 llamada              : 98
-m_exp                : 32 33 64 65 65 71 72 85 107 109 124 134 136 147 147
+m_exp                : 25 26 26 32 33 64 65 65 71 72 85 107 109 124 134 136 147 147
 m_exp_aux            : 69
 main                 : 2 3 4 5
 main_aux             : 7
@@ -717,8 +717,8 @@ state 34
     (21) declaracion_inicial -> . dec_varaux punto_dec_var_1
     (23) dec_varaux -> . ID
     (24) dec_varaux -> . dec_var_dimension
-    (25) dec_var_dimension -> . ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR
-    (26) dec_var_dimension -> . ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+    (25) dec_var_dimension -> . ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR
+    (26) dec_var_dimension -> . ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
 
     ID              shift and go to state 40
 
@@ -816,8 +816,8 @@ state 39
 state 40
 
     (23) dec_varaux -> ID .
-    (25) dec_var_dimension -> ID . LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR
-    (26) dec_var_dimension -> ID . LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+    (25) dec_var_dimension -> ID . LEFT_BR punto_is_array m_exp punto_size RIGHT_BR
+    (26) dec_var_dimension -> ID . LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
 
     COMMA           reduce using rule 23 (dec_varaux -> ID .)
     MORE            reduce using rule 23 (dec_varaux -> ID .)
@@ -1077,11 +1077,14 @@ state 64
 
 state 65
 
-    (25) dec_var_dimension -> ID LEFT_BR . punto_is_array CTE_I punto_size RIGHT_BR
-    (26) dec_var_dimension -> ID LEFT_BR . punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+    (25) dec_var_dimension -> ID LEFT_BR . punto_is_array m_exp punto_size RIGHT_BR
+    (26) dec_var_dimension -> ID LEFT_BR . punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
     (27) punto_is_array -> .
 
+    LEFT_PAR        reduce using rule 27 (punto_is_array -> .)
+    ID              reduce using rule 27 (punto_is_array -> .)
     CTE_I           reduce using rule 27 (punto_is_array -> .)
+    CTE_CHAR        reduce using rule 27 (punto_is_array -> .)
 
     punto_is_array                 shift and go to state 90
 
@@ -1376,8 +1379,8 @@ state 89
     (21) declaracion_inicial -> . dec_varaux punto_dec_var_1
     (23) dec_varaux -> . ID
     (24) dec_varaux -> . dec_var_dimension
-    (25) dec_var_dimension -> . ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR
-    (26) dec_var_dimension -> . ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+    (25) dec_var_dimension -> . ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR
+    (26) dec_var_dimension -> . ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
 
     ID              shift and go to state 40
 
@@ -1387,11 +1390,33 @@ state 89
 
 state 90
 
-    (25) dec_var_dimension -> ID LEFT_BR punto_is_array . CTE_I punto_size RIGHT_BR
-    (26) dec_var_dimension -> ID LEFT_BR punto_is_array . CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+    (25) dec_var_dimension -> ID LEFT_BR punto_is_array . m_exp punto_size RIGHT_BR
+    (26) dec_var_dimension -> ID LEFT_BR punto_is_array . m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
+    (68) m_exp -> . termino punto_mexp_pop
+    (69) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (74) termino -> . factor punto_termino_pop
+    (75) termino -> . factor punto_termino_pop termino_aux
+    (80) factor -> . cte
+    (81) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (82) factor -> . ID factor_push_operand
+    (83) factor -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (84) factor -> . ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada
+    (85) factor -> . ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr
+    (156) cte -> . CTE_I factor_int_push
+    (157) cte -> . cte_f factor_float_push
+    (158) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
 
-    CTE_I           shift and go to state 119
+    LEFT_PAR        shift and go to state 104
+    ID              shift and go to state 112
+    CTE_I           shift and go to state 113
+    CTE_CHAR        shift and go to state 115
 
+    m_exp                          shift and go to state 119
+    termino                        shift and go to state 109
+    factor                         shift and go to state 110
+    cte                            shift and go to state 111
+    cte_f                          shift and go to state 114
 
 state 91
 
@@ -1637,9 +1662,9 @@ state 109
     AND             reduce using rule 70 (punto_mexp_pop -> .)
     OR              reduce using rule 70 (punto_mexp_pop -> .)
     RIGHT_PAR       reduce using rule 70 (punto_mexp_pop -> .)
+    RIGHT_BR        reduce using rule 70 (punto_mexp_pop -> .)
     SEMICOLON       reduce using rule 70 (punto_mexp_pop -> .)
     COMMA           reduce using rule 70 (punto_mexp_pop -> .)
-    RIGHT_BR        reduce using rule 70 (punto_mexp_pop -> .)
     TO              reduce using rule 70 (punto_mexp_pop -> .)
 
     punto_mexp_pop                 shift and go to state 143
@@ -1663,9 +1688,9 @@ state 110
     AND             reduce using rule 76 (punto_termino_pop -> .)
     OR              reduce using rule 76 (punto_termino_pop -> .)
     RIGHT_PAR       reduce using rule 76 (punto_termino_pop -> .)
+    RIGHT_BR        reduce using rule 76 (punto_termino_pop -> .)
     SEMICOLON       reduce using rule 76 (punto_termino_pop -> .)
     COMMA           reduce using rule 76 (punto_termino_pop -> .)
-    RIGHT_BR        reduce using rule 76 (punto_termino_pop -> .)
     TO              reduce using rule 76 (punto_termino_pop -> .)
 
     punto_termino_pop              shift and go to state 144
@@ -1687,9 +1712,9 @@ state 111
     AND             reduce using rule 80 (factor -> cte .)
     OR              reduce using rule 80 (factor -> cte .)
     RIGHT_PAR       reduce using rule 80 (factor -> cte .)
+    RIGHT_BR        reduce using rule 80 (factor -> cte .)
     SEMICOLON       reduce using rule 80 (factor -> cte .)
     COMMA           reduce using rule 80 (factor -> cte .)
-    RIGHT_BR        reduce using rule 80 (factor -> cte .)
     TO              reduce using rule 80 (factor -> cte .)
 
 
@@ -1716,9 +1741,9 @@ state 112
     AND             reduce using rule 159 (factor_push_operand -> .)
     OR              reduce using rule 159 (factor_push_operand -> .)
     RIGHT_PAR       reduce using rule 159 (factor_push_operand -> .)
+    RIGHT_BR        reduce using rule 159 (factor_push_operand -> .)
     SEMICOLON       reduce using rule 159 (factor_push_operand -> .)
     COMMA           reduce using rule 159 (factor_push_operand -> .)
-    RIGHT_BR        reduce using rule 159 (factor_push_operand -> .)
     TO              reduce using rule 159 (factor_push_operand -> .)
     LEFT_PAR        reduce using rule 120 (punto_verify_id -> .)
     LEFT_BR         reduce using rule 115 (punto_asignacion_var -> .)
@@ -1747,9 +1772,9 @@ state 113
     AND             reduce using rule 161 (factor_int_push -> .)
     OR              reduce using rule 161 (factor_int_push -> .)
     RIGHT_PAR       reduce using rule 161 (factor_int_push -> .)
+    RIGHT_BR        reduce using rule 161 (factor_int_push -> .)
     SEMICOLON       reduce using rule 161 (factor_int_push -> .)
     COMMA           reduce using rule 161 (factor_int_push -> .)
-    RIGHT_BR        reduce using rule 161 (factor_int_push -> .)
     TO              reduce using rule 161 (factor_int_push -> .)
 
     factor_int_push                shift and go to state 148
@@ -1772,9 +1797,9 @@ state 114
     AND             reduce using rule 160 (factor_float_push -> .)
     OR              reduce using rule 160 (factor_float_push -> .)
     RIGHT_PAR       reduce using rule 160 (factor_float_push -> .)
+    RIGHT_BR        reduce using rule 160 (factor_float_push -> .)
     SEMICOLON       reduce using rule 160 (factor_float_push -> .)
     COMMA           reduce using rule 160 (factor_float_push -> .)
-    RIGHT_BR        reduce using rule 160 (factor_float_push -> .)
     TO              reduce using rule 160 (factor_float_push -> .)
 
     factor_float_push              shift and go to state 150
@@ -1797,9 +1822,9 @@ state 115
     AND             reduce using rule 162 (factor_char_push -> .)
     OR              reduce using rule 162 (factor_char_push -> .)
     RIGHT_PAR       reduce using rule 162 (factor_char_push -> .)
+    RIGHT_BR        reduce using rule 162 (factor_char_push -> .)
     SEMICOLON       reduce using rule 162 (factor_char_push -> .)
     COMMA           reduce using rule 162 (factor_char_push -> .)
-    RIGHT_BR        reduce using rule 162 (factor_char_push -> .)
     TO              reduce using rule 162 (factor_char_push -> .)
 
     factor_char_push               shift and go to state 151
@@ -1861,8 +1886,8 @@ state 118
 
 state 119
 
-    (25) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I . punto_size RIGHT_BR
-    (26) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I . punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+    (25) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp . punto_size RIGHT_BR
+    (26) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp . punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
     (28) punto_size -> .
 
     RIGHT_BR        reduce using rule 28 (punto_size -> .)
@@ -2174,9 +2199,9 @@ state 143
     AND             reduce using rule 68 (m_exp -> termino punto_mexp_pop .)
     OR              reduce using rule 68 (m_exp -> termino punto_mexp_pop .)
     RIGHT_PAR       reduce using rule 68 (m_exp -> termino punto_mexp_pop .)
+    RIGHT_BR        reduce using rule 68 (m_exp -> termino punto_mexp_pop .)
     SEMICOLON       reduce using rule 68 (m_exp -> termino punto_mexp_pop .)
     COMMA           reduce using rule 68 (m_exp -> termino punto_mexp_pop .)
-    RIGHT_BR        reduce using rule 68 (m_exp -> termino punto_mexp_pop .)
     TO              reduce using rule 68 (m_exp -> termino punto_mexp_pop .)
     PLUS            shift and go to state 175
     MINUS           shift and go to state 176
@@ -2201,9 +2226,9 @@ state 144
     AND             reduce using rule 74 (termino -> factor punto_termino_pop .)
     OR              reduce using rule 74 (termino -> factor punto_termino_pop .)
     RIGHT_PAR       reduce using rule 74 (termino -> factor punto_termino_pop .)
+    RIGHT_BR        reduce using rule 74 (termino -> factor punto_termino_pop .)
     SEMICOLON       reduce using rule 74 (termino -> factor punto_termino_pop .)
     COMMA           reduce using rule 74 (termino -> factor punto_termino_pop .)
-    RIGHT_BR        reduce using rule 74 (termino -> factor punto_termino_pop .)
     TO              reduce using rule 74 (termino -> factor punto_termino_pop .)
     MULTIPLY        shift and go to state 178
     DIVIDE          shift and go to state 179
@@ -2227,9 +2252,9 @@ state 145
     AND             reduce using rule 82 (factor -> ID factor_push_operand .)
     OR              reduce using rule 82 (factor -> ID factor_push_operand .)
     RIGHT_PAR       reduce using rule 82 (factor -> ID factor_push_operand .)
+    RIGHT_BR        reduce using rule 82 (factor -> ID factor_push_operand .)
     SEMICOLON       reduce using rule 82 (factor -> ID factor_push_operand .)
     COMMA           reduce using rule 82 (factor -> ID factor_push_operand .)
-    RIGHT_BR        reduce using rule 82 (factor -> ID factor_push_operand .)
     TO              reduce using rule 82 (factor -> ID factor_push_operand .)
 
 
@@ -2267,9 +2292,9 @@ state 148
     AND             reduce using rule 156 (cte -> CTE_I factor_int_push .)
     OR              reduce using rule 156 (cte -> CTE_I factor_int_push .)
     RIGHT_PAR       reduce using rule 156 (cte -> CTE_I factor_int_push .)
+    RIGHT_BR        reduce using rule 156 (cte -> CTE_I factor_int_push .)
     SEMICOLON       reduce using rule 156 (cte -> CTE_I factor_int_push .)
     COMMA           reduce using rule 156 (cte -> CTE_I factor_int_push .)
-    RIGHT_BR        reduce using rule 156 (cte -> CTE_I factor_int_push .)
     TO              reduce using rule 156 (cte -> CTE_I factor_int_push .)
 
 
@@ -2297,9 +2322,9 @@ state 150
     AND             reduce using rule 157 (cte -> cte_f factor_float_push .)
     OR              reduce using rule 157 (cte -> cte_f factor_float_push .)
     RIGHT_PAR       reduce using rule 157 (cte -> cte_f factor_float_push .)
+    RIGHT_BR        reduce using rule 157 (cte -> cte_f factor_float_push .)
     SEMICOLON       reduce using rule 157 (cte -> cte_f factor_float_push .)
     COMMA           reduce using rule 157 (cte -> cte_f factor_float_push .)
-    RIGHT_BR        reduce using rule 157 (cte -> cte_f factor_float_push .)
     TO              reduce using rule 157 (cte -> cte_f factor_float_push .)
 
 
@@ -2320,9 +2345,9 @@ state 151
     AND             reduce using rule 158 (cte -> CTE_CHAR factor_char_push .)
     OR              reduce using rule 158 (cte -> CTE_CHAR factor_char_push .)
     RIGHT_PAR       reduce using rule 158 (cte -> CTE_CHAR factor_char_push .)
+    RIGHT_BR        reduce using rule 158 (cte -> CTE_CHAR factor_char_push .)
     SEMICOLON       reduce using rule 158 (cte -> CTE_CHAR factor_char_push .)
     COMMA           reduce using rule 158 (cte -> CTE_CHAR factor_char_push .)
-    RIGHT_BR        reduce using rule 158 (cte -> CTE_CHAR factor_char_push .)
     TO              reduce using rule 158 (cte -> CTE_CHAR factor_char_push .)
 
 
@@ -2342,8 +2367,8 @@ state 153
 
 state 154
 
-    (25) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size . RIGHT_BR
-    (26) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size . RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR
+    (25) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size . RIGHT_BR
+    (26) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size . RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR
 
     RIGHT_BR        shift and go to state 185
 
@@ -2605,9 +2630,9 @@ state 174
     AND             reduce using rule 69 (m_exp -> termino punto_mexp_pop m_exp_aux .)
     OR              reduce using rule 69 (m_exp -> termino punto_mexp_pop m_exp_aux .)
     RIGHT_PAR       reduce using rule 69 (m_exp -> termino punto_mexp_pop m_exp_aux .)
+    RIGHT_BR        reduce using rule 69 (m_exp -> termino punto_mexp_pop m_exp_aux .)
     SEMICOLON       reduce using rule 69 (m_exp -> termino punto_mexp_pop m_exp_aux .)
     COMMA           reduce using rule 69 (m_exp -> termino punto_mexp_pop m_exp_aux .)
-    RIGHT_BR        reduce using rule 69 (m_exp -> termino punto_mexp_pop m_exp_aux .)
     TO              reduce using rule 69 (m_exp -> termino punto_mexp_pop m_exp_aux .)
 
 
@@ -2650,9 +2675,9 @@ state 177
     AND             reduce using rule 75 (termino -> factor punto_termino_pop termino_aux .)
     OR              reduce using rule 75 (termino -> factor punto_termino_pop termino_aux .)
     RIGHT_PAR       reduce using rule 75 (termino -> factor punto_termino_pop termino_aux .)
+    RIGHT_BR        reduce using rule 75 (termino -> factor punto_termino_pop termino_aux .)
     SEMICOLON       reduce using rule 75 (termino -> factor punto_termino_pop termino_aux .)
     COMMA           reduce using rule 75 (termino -> factor punto_termino_pop termino_aux .)
-    RIGHT_BR        reduce using rule 75 (termino -> factor punto_termino_pop termino_aux .)
     TO              reduce using rule 75 (termino -> factor punto_termino_pop termino_aux .)
 
 
@@ -2718,9 +2743,9 @@ state 182
     AND             reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
     OR              reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
     RIGHT_PAR       reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
+    RIGHT_BR        reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
     SEMICOLON       reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
     COMMA           reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
-    RIGHT_BR        reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
     TO              reduce using rule 1 (cte_f -> CTE_I DOT CTE_I .)
 
 
@@ -2764,12 +2789,12 @@ state 184
 
 state 185
 
-    (25) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR .
-    (26) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR . LEFT_BR CTE_I punto_size RIGHT_BR
+    (25) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR .
+    (26) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR . LEFT_BR m_exp punto_size RIGHT_BR
 
-    COMMA           reduce using rule 25 (dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR .)
-    MORE            reduce using rule 25 (dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR .)
-    SEMICOLON       reduce using rule 25 (dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR .)
+    COMMA           reduce using rule 25 (dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR .)
+    MORE            reduce using rule 25 (dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR .)
+    SEMICOLON       reduce using rule 25 (dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR .)
     LEFT_BR         shift and go to state 209
 
 
@@ -2965,9 +2990,9 @@ state 196
     AND             reduce using rule 88 (punto_fin_fondo_falso -> .)
     OR              reduce using rule 88 (punto_fin_fondo_falso -> .)
     RIGHT_PAR       reduce using rule 88 (punto_fin_fondo_falso -> .)
+    RIGHT_BR        reduce using rule 88 (punto_fin_fondo_falso -> .)
     SEMICOLON       reduce using rule 88 (punto_fin_fondo_falso -> .)
     COMMA           reduce using rule 88 (punto_fin_fondo_falso -> .)
-    RIGHT_BR        reduce using rule 88 (punto_fin_fondo_falso -> .)
     TO              reduce using rule 88 (punto_fin_fondo_falso -> .)
 
     punto_fin_fondo_falso          shift and go to state 222
@@ -3261,10 +3286,32 @@ state 208
 
 state 209
 
-    (26) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR . CTE_I punto_size RIGHT_BR
+    (26) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR . m_exp punto_size RIGHT_BR
+    (68) m_exp -> . termino punto_mexp_pop
+    (69) m_exp -> . termino punto_mexp_pop m_exp_aux
+    (74) termino -> . factor punto_termino_pop
+    (75) termino -> . factor punto_termino_pop termino_aux
+    (80) factor -> . cte
+    (81) factor -> . LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
+    (82) factor -> . ID factor_push_operand
+    (83) factor -> . ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+    (84) factor -> . ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada
+    (85) factor -> . ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr
+    (156) cte -> . CTE_I factor_int_push
+    (157) cte -> . cte_f factor_float_push
+    (158) cte -> . CTE_CHAR factor_char_push
+    (1) cte_f -> . CTE_I DOT CTE_I
 
-    CTE_I           shift and go to state 236
+    LEFT_PAR        shift and go to state 104
+    ID              shift and go to state 112
+    CTE_I           shift and go to state 113
+    CTE_CHAR        shift and go to state 115
 
+    m_exp                          shift and go to state 236
+    termino                        shift and go to state 109
+    factor                         shift and go to state 110
+    cte                            shift and go to state 111
+    cte_f                          shift and go to state 114
 
 state 210
 
@@ -3448,9 +3495,9 @@ state 222
     AND             reduce using rule 81 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
     OR              reduce using rule 81 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
     RIGHT_PAR       reduce using rule 81 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
+    RIGHT_BR        reduce using rule 81 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
     SEMICOLON       reduce using rule 81 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
     COMMA           reduce using rule 81 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
-    RIGHT_BR        reduce using rule 81 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
     TO              reduce using rule 81 (factor -> LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso .)
 
 
@@ -3499,9 +3546,9 @@ state 227
     AND             reduce using rule 71 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
     OR              reduce using rule 71 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
     RIGHT_PAR       reduce using rule 71 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
+    RIGHT_BR        reduce using rule 71 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
     SEMICOLON       reduce using rule 71 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
     COMMA           reduce using rule 71 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
-    RIGHT_BR        reduce using rule 71 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
     TO              reduce using rule 71 (m_exp_aux -> PLUS punto_m_exp_push m_exp .)
 
 
@@ -3518,9 +3565,9 @@ state 228
     AND             reduce using rule 72 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
     OR              reduce using rule 72 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
     RIGHT_PAR       reduce using rule 72 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
+    RIGHT_BR        reduce using rule 72 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
     SEMICOLON       reduce using rule 72 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
     COMMA           reduce using rule 72 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
-    RIGHT_BR        reduce using rule 72 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
     TO              reduce using rule 72 (m_exp_aux -> MINUS punto_m_exp_push m_exp .)
 
 
@@ -3539,9 +3586,9 @@ state 229
     AND             reduce using rule 77 (termino_aux -> MULTIPLY punto_termino_aux termino .)
     OR              reduce using rule 77 (termino_aux -> MULTIPLY punto_termino_aux termino .)
     RIGHT_PAR       reduce using rule 77 (termino_aux -> MULTIPLY punto_termino_aux termino .)
+    RIGHT_BR        reduce using rule 77 (termino_aux -> MULTIPLY punto_termino_aux termino .)
     SEMICOLON       reduce using rule 77 (termino_aux -> MULTIPLY punto_termino_aux termino .)
     COMMA           reduce using rule 77 (termino_aux -> MULTIPLY punto_termino_aux termino .)
-    RIGHT_BR        reduce using rule 77 (termino_aux -> MULTIPLY punto_termino_aux termino .)
     TO              reduce using rule 77 (termino_aux -> MULTIPLY punto_termino_aux termino .)
 
 
@@ -3560,9 +3607,9 @@ state 230
     AND             reduce using rule 78 (termino_aux -> DIVIDE punto_termino_aux termino .)
     OR              reduce using rule 78 (termino_aux -> DIVIDE punto_termino_aux termino .)
     RIGHT_PAR       reduce using rule 78 (termino_aux -> DIVIDE punto_termino_aux termino .)
+    RIGHT_BR        reduce using rule 78 (termino_aux -> DIVIDE punto_termino_aux termino .)
     SEMICOLON       reduce using rule 78 (termino_aux -> DIVIDE punto_termino_aux termino .)
     COMMA           reduce using rule 78 (termino_aux -> DIVIDE punto_termino_aux termino .)
-    RIGHT_BR        reduce using rule 78 (termino_aux -> DIVIDE punto_termino_aux termino .)
     TO              reduce using rule 78 (termino_aux -> DIVIDE punto_termino_aux termino .)
 
 
@@ -3584,9 +3631,9 @@ state 231
     AND             reduce using rule 122 (punto_end_llamada -> .)
     OR              reduce using rule 122 (punto_end_llamada -> .)
     RIGHT_PAR       reduce using rule 122 (punto_end_llamada -> .)
+    RIGHT_BR        reduce using rule 122 (punto_end_llamada -> .)
     SEMICOLON       reduce using rule 122 (punto_end_llamada -> .)
     COMMA           reduce using rule 122 (punto_end_llamada -> .)
-    RIGHT_BR        reduce using rule 122 (punto_end_llamada -> .)
     TO              reduce using rule 122 (punto_end_llamada -> .)
 
     punto_end_llamada              shift and go to state 249
@@ -3711,7 +3758,7 @@ state 235
 
 state 236
 
-    (26) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I . punto_size RIGHT_BR
+    (26) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp . punto_size RIGHT_BR
     (28) punto_size -> .
 
     RIGHT_BR        reduce using rule 28 (punto_size -> .)
@@ -3882,9 +3929,9 @@ state 249
     AND             reduce using rule 83 (factor -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
     OR              reduce using rule 83 (factor -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
     RIGHT_PAR       reduce using rule 83 (factor -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
+    RIGHT_BR        reduce using rule 83 (factor -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
     SEMICOLON       reduce using rule 83 (factor -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
     COMMA           reduce using rule 83 (factor -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
-    RIGHT_BR        reduce using rule 83 (factor -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
     TO              reduce using rule 83 (factor -> ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada .)
 
 
@@ -3942,7 +3989,7 @@ state 253
 
 state 254
 
-    (26) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size . RIGHT_BR
+    (26) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size . RIGHT_BR
 
     RIGHT_BR        shift and go to state 266
 
@@ -4026,9 +4073,9 @@ state 262
     AND             reduce using rule 86 (punto_saca_fondo_falso -> .)
     OR              reduce using rule 86 (punto_saca_fondo_falso -> .)
     RIGHT_PAR       reduce using rule 86 (punto_saca_fondo_falso -> .)
+    RIGHT_BR        reduce using rule 86 (punto_saca_fondo_falso -> .)
     SEMICOLON       reduce using rule 86 (punto_saca_fondo_falso -> .)
     COMMA           reduce using rule 86 (punto_saca_fondo_falso -> .)
-    RIGHT_BR        reduce using rule 86 (punto_saca_fondo_falso -> .)
     TO              reduce using rule 86 (punto_saca_fondo_falso -> .)
 
     punto_saca_fondo_falso         shift and go to state 270
@@ -4062,11 +4109,11 @@ state 265
 
 state 266
 
-    (26) dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR .
+    (26) dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR .
 
-    COMMA           reduce using rule 26 (dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR .)
-    MORE            reduce using rule 26 (dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR .)
-    SEMICOLON       reduce using rule 26 (dec_var_dimension -> ID LEFT_BR punto_is_array CTE_I punto_size RIGHT_BR LEFT_BR CTE_I punto_size RIGHT_BR .)
+    COMMA           reduce using rule 26 (dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR .)
+    MORE            reduce using rule 26 (dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR .)
+    SEMICOLON       reduce using rule 26 (dec_var_dimension -> ID LEFT_BR punto_is_array m_exp punto_size RIGHT_BR LEFT_BR m_exp punto_size RIGHT_BR .)
 
 
 state 267
@@ -4110,9 +4157,9 @@ state 270
     AND             reduce using rule 121 (punto_verify_total_params -> .)
     OR              reduce using rule 121 (punto_verify_total_params -> .)
     RIGHT_PAR       reduce using rule 121 (punto_verify_total_params -> .)
+    RIGHT_BR        reduce using rule 121 (punto_verify_total_params -> .)
     SEMICOLON       reduce using rule 121 (punto_verify_total_params -> .)
     COMMA           reduce using rule 121 (punto_verify_total_params -> .)
-    RIGHT_BR        reduce using rule 121 (punto_verify_total_params -> .)
     TO              reduce using rule 121 (punto_verify_total_params -> .)
 
     punto_verify_total_params      shift and go to state 276
@@ -4213,9 +4260,9 @@ state 276
     AND             reduce using rule 122 (punto_end_llamada -> .)
     OR              reduce using rule 122 (punto_end_llamada -> .)
     RIGHT_PAR       reduce using rule 122 (punto_end_llamada -> .)
+    RIGHT_BR        reduce using rule 122 (punto_end_llamada -> .)
     SEMICOLON       reduce using rule 122 (punto_end_llamada -> .)
     COMMA           reduce using rule 122 (punto_end_llamada -> .)
-    RIGHT_BR        reduce using rule 122 (punto_end_llamada -> .)
     TO              reduce using rule 122 (punto_end_llamada -> .)
 
     punto_end_llamada              shift and go to state 280
@@ -4238,9 +4285,9 @@ state 277
     AND             reduce using rule 114 (punto_direccion_arr -> .)
     OR              reduce using rule 114 (punto_direccion_arr -> .)
     RIGHT_PAR       reduce using rule 114 (punto_direccion_arr -> .)
+    RIGHT_BR        reduce using rule 114 (punto_direccion_arr -> .)
     SEMICOLON       reduce using rule 114 (punto_direccion_arr -> .)
     COMMA           reduce using rule 114 (punto_direccion_arr -> .)
-    RIGHT_BR        reduce using rule 114 (punto_direccion_arr -> .)
     TO              reduce using rule 114 (punto_direccion_arr -> .)
 
     punto_direccion_arr            shift and go to state 281
@@ -4276,9 +4323,9 @@ state 280
     AND             reduce using rule 84 (factor -> ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada .)
     OR              reduce using rule 84 (factor -> ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada .)
     RIGHT_PAR       reduce using rule 84 (factor -> ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada .)
+    RIGHT_BR        reduce using rule 84 (factor -> ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada .)
     SEMICOLON       reduce using rule 84 (factor -> ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada .)
     COMMA           reduce using rule 84 (factor -> ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada .)
-    RIGHT_BR        reduce using rule 84 (factor -> ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada .)
     TO              reduce using rule 84 (factor -> ID punto_verify_id LEFT_PAR punto_era punto_fondo_falso dec_var_llamada RIGHT_PAR punto_saca_fondo_falso punto_verify_total_params punto_end_llamada .)
 
 
@@ -4299,9 +4346,9 @@ state 281
     AND             reduce using rule 85 (factor -> ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr .)
     OR              reduce using rule 85 (factor -> ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr .)
     RIGHT_PAR       reduce using rule 85 (factor -> ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr .)
+    RIGHT_BR        reduce using rule 85 (factor -> ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr .)
     SEMICOLON       reduce using rule 85 (factor -> ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr .)
     COMMA           reduce using rule 85 (factor -> ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr .)
-    RIGHT_BR        reduce using rule 85 (factor -> ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr .)
     TO              reduce using rule 85 (factor -> ID punto_asignacion_var punto_get_size LEFT_BR punto_fondo_falso m_exp punto_access_arr punto_verify_arr RIGHT_BR punto_direccion_arr .)
 
 
