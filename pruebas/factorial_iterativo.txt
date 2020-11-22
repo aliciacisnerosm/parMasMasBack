@@ -28,3 +28,4 @@ main (){
  x = (factorial(n)) + factorial2(4 + 1 )+ factorial(3);
 write(x);
 }
+

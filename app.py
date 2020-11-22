@@ -10,12 +10,19 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello, World!'
 
-@app.route('/compiler')
+@app.route('/compiler', methods=['GET'])
 def compiler():
     try:
-        return parser()
+
+        print(request.get_json())
+        usr_input = request.args.get("input")
+        file_name = request.args.get("name")
+
+        filename = "pruebas/" + str(file_name) + ".txt"
+        print(file_name)
+        return parser(file_name), 200
     except Exception as e:
-         return {'data': str(e), 'status': 400}
+         return str(e),  400
 
 @app.route('/files', methods=['GET'])
 def get_files():
@@ -48,24 +55,31 @@ def create_File():
         
     return {"data": n}
 
+@app.route('/saveFile', methods=['POST'])
+def save_file():
+    try:
+        print(request.get_json())
+        req_data = request.get_json()
+        file_text = req_data['file']
+        file_name = req_data['name']
 
+        filename = "pruebas/"+str(file_name) + ".txt"
+        print(file_text, file=open(filename, "w"))
+        
+        print(file_text, file_name)
+        return 'Archivo guardado!', 200
+    except:
+        return 'Error: No se pudo guardar el archivo', 400
 
-@app.route('/compiler2')
-def compiler_aux():
-    result = os.system('python lexer.py')
-    if 0 == result:
-        print("funciona")
-        return parser()
-    else:
-        #print("no funciona")
-        return 'hola'
-    # return parser()
+@app.route('/readFile', methods=['GET'])
+def read_file():
+    try:
+        get_name = request.args.get("file", "")
+        name = "{}".format(get_name)
+        print("el nombre del programa es:", name)
+        f = open("pruebas/" + str(name) + ".txt", "r")
+        n = f.read()
 
-# @app.route('/exceptions')
-# def exceptions():
-#     with open('parser.py') as f;
-#     script = f.read()
-#     try:
-#         exec(script)
-#     except EOFError as e:
-#         print('uwu', e)
+        return n
+    except:
+        return 'Error: No se pudo leer el archivo', 400

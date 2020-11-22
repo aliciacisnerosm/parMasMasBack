@@ -1,0 +1,7 @@
+program hola:
+var int a;
+
+main(){
+a = 1;
+write(a);
+}

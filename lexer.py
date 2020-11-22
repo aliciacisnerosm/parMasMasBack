@@ -1414,11 +1414,11 @@ def p_empty(p):
 parser = yacc.yacc()
 
 
-def parser():
+def parser(filename, input=None):
 	try:
-		arch_name = 'prueba-2.txt'
-		this_folder = os.path.dirname(os.path.abspath(__file__))
-		my_file = os.path.join(this_folder, arch_name)
+		arch_name = filename +'.txt'
+		#this_folder = os.path.dirname(os.path.abspath(__file__))
+		my_file = os.path.join('pruebas', arch_name)
 		print(my_file)
 		arch = open(my_file,'r')
 		print("Nombre de archivo " + arch_name)

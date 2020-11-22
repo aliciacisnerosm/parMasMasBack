@@ -86,10 +86,8 @@ class VirtualMachine:
 				else:
 					value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
 				
-				print("write",value_memory)
 				self.output_array.append(value_memory)
 				pointer += 1
-				print(counter, value_memory)
 				counter += 1
 
 			elif self.arr_quadruples[pointer][0] == 'and':
@@ -165,9 +163,6 @@ class VirtualMachine:
 				if(len(self.execution_stack)!=0):
 					self.local_memory = self.execution_stack.pop()  #memory#self.execution_stack[len(self.execution_stack)-1]
 					pointer = self.stack_pointers.pop()
-				#	self.local_memory = self.execution_stack[len(self.execution_stack) - 1]
-				#	print(self.execution_stack)
-				print("--------------------------TERMINA----------------------------------")
 
 			elif self.arr_quadruples[pointer][0] == 'GOTOF':
 				left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
@@ -180,7 +175,6 @@ class VirtualMachine:
 				self.aux_memory = None
 				self.stack_pointers.append(pointer + 1)		# cool
 				pointer = self.arr_quadruples[pointer][3] # cool
-				print(self.execution_stack, "stackkkk" , self.execution_stack[len(self.execution_stack)-1].function_name)
 				print("------------------------EMPIEZA------------------------------------")
 				self.local_memory.add_params(params)
 				params = []
@@ -198,23 +192,17 @@ class VirtualMachine:
 				value_2 = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
 				self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], value)
 				
-				#print(memory.function_name, pointer)
 				print("--------------------------TERMINA RETURN----------------------------------")
 
 				if(len(self.execution_stack)!=0):
 					self.local_memory = self.execution_stack.pop()  #memory#self.execution_stack[len(self.execution_stack)-1]
 					pointer = self.stack_pointers.pop()
-
-				print(self.execution_stack, "stack de ejecucion")
-				print()
-				print("nueva memoria asignada ->", self.local_memory.function_name)
 				
 			elif self.arr_quadruples[pointer][0] == '&':
 
 				value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
 				dir_base = self.arr_quadruples[pointer][2]
 				total = value + dir_base
-				print(total, "MEMORIA REAL / VIRTUAL")
 
 				if type(self.arr_quadruples[pointer][3]) is str:
 					retorna = self.local_memory.get_value(self.arr_quadruples[pointer][3])
@@ -239,10 +227,8 @@ class VirtualMachine:
 
 	def execute(self): 
 		print("-------------------MAQUINA--VIRTUAL-----------------------")
-		print(self.general_dir)
 		self.global_memory.init_global_memory()
 		self.process_quadruples()
-		print(self.execution_stack)
 
 
 class MemoryMap:
@@ -303,31 +289,22 @@ class MemoryMap:
 							'value': self.general_dir['global_var'][i]['value']
 						}
 
-			print(1, self.type_int, file=open("output_global_int.txt", "w"))
-			print(2, self.type_float,file=open("output_global_float.txt", "w"))
-			print(3, self.type_char, file=open("output_global_char.txt", "w"))
-			print(4, self.type_str, file=open("output_global_string.txt", "w"))
-
 	def add_return_value(self, value, return_type, function_name):
 		if return_type == 1:
 			self.type_int[function_name] = {
 				'value': value
 			}
-			print("entra a return value",self.type_int[function_name], "int")
 		elif return_type == 2:
 			self.type_float[function_name] = {
 				'value': value
 			}
-			print("entra a return value",self.type_float[function_name], "float")
 		elif return_type == 3:
 			self.type_char[function_name] = {
 				'value': value
 			}
-			print("entra a return value",self.type_char[function_name], "char")
 
 
 	def get_value(self, memory_dir):
-		print(memory_dir, "get_value")
 		if (type(memory_dir) == str):
 			val = int(memory_dir.replace('(', '').replace(')', ''))
 			return self.get_value(self.get_value(val))
@@ -380,7 +357,6 @@ class MemoryMap:
 		self.type_bool[memory_dir] = {
 			'value': None
 		}
-		print(self.type_bool[memory_dir]['value'], "este es bool - crea")
 		return self.type_bool[memory_dir]['value']
 
 	def new_str(self, memory_dir):
@@ -393,7 +369,6 @@ class MemoryMap:
 		print(memory_dir)
 		if (type(memory_dir) is str):
 			val = int(memory_dir.replace('(', '').replace(')', ''))
-			print("entraal settttt")
 			self.set_value(self.get_value(val), value)
 			pass
 		else:	
@@ -402,20 +377,16 @@ class MemoryMap:
 					self.type_int[memory_dir] = {
 						'value': value
 					}
-					print(self.type_int[memory_dir], "setttt")
 				else:
 					self.type_int[memory_dir]['value'] = value
-					print(self.type_int[memory_dir])
 
 			elif (memory_dir >= 2000 and memory_dir < 3000) or (memory_dir >= 5000 and memory_dir < 6000) or (memory_dir >= 9000 and memory_dir < 10000) or (memory_dir >= 12000 and memory_dir < 13000) or (memory_dir >= 16000 and memory_dir < 17000):
 				if memory_dir not in self.type_int:
 					self.type_float[memory_dir] = {
 						'value': value
 					}
-					print(self.type_float[memory_dir], "setttt")
 				else:
 					self.type_float[memory_dir]['value'] = value
-					print(self.type_float[memory_dir])
 
 			elif (memory_dir >= 10000 and memory_dir < 11000) or (memory_dir >= 13000 and memory_dir < 14000) or ( memory_dir >= 17000 and memory_dir < 18000) or (memory_dir >= 3000 and memory_dir < 4000) or (memory_dir >= 6000 and memory_dir < 7000):
 				if memory_dir not in self.type_char:
@@ -424,7 +395,6 @@ class MemoryMap:
 					}
 				else:
 					self.type_char[memory_dir]['value'] = value
-					print(self.type_char[memory_dir])
 
 			elif (memory_dir>=14000 and memory_dir < 15000):
 				if memory_dir not in self.type_bool:
@@ -433,7 +403,6 @@ class MemoryMap:
 					}
 				else:
 					self.type_bool[memory_dir]['value'] = value
-					print(self.type_bool[memory_dir])
 
 			elif (memory_dir >= 18000 and memory_dir < 19000):
 				if memory_dir not in self.type_str:
@@ -442,7 +411,6 @@ class MemoryMap:
 					}
 				else:
 					self.type_str[memory_dir]['value'] = value
-					print(self.type_str[memory_dir])
 	
 	def add_params(self, params):
 		for index, value in enumerate(params):
