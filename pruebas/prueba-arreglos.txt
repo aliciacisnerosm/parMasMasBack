@@ -11,3 +11,4 @@ main(){
   write(n[9] + n[5] * (n[3] - n[1]));
   write(x);
 }
+

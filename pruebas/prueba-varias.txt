@@ -1,4 +1,4 @@
-program fibonnaciIterativo:
+program prueba_varias:
  var int: n, x;
 int func fib(int n) { 
   var int: a, b, c, i; 
@@ -9,7 +9,7 @@ int func fib(int n) {
     return (a); 
   };
 
-  for (i = 2 to n ) 
+  for (i = 1 to n ) 
   { 
      c = a + b; 
      a = b; 
@@ -19,7 +19,9 @@ int func fib(int n) {
 }
 
 main(){
-  n=10;
-  x= fib(fib(3)) + 1;
+  read(n);
+  x= fib(fib(n));
   write(x);
 }
+
+

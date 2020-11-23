@@ -13,16 +13,15 @@ def hello_world():
 @app.route('/compiler', methods=['GET'])
 def compiler():
     try:
-
-        print(request.get_json())
         usr_input = request.args.get("input")
         file_name = request.args.get("name")
-
-        filename = "pruebas/" + str(file_name) + ".txt"
-       # print(parser(file_name))
-        return parser(file_name), 200
+        print(file_name, "holis")
+        if usr_input == '':
+            return parser(file_name), 200
+        else:
+            return parser(file_name, usr_input), 200
     except Exception as e:
-         return str(e),  400
+        return str(e), 400
 
 @app.route('/files', methods=['GET'])
 def get_files():

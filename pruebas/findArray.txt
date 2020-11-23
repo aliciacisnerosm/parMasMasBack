@@ -1,5 +1,5 @@
 program findArray:
-var int: i,s[10], result;
+var int: n, i,s[10], result;
 
 int func find(int x){
   
@@ -19,7 +19,8 @@ int func find(int x){
 }
 
 main(){
-result = find(20);
+read(n);
+result = find(n);
 if(result == -1){
     write("El valor no se encuentra");
 }

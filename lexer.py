@@ -30,7 +30,7 @@ is_array = False
 array_info = {}
 cont = 1
 output_array = []
-
+input_array = []
 
 stack_operators = deque()
 stack_operands = deque()
@@ -168,9 +168,14 @@ def p_punto_generator(p):
 	'''
 	global arr_quadruples, semantic_var, scope, output_array
 	scope = 'global'
-	virtualMachine = VirtualMachine(arr_quadruples,semantic_var._global)
+	virtualMachine = VirtualMachine(arr_quadruples, semantic_var._global)
+	
+	if len(input_array) != 0:
+		virtualMachine.input_array = input_array
+
 	virtualMachine.execute()
 	output_array = virtualMachine.output_array
+
 	for index, value in enumerate(arr_quadruples):
 		print(index, value, file=open("output_quadruples-1.txt", "a"))
 	semantic_var.remove_local_function(scope)
@@ -1362,15 +1367,17 @@ def p_empty(p):
 parser = yacc.yacc()
 
 
-def parser(filename, input=None):
+def parser(filename, usr_input_a=None):
 	try:
 		arch_name = filename +'.txt'
-		#this_folder = os.path.dirname(os.path.abspath(__file__))
 		my_file = os.path.join('pruebas', arch_name)
 		arch = open(my_file,'r')
 		print("Nombre de archivo " + arch_name)
 		archivo = arch.read()
 		arch.close()
+		global input_array
+		if usr_input_a != None:
+			input_array = usr_input_a.split()
 		yacc.parse(archivo)
 
 		if error: 

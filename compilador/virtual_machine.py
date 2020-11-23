@@ -1,4 +1,5 @@
 from collections import deque
+import re
 from copy import deepcopy,copy
 
 class VirtualMachine:
@@ -12,6 +13,7 @@ class VirtualMachine:
 		self.general_dir = general_dir
 		self.aux_memory = None
 		self.output_array = []
+		self.input_array = []
 
 
 	def get_memory(self, memory_dir):
@@ -22,7 +24,6 @@ class VirtualMachine:
 			return self.global_memory
 
 		elif (memory_dir >= 8000 and memory_dir < 15000) and self.aux_memory == None :
-			print("memoria local", self.local_memory.function_name)
 			return self.local_memory
 		else:
 			if self.aux_memory.get_value(memory_dir) != None:
@@ -34,7 +35,7 @@ class VirtualMachine:
 	def process_quadruples(self):
 		pointer = 0
 		params = []
-		counter = 1
+		counter = 0
 		while (pointer < len(self.arr_quadruples)):
 			print("CUADRUPLO ACTUAL ->>>", self.arr_quadruples[pointer],"->>", pointer)
 			
@@ -93,8 +94,10 @@ class VirtualMachine:
 				
 			elif self.arr_quadruples[pointer][0] == 'read':
 				try:
-					value_memory = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
+					print("read, -> ", self.input_array[counter])
+					self.get_memory(self.arr_quadruples[pointer][3]).set_value(self.arr_quadruples[pointer][3], self.input_array[counter])
 					pointer += 1
+					counter += 1
 				except:
 					raise Exception("ERROR: Variable sin valor")
 				
@@ -107,7 +110,7 @@ class VirtualMachine:
 					
 					self.output_array.append(value_memory)
 					pointer += 1
-					counter += 1
+					print(value_memory, "write")
 				except:
 					raise Exception("ERROR: Variable sin valor")
 
@@ -133,6 +136,7 @@ class VirtualMachine:
 
 			elif self.arr_quadruples[pointer][0] == '>':
 				try:
+					print(self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1]))
 					left_value = self.get_memory(self.arr_quadruples[pointer][1]).get_value(self.arr_quadruples[pointer][1])
 					right_value =  self.get_memory(self.arr_quadruples[pointer][2]).get_value(self.arr_quadruples[pointer][2])
 					result = left_value > right_value
@@ -228,6 +232,7 @@ class VirtualMachine:
 				value_memory = self.get_memory(self.arr_quadruples[pointer][1])
 				value = value_memory.get_value(self.arr_quadruples[pointer][1])
 				params.append(value)
+				print(params)
 				pointer +=1
 			elif self.arr_quadruples[pointer][0] == 'RETURN':
 				value = self.get_memory(self.arr_quadruples[pointer][3]).get_value(self.arr_quadruples[pointer][3])
@@ -265,13 +270,12 @@ class VirtualMachine:
 				else:
 					raise Exception("ERROR: Out of bounds")
 
-
-
 			else:
 				pointer += 1
 
 	def execute(self): 
 		print("-------------------MAQUINA--VIRTUAL-----------------------")
+		print(self.input_array)
 		self.global_memory.init_global_memory()
 		self.process_quadruples()
 
@@ -457,7 +461,17 @@ class MemoryMap:
 					self.type_str[memory_dir]['value'] = value
 	
 	def add_params(self, params):
+		print(params, "paramssss")
 		for index, value in enumerate(params):
+			if type(value) == str:
+				if re.search("[\-]?\d+", value):
+					try:
+						value = int(value.replace("'", ""))
+						print(value, "despues de replace", type(value))
+					except:
+						value = float(value.replace("'", ""))
+						print(value, "despues de replace", type(value))
+
 			if type(value) is int:
 				if self.param_types[index] != 0:
 					self.type_int[self.counter_int] = {
@@ -471,7 +485,7 @@ class MemoryMap:
 					self.type_float[self.counter_float] = {
 						'value': value
 					}
-					self.counter_int += 1
+					self.counter_float += 1
 				else:
 					print("Error - parametro #", index +1, "en", self.function_name, "esta incorrecto")
 			else:
@@ -479,7 +493,7 @@ class MemoryMap:
 					self.type_char[self.counter_char] = {
 						'value': value
 					}
-					self.counter_int += 1
+					self.counter_char += 1
 				else:
 					print("Error - parametro #", index +1, "en", self.function_name, "esta incorrecto")
 	

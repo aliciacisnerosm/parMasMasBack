@@ -1,8 +1,9 @@
 program prueba :
-var int: aglobal;
+var int: x & float: f & char: c;
 
 void func cuenta_regresiva(int n){
-
+   f = 10.5;
+   write(f);
   if(n>0){
     write(n);
     cuenta_regresiva(n - 1);
@@ -13,10 +14,23 @@ void func cuenta_regresiva(int n){
   };
   
 }
-
-main (){
-  cuenta_regresiva(5);
+void func variable_float(float float_variable){
+  write(float_variable);
 }
 
+void func variable_chr(char char_variable){
+  write(char_variable);
+}
+
+main (){
+  read(x);
+  cuenta_regresiva(x);
+
+  read(f);
+  variable_float(f);
+  read(c);
+  variable_chr(c);
+  
+}
 
 

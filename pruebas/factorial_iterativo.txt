@@ -23,8 +23,9 @@ var int: fact,i;
 }
 
 main (){
- n =5;
+read(n);
  x = (factorial(n)) + factorial2(4 + 1 )+ factorial(3);
 write(x);
 }
+
 
