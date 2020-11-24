@@ -9,26 +9,31 @@ app = Flask(__name__)
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
-# funcion que manda a llamar el compilador con el archivo indicado
+'''
+    Funcion que manda a llamar el compilador con el archivo indicado
+'''
 @app.route('/compiler', methods=['GET'])
 def compiler():
     try:
         usr_input = request.args.get("input")
         file_name = request.args.get("name")
-        print(file_name, "holis")
         if usr_input == '':
             return parser(file_name), 200
         else:
             return parser(file_name, usr_input), 200
     except Exception as e:
         return str(e), 400
-#Función para obtener la lista de archivos guardados
+'''
+    Función para obtener la lista de archivos guardados
+'''
 @app.route('/files', methods=['GET'])
 def get_files():
     with open('files.json') as f:
         data = json.load(f)
     return data, 200
-#Función para crear un nuevo archivo
+'''
+    Función para crear un nuevo archivo
+'''   
 @app.route('/createFile')
 def create_File():
     get_name = request.args.get("file", "")
@@ -53,7 +58,9 @@ def create_File():
         print(p_json, file=open("files.json", "w"))
         
     return {"data": n}
-#Función para eliminar un archivo
+'''   
+    Función para eliminar un archivo
+'''   
 @app.route('/deleteFile')
 def delete_file():
     get_name = request.args.get("file", "")
@@ -68,7 +75,9 @@ def delete_file():
         print(p_json, file=open("files.json", "w"))
     return 'yay'
 
-#Función para guardar un archivo dentro de la aplicación
+'''
+    Función para guardar un archivo dentro de la aplicación
+'''
 @app.route('/saveFile', methods=['POST'])
 def save_file():
     try:
@@ -83,7 +92,10 @@ def save_file():
         return 'Archivo guardado!', 200
     except:
         return 'Error: No se pudo guardar el archivo', 400
-#Función para leer un archivo
+'''
+    Función para leer un archivo
+'''
+
 @app.route('/readFile', methods=['GET'])
 def read_file():
     try:

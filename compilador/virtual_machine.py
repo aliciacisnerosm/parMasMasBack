@@ -14,9 +14,10 @@ class VirtualMachine:
 		self.aux_memory = None
 		self.output_array = []
 		self.input_array = []
-
-#Función que determina el tipo de memoria, local, global o auxiliar de acuerdo al rango de la dirección de memoria.
-#Recibe la  dirección de memoria como parámetro.
+	'''
+		Función que determina el tipo de memoria, local, global o auxiliar de acuerdo al rango de la dirección de memoria.
+		Recibe la  dirección de memoria como parámetro.
+	'''
 	def get_memory(self, memory_dir):
 		if (type(memory_dir) == str):
 			return self.local_memory
@@ -31,9 +32,10 @@ class VirtualMachine:
 				return self.aux_memory
 			else:
 				return self.local_memory
-
-#Función que se encarga de procesar los cuádruplos, validando el valor del operador
-#Obteniendo los valores de la dirección de memoria de los operadores y generando un resultado
+	'''
+		Función que se encarga de procesar los cuádruplos, validando el valor del operador
+		Obteniendo los valores de la dirección de memoria de los operadores y generando un resultado
+	'''
 	def process_quadruples(self):
 		pointer = 0
 		params = []
@@ -302,7 +304,9 @@ class MemoryMap:
 		self.counter_int = 8001
 		self.counter_float = 9001
 		self.counter_char = 10001
-#Función que obtiene los valores locales
+	'''
+		Función que obtiene los valores locales
+	'''
 	def get_local_values(self):
 		if self.function_name != 'global':
 			self.init = self.general_dir['functions'][self.function_name]['init']
@@ -313,7 +317,11 @@ class MemoryMap:
 			self.temp_count = self.general_dir['functions'].get(self.function_name).get('temp_count') 
 			self.return_type = self.general_dir['functions'].get(self.function_name).get('return_type') 
 			self.temp_types = self.general_dir['functions'].get(self.function_name).get('temp_types')
-#Función que inicializa la memoria global
+
+	'''
+		Función que inicializa la memoria global
+	'''
+
 	def init_global_memory(self):
 		if self.function_name == 'global':
 			
@@ -339,7 +347,9 @@ class MemoryMap:
 						self.type_str[i] = {
 							'value': self.general_dir['global_var'][i]['value']
 						}
-#Agrega un valor de retorno a una función. Recibe el valor, tipo de retorno y nombre de la función como parámetros.
+	'''
+		Agrega un valor de retorno a una función. Recibe el valor, tipo de retorno y nombre de la función como parámetros.
+	'''	
 	def add_return_value(self, value, return_type, function_name):
 		if return_type == 1:
 			self.type_int[function_name] = {
@@ -353,7 +363,9 @@ class MemoryMap:
 			self.type_char[function_name] = {
 				'value': value
 			}
-#Función para obtener el valor asignado. Recibe la dirección de memoria como parámetro.
+	'''
+		Función para obtener el valor asignado. Recibe la dirección de memoria como parámetro.
+	'''
 	def get_value(self, memory_dir):
 		if (type(memory_dir) == str):
 			val = int(memory_dir.replace('(', '').replace(')', ''))
@@ -384,37 +396,49 @@ class MemoryMap:
 					return self.type_str[memory_dir]['value']
 				else:
 					return self.new_str(memory_dir)
-#Función para asignar un nuevo valor entero. Recibe como parámetro la dirección de memoria.
+	'''
+		Función para asignar un nuevo valor entero. Recibe como parámetro la dirección de memoria.
+	'''
 	def new_int(self, memory_dir):
 		self.type_int[memory_dir] = {
 			'value': None
 				}
 		return self.type_int[memory_dir]['value']
-#Función para asignar un nuevo valor flotante. Recibe como parámetro la dirección de memoria.
+	'''
+		Función para asignar un nuevo valor flotante. Recibe como parámetro la dirección de memoria.
+	'''
 	def new_float(self, memory_dir):
 		self.type_float[memory_dir] = {
 			'value': None
 		}
 		return self.type_float[memory_dir]['value']
-#Función para asignar un nuevo valor char. Recibe como parámetro la dirección de memoria.
+	'''
+		Función para asignar un nuevo valor char. Recibe como parámetro la dirección de memoria.
+	'''
 	def new_char(self, memory_dir):
 		self.type_char[memory_dir] = {
 			'value': None
 		}
 		return self.type_char[memory_dir]['value']
-#Función para asignar un nuevo valor booleano. Recibe como parámetro la dirección de memoria.
+	'''
+		Función para asignar un nuevo valor booleano. Recibe como parámetro la dirección de memoria.
+	'''
 	def new_bool(self, memory_dir):
 		self.type_bool[memory_dir] = {
 			'value': None
 		}
 		return self.type_bool[memory_dir]['value']
-#Función para asignar un nuevo valor string. Recibe como parámetro la dirección de memoria.
+	'''
+		Función para asignar un nuevo valor string. Recibe como parámetro la dirección de memoria.
+	'''
 	def new_str(self, memory_dir):
 		self.type_str[memory_dir] = {
 			'value': None
 		}
 		return self.type_str[memory_dir]['value']
-#Función para asignar un valor. Recibe como parámetro la dirección de memoria y el valor.
+	'''
+		Función para asignar un valor. Recibe como parámetro la dirección de memoria y el valor.
+	'''
 	def set_value(self, memory_dir, value):
 		print(memory_dir)
 		if (type(memory_dir) is str):
@@ -461,7 +485,9 @@ class MemoryMap:
 					}
 				else:
 					self.type_str[memory_dir]['value'] = value
-#Función para agregar parámetros de una función, recibe el parámetro como parámetro.	
+	'''
+		Función para agregar parámetros de una función, recibe el parámetro como parámetro.	
+	'''
 	def add_params(self, params):
 		print(params, "paramssss")
 		for index, value in enumerate(params):
