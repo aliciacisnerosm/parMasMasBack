@@ -340,7 +340,7 @@ class SemanticCube:
         }, 
       },
     }
-
+#Función para obtener el tipo de dato de acuerdo a la operación en el cubo semántico
   def get_type(self, left, right, oper):
     return self.semantic_cube[left][oper][right]
 
