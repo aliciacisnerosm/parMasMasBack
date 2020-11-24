@@ -36,10 +36,10 @@ def create_File():
     print("el nombre del programa es:", name)
     file_name = "pruebas/"+ name + ".txt"
     open(file_name, "w+")
-
+        
     new_file = {
          "name": name,
-         "createdAt": str(datetime.datetime.now()),
+         "createdAt": str(datetime.datetime.now().strftime("%x")),
          "path": file_name            
     }
     n = None
@@ -54,10 +54,24 @@ def create_File():
         
     return {"data": n}
 
+@app.route('/deleteFile')
+def delete_file():
+    get_name = request.args.get("file", "")
+    with open('files.json') as f:
+        data = json.load(f)
+        for i, value in enumerate( data['files']):
+            if value['name'] == get_name:
+                data['files'].pop(i)
+                
+        n = data
+        p_json = json.dumps(n)
+        print(p_json, file=open("files.json", "w"))
+    return 'yay'
+
+
 @app.route('/saveFile', methods=['POST'])
 def save_file():
     try:
-        print(request.get_json())
         req_data = request.get_json()
         file_text = req_data['file']
         file_name = req_data['name']

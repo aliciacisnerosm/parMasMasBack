@@ -32,5 +32,3 @@ main (){
   variable_chr(c);
   
 }
-
-

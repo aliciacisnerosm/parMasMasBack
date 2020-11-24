@@ -23,5 +23,3 @@ main(){
   x= fib(fib(n));
   write(x);
 }
-
-

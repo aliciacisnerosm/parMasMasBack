@@ -20,6 +20,8 @@ int func fib(int n) {
 }
 
 main(){
-  x= fib(4) + 1;
+  read(x);
+  x= fib(x) + 1;
   write(x);
 }
+
