@@ -10,7 +10,7 @@ int func find(int x){
   s[2] = 0;
   s[0] = 11;
 
-    for(i = 0 to 5){
+    for(i = 0 to 6){
         if(s[i] == x){
             return(i);
         };
@@ -28,4 +28,6 @@ else{
     write("El valor se encontro en la posicion ", result); 
 };
 }
+
+
 

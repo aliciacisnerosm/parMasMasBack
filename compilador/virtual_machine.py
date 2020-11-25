@@ -207,8 +207,13 @@ class VirtualMachine:
 				pointer = next_quadruple
 
 			elif self.arr_quadruples[pointer][0] == 'ERA':
-				self.aux_memory = deepcopy(self.local_memory) # la copia de aux memory
-				self.execution_stack.append(self.aux_memory) # se agrega al stack de ejecucion
+				self.aux_memory = deepcopy(self.local_memory) 
+				
+				if (len(self.execution_stack) < 200):
+					self.execution_stack.append(self.aux_memory)  
+				else:
+					raise Exception("ERROR: Stack Overflow")
+
 				self.local_memory = MemoryMap(self.general_dir, self.arr_quadruples[pointer][3])
 				self.local_memory.get_local_values()
 				pointer +=1
